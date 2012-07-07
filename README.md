@@ -1,11 +1,16 @@
 ﻿Forecalc
-
 =======
 
-Core spreadsheet implementation in F#
+**Forecalc** is a core spreadsheet implementation in F# built for research purposes at the IT University of Copenhagen.
+
+The goals of **Forecalc** are:
+
+* Learn large-scale functional programming using an LR parser, pattern matching, and asynchronous parallel calculations.
+* Compare different data representations for large spreadsheets.
+* Compare object-oriented and functional programming styles in a substantial piece of software, including testability, maintainability, and code volume.
+
 
 License
-
 =======
 
 Forecalc is released under a BSD-style license:
