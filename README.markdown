@@ -1,6 +1,6 @@
 ﻿# Forecalc
 
-## Core spreadsheet implementation in F&#35;
+## Core spreadsheet implementation in F\\#
 
 ---
 
