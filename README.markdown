@@ -1,8 +1,6 @@
 ﻿# Forecalc
 
-## Core spreadsheet implementation in F#
-
----
+## Core spreadsheet implementation in F\#
 
 ## License
 
