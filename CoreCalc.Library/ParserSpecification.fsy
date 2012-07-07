@@ -1,0 +1,89 @@
+﻿%{
+open Ast
+%}
+
+// The start token becomes a parser function in the compiled code:
+%start start
+
+// These are the terminal tokens of the grammar along with the types of
+// the data carried by each token:
+%token MUL DIV EXP PLUS MINUS
+%token LPAR RPAR
+%token <float> FLOAT
+%token <string> STRING
+%token <string> NAME 
+%token <string> SHEETNAME
+%token <bool> BOOLEAN
+%token COMMA
+%token COLON
+%token AMP
+%token LT LTE GT GTE EQ NOTEQ
+%token EOF
+
+// Associativity and Precedences - Lowest precedence comes first
+%left AMP
+%left LT LTE GT GTE EQ NOTEQ
+%left PLUS MINUS
+%left MUL DIV 
+%left EXP
+
+// This is the type of the data produced by a successful reduction of the 'start'
+// symbol:
+%type <Expr> start
+
+%%
+
+// These are the rules of the grammar along with the F# code of the 
+// actions executed as rules are reduced.  In this case the actions 
+// produce data using F# data construction terms.
+start: Prog { $1 }
+
+Prog:
+    | Expr EOF                    { $1 }
+
+Expr:
+    | NAME LPAR ExprList RPAR     { Function($1, $3) }
+    | NAME LPAR RPAR              { Function($1, []) }
+    | LPAR Expr RPAR              { $2 }
+    | Constant                    { $1 }
+    | Formula                     { $1 }
+    | Ref                         { $1 }
+
+Constant: 
+    | FLOAT                       { Float $1  }
+    | STRING                      { String $1 }
+	| BOOLEAN                     { Boolean $1 }
+
+Formula:
+    | UnaryOperation              { $1 }
+    | BinaryOperation             { $1 }
+
+UnaryOperation:
+    | PLUS Expr                   { $2 }
+    | MINUS Expr                  { Negate $2 }
+
+BinaryOperation:
+    | Expr AMP Expr               { Concat($1, $3) }    
+    | Expr PLUS Expr              { Add($1, $3) }    
+    | Expr MINUS Expr             { Sub($1, $3) }
+    | Expr MUL Expr               { Mul($1, $3) }
+    | Expr DIV Expr               { Div($1, $3) }
+    | Expr EXP Expr               { Pow($1, $3) }
+	| Expr LT Expr                { Lt($1, $3) }
+	| Expr LTE Expr               { Lte($1, $3) }
+	| Expr GT Expr                { Gt($1, $3) }
+	| Expr GTE Expr               { Gte($1, $3) }
+	| Expr EQ Expr                { Eq($1, $3) }
+	| Expr NOTEQ Expr             { NotEq($1, $3) }
+
+Ref:
+    | SHEETNAME NAME              { SheetRef($1, $2) }
+    | SHEETNAME NAME COLON NAME   { SheetRange($1, $2, $4) }
+    | NAME                        { Cell $1 }
+    | NAME COLON NAME             { Range($1, $3) }
+
+ExprList:
+    | Expr                        { [$1] }
+    | Expr COMMA ExprList         { $1 :: $3 }
+
+

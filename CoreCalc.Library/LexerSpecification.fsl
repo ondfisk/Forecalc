@@ -1,0 +1,78 @@
+﻿{
+module LexerSpecification
+open System
+open ParserSpecification
+open Microsoft.FSharp.Text.Lexing
+
+let lexeme lexbuf =
+    LexBuffer<char>.LexemeString lexbuf
+
+let upperName (cell : string) =
+    NAME (cell.ToUpper())
+
+let fixQuotes (s : string) =
+    let s' = s.Substring(1, String.length s - 2)
+    let s'' = s'.Replace("\"\"", "\"")
+    STRING s''
+
+let fixSheet (s : string) =
+    let s' = s.Substring(0, String.length s - 1)
+    SHEETNAME s'
+
+let fixAposSheet (s : string) =
+    let s' = s.Substring(1, String.length s - 3)
+    SHEETNAME s'
+}
+
+// These are some regular expression definitions
+let char                = ['a'-'z' 'A'-'Z']   
+let digit               = ['0'-'9']   
+let int                 = digit+   
+let float               = digit+('.'digit+)?(['e''E']digit+)?   
+let ref                 = ('$')?char+('$')?digit+
+let func                = char+digit*
+let whitespace          = [' ' '\t']   
+let newline             = "\r\n" | '\n' | '\r'
+let string              = '"'[^'"']*'"'
+let sheet               = (digit|char)+'!'
+let apossheet           = '\''[^'\'' ':' '/' '\\']*'\'''!'
+let true                = ['T' 't']['R' 'r']['U' 'u']['E' 'e']
+let false               = ['F' 'f']['A' 'a']['L' 'l']['S' 's']['E' 'e']
+let r1c1                = 'R' digit* 'C' digit*
+let r2c1                = "R[" ['+' '-'] digit+ "]C" digit*
+let r1c2                = 'R' digit* "C[" ['+' '-'] digit+ ']'
+let r2c2                = "R[" ['+' '-'] digit+ "]C[" ['+' '-'] digit+ ']'
+
+rule tokenize = parse
+| whitespace            { tokenize lexbuf }
+| newline               { tokenize lexbuf }
+| '+'                   { PLUS }
+| '-'                   { MINUS }
+| '*'                   { MUL }
+| '/'                   { DIV }
+| '^'                   { EXP }
+| '('                   { LPAR }
+| ')'                   { RPAR }
+| ','                   { COMMA }
+| ':'                   { COLON }
+| '&'                   { AMP }
+| '<'                   { LT }
+| "<="                  { LTE }
+| '>'                   { GT }
+| ">="                  { GTE }
+| '='                   { EQ }
+| "<>"                  { NOTEQ }
+| int                   { FLOAT (float (lexeme lexbuf)) }
+| float                 { FLOAT (float (lexeme lexbuf)) }
+| true|false            { BOOLEAN (bool.Parse (lexeme lexbuf)) }
+| ref                   { upperName (lexeme lexbuf) }
+| func                  { upperName (lexeme lexbuf) }
+| r1c1                  { upperName (lexeme lexbuf) }
+| r2c1                  { upperName (lexeme lexbuf) }
+| r1c2                  { upperName (lexeme lexbuf) }
+| r2c2                  { upperName (lexeme lexbuf) }
+| string+               { fixQuotes (lexeme lexbuf) }
+| sheet                 { fixSheet (lexeme lexbuf) }
+| apossheet             { fixAposSheet (lexeme lexbuf) }
+| eof                   { EOF }
+
