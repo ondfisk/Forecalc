@@ -8,9 +8,9 @@
     <ProjectGuid>22e60918-b46d-44f0-a73b-f4013a07941f</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>CoreCalc.Library.Tests</RootNamespace>
-    <AssemblyName>CoreCalc.Library.Tests</AssemblyName>
+    <AssemblyName>ForeCalc.Library.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <Name>CoreCalc.Library.Tests</Name>
+    <Name>ForeCalc.Library.Tests</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -61,8 +61,10 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
-    <ProjectReference Include="..\CoreCalc.Library\CoreCalc.Library.fsproj">
-      <Name>CoreCalc.Library</Name>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Forecalc.Library\Forecalc.Library.fsproj">
+      <Name>Forecalc.Library</Name>
       <Project>{ed5d0555-0cea-4203-bd7c-1571da65751e}</Project>
       <Private>True</Private>
     </ProjectReference>

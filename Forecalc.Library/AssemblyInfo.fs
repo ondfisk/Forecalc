@@ -6,7 +6,7 @@ open System.Runtime.CompilerServices
  
 open System.Runtime.InteropServices
  
-[<assembly: AssemblyTitle("CoreCalc.Library")>]
+[<assembly: AssemblyTitle("Forecalc.Library")>]
  
 [<assembly: AssemblyDescription("")>]
  
@@ -14,7 +14,7 @@ open System.Runtime.InteropServices
  
 [<assembly: AssemblyCompany("ITU")>]
  
-[<assembly: AssemblyProduct("CoreCalc.Library")>]
+[<assembly: AssemblyProduct("Forecalc.Library")>]
  
 [<assembly: AssemblyCopyright("Copyright © Rasmus Nielsen 2012")>]
  

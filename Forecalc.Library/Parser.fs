@@ -1,4 +1,4 @@
-﻿namespace CoreCalc.Library
+﻿namespace Forecalc.Library
 
 open System
 open System.Globalization

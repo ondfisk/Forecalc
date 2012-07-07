@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "CoreCalc.Library", "CoreCalc.Library\CoreCalc.Library.fsproj", "{ED5D0555-0CEA-4203-BD7C-1571DA65751E}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Forecalc.Library", "Forecalc.Library\Forecalc.Library.fsproj", "{ED5D0555-0CEA-4203-BD7C-1571DA65751E}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "CoreCalc.Library.Tests", "CoreCalc.Library.Tests\CoreCalc.Library.Tests.fsproj", "{22E60918-B46D-44F0-A73B-F4013A07941F}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Forecalc.Library.Tests", "Forecalc.Library.Tests\Forecalc.Library.Tests.fsproj", "{22E60918-B46D-44F0-A73B-F4013A07941F}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "CoreCalc.App", "CoreCalc.App\CoreCalc.App.fsproj", "{B54CB317-6311-4A14-8C33-BC9F8F52C19B}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Forecalc.App", "Forecalc.App\Forecalc.App.fsproj", "{B54CB317-6311-4A14-8C33-BC9F8F52C19B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{DD5F65D8-2EDA-479C-B928-49D7CD68BF6C}"
 	ProjectSection(SolutionItems) = preProject

@@ -6,7 +6,7 @@ open System.Runtime.CompilerServices
  
 open System.Runtime.InteropServices
  
-[<assembly: AssemblyTitle("CoreCalc.Library.Tests")>]
+[<assembly: AssemblyTitle("Forecalc.App")>]
  
 [<assembly: AssemblyDescription("")>]
  
@@ -14,7 +14,7 @@ open System.Runtime.InteropServices
  
 [<assembly: AssemblyCompany("ITU")>]
  
-[<assembly: AssemblyProduct("CoreCalc.Library.Tests")>]
+[<assembly: AssemblyProduct("Forecalc.App")>]
  
 [<assembly: AssemblyCopyright("Copyright © Rasmus Nielsen 2012")>]
  
@@ -24,7 +24,7 @@ open System.Runtime.InteropServices
  
 [<assembly: ComVisible(false)>]
  
-[<assembly: Guid("691b89d2-c5e7-4c7b-b1fb-389041a1bcc6")>]
+[<assembly: Guid("ae7bd4c9-6183-4bed-a6fc-ca98ef39bdb6")>]
  
 [<assembly: AssemblyVersion("1.0.0.*")>]
  

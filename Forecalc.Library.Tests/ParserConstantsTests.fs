@@ -1,9 +1,9 @@
-﻿namespace CoreCalc.Library.Tests
+﻿namespace Forecalc.Library.Tests
 
 open NUnit.Framework
 open FsUnit
 open Ast
-open CoreCalc.Library
+open Forecalc.Library
 
 [<TestFixture>] 
 type ParserConstantsTests () =

@@ -8,9 +8,9 @@
     <ProjectGuid>b54cb317-6311-4a14-8c33-bc9f8f52c19b</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>CoreCalc.App</RootNamespace>
-    <AssemblyName>CoreCalc.App</AssemblyName>
+    <AssemblyName>ForeCalc.App</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <Name>CoreCalc.App</Name>
+    <Name>ForeCalc.App</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -52,8 +52,8 @@
     <None Include="Script1.fsx" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CoreCalc.Library\CoreCalc.Library.fsproj">
-      <Name>CoreCalc.Library</Name>
+    <ProjectReference Include="..\Forecalc.Library\Forecalc.Library.fsproj">
+      <Name>Forecalc.Library</Name>
       <Project>{ed5d0555-0cea-4203-bd7c-1571da65751e}</Project>
       <Private>True</Private>
     </ProjectReference>
