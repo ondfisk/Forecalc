@@ -82,10 +82,12 @@ module Parser =
 
     let resolveRef (cell : CellRef) (ref : UnresolvedRef) =
         match ref with
-            | A1Cell(value) -> { cell with Cell = resolveA1 cell value }
-            | A1SheetRef(sheet, value) -> { Sheet = sheet ; Cell = resolveA1 cell value }
-            | R1C1Cell(value) -> { cell with Cell = resolveR1C1 cell value }
-            | R1C1SheetRef(sheet, value) -> { Sheet = sheet ; Cell = resolveR1C1 cell value }
+            | A1Cell(value) -> CellRef({ cell with Cell = resolveA1 cell value })
+            | A1Range(topLeft, bottomRight) -> RangeRef({ Sheet = cell.Sheet ; TopLeft = resolveA1 cell topLeft ; BottomRight = resolveA1 cell bottomRight })
+            | A1SheetRef(sheet, value) -> CellRef({ Sheet = sheet ; Cell = resolveA1 cell value })
+            | A1SheetRange(sheet, topLeft, bottomRight) -> RangeRef({ Sheet = sheet ; TopLeft = resolveA1 cell topLeft ; BottomRight = resolveA1 cell bottomRight })
+            | R1C1Cell(value) -> CellRef({ cell with Cell = resolveR1C1 cell value })
+            | R1C1SheetRef(sheet, value) -> CellRef({ Sheet = sheet ; Cell = resolveR1C1 cell value })
             | _ -> failwith "i dunno yet"
             
 
