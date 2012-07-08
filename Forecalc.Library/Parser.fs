@@ -70,9 +70,21 @@ module Parser =
 
         { cell with Cell = { Col = col ; ColAbs = colAbs ; Row = row ; RowAbs = rowAbs } }
 
+    let resolveR1C1 (cell : CellRef) (ref : string) =
+        let pattern = new Regex(@"^R(\[?)([\+|\-]?\d+)?(\]?)C(\[?)([\+|\-]?\d+)?(\])?$")
+        let groups = pattern.Match(ref).Groups
+        let rowAbs = groups.[1].Value = "" && groups.[2].Value <> "" && groups.[3].Value = ""
+        let (_, row) = Int32.TryParse(groups.[2].Value)
+        let colAbs = groups.[4].Value = "" && groups.[5].Value <> "" && groups.[6].Value = ""
+        let (_, col) = Int32.TryParse(groups.[5].Value)
+        
+        { cell with Cell = { Col = col ; ColAbs = colAbs ; Row = row ; RowAbs = rowAbs } }
+
     let resolveRef (cell : CellRef) (ref : UnresolvedRef) =
         match ref with
             | A1Cell(value) -> resolveA1 cell value
+            | A1SheetRef(sheet, value) -> resolveA1 { cell with Sheet = sheet } value
+            | R1C1Cell(value) -> resolveR1C1 cell value
             | _ -> failwith "i dunno yet"
             
 
