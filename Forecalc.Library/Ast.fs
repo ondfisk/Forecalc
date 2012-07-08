@@ -32,7 +32,7 @@ and UnresolvedRef =
     | R1C1SheetRef of string * string
     | R1C1SheetRange of string * string * string
 
-and Cell = { Column : int ; ColumnAbsolute : bool ; Row : int ; RowAbsolute : bool }
+and Cell = { Row : int ; RowAbs : bool ; Col : int ; ColAbs : bool }
 
 and CellRef = { Sheet : string ; Cell : Cell }
 

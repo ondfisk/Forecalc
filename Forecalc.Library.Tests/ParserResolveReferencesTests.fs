@@ -7,7 +7,8 @@ open Forecalc.Library
 
 [<TestFixture>] 
 type ParserResolveReferencesTests () =
-    let cell = { Sheet = "Sheet1" ; Cell = { Column = 1 ; ColumnAbsolute = false ; Row = 1 ; RowAbsolute = false } }
+    // Cell = C3 / R3C3
+    let cell = { Sheet = "Sheet1" ; Cell = { Row = 3 ; RowAbs = false ; Col = 3 ; ColAbs = false } }
 
     [<Test>]
     member this.``alphaToNumeric "A" -> 1``() =
@@ -29,7 +30,23 @@ type ParserResolveReferencesTests () =
     member this.``alphaToNumeric "AP" -> 42``() =
         Parser.alphaToNumeric "AP" |> should equal 42
 
+    [<Test>]
+    member this.``UnresolvedRef(A1) -> { Sheet = "Sheet1" ; { Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false }}``() =
+        A1Cell("A1") |> Parser.resolveRef cell |> should equal { Sheet = "Sheet1" ; Cell = { Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } }
 
-//    [<Test>]
-//    member this.``UnresolvedRef(A1) -> CellRef(Sheet = "Sheet1", Cell(Column = 1, ColumnAbsolute = false, Row = 1, RowAbsolute = false))``() =
-//        A1Cell("A1") |> Parser.resolveRef cell |> should equal { Sheet = "Sheet1" ; Cell = { Column = 1 ; ColumnAbsolute = false ; Row = 1 ; RowAbsolute = false } }
+    [<Test>]
+    member this.``UnresolvedRef(E5) -> { Sheet = "Sheet1" ; { Row = 2 ; RowAbs = false ; Col = 2 ; ColAbs = false }}``() =
+        A1Cell("E5") |> Parser.resolveRef cell |> should equal { Sheet = "Sheet1" ; Cell = { Row = 2 ; RowAbs = false ; Col = 2 ; ColAbs = false } }
+
+    [<Test>]
+    member this.``UnresolvedRef($A1) -> { Sheet = "Sheet1" ; { Row = -2 ; RowAbs = false ; Col = 1 ; ColAbs = true }}``() =
+        A1Cell("$A1") |> Parser.resolveRef cell |> should equal { Sheet = "Sheet1" ; Cell = { Row = -2 ; RowAbs = false ; Col = 1 ; ColAbs = true } }
+        
+    [<Test>]
+    member this.``UnresolvedRef(A$1) -> { Sheet = "Sheet1" ; { Row = 1 ; RowAbs = true ; Col = -2 ; ColAbs = false }}``() =
+        A1Cell("A$1") |> Parser.resolveRef cell |> should equal { Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = -2 ; ColAbs = false } }
+
+    [<Test>]
+    member this.``UnresolvedRef($A$1) -> { Sheet = "Sheet1" ; { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }}``() =
+        A1Cell("$A$1") |> Parser.resolveRef cell |> should equal { Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true } }
+        

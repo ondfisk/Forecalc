@@ -50,16 +50,30 @@ module Parser =
             array.[c] <- array.[c] + c * 25
         Array.sum array
 
-//    let resolveA1 (ref : string) =
-//        let alphaToNumeric (a : string) =
-//            a |> Array.sumBy (fun c -> c - 64)
-//        let pattern = new Regex(@"^(\$?)([A-Z]+)(\$?)(\d+)$")
-//        let groups = pattern.Match(ref).Groups
-//        let columnAbsolute = groups.[1] = "$"
-//        let rowAbsolute = groups.[3] = "$"
-//        let row = int groups.[4]
-//        
+    let resolveA1 (cell : CellRef) (ref : string) =
+        let pattern = new Regex(@"^(\$?)([A-Z]+)(\$?)(\d+)$")
+        let groups = pattern.Match(ref).Groups
+        let colAbs = groups.[1].Value = "$"
+        let colValue = alphaToNumeric groups.[2].Value
+        let rowAbs = groups.[3].Value = "$"
+        let rowValue = int groups.[4].Value
+        
+        let col =
+            match colAbs with
+            | true -> colValue
+            | false -> colValue - cell.Cell.Col
 
+        let row =
+            match rowAbs with
+            | true -> rowValue
+            | false -> rowValue - cell.Cell.Row
+
+        { cell with Cell = { Col = col ; ColAbs = colAbs ; Row = row ; RowAbs = rowAbs } }
+
+    let resolveRef (cell : CellRef) (ref : UnresolvedRef) =
+        match ref with
+            | A1Cell(value) -> resolveA1 cell value
+            | _ -> failwith "i dunno yet"
             
 
             

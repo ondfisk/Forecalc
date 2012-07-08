@@ -1,14 +1,10 @@
 ﻿module Program 
 
-open System
-open System.Diagnostics
+open Ast
+open Forecalc.Library
 
-[<EntryPoint>]
-let main argv = 
-    let proc = Process.GetCurrentProcess()
-    let counter = new PerformanceCounter("Process", "Private Bytes", proc.ProcessName)
-    let min = counter.NextValue()
-    let smallsheet = Array2D.zeroCreate<IntPtr> 65536 256
-    let mem = counter.NextValue() - min
-    printfn "Space usage in megabytes for a 65,536 rows by 256 columns sheet: %f" (mem/(1024.0f**2.0f))
-    0
+let cell = { Sheet = "Sheet1" ; Cell = { Row = 3 ; RowAbs = false ; Col = 3 ; ColAbs = false } }
+
+let res = A1Cell("E5") |> Parser.resolveRef cell
+
+printfn "%A" res
