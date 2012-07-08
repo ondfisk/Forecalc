@@ -68,7 +68,7 @@ module Parser =
             | true -> rowValue
             | false -> rowValue - cell.Cell.Row
 
-        { cell with Cell = { Col = col ; ColAbs = colAbs ; Row = row ; RowAbs = rowAbs } }
+        { Col = col ; ColAbs = colAbs ; Row = row ; RowAbs = rowAbs }
 
     let resolveR1C1 (cell : CellRef) (ref : string) =
         let pattern = new Regex(@"^R(\[?)([\+|\-]?\d+)?(\]?)C(\[?)([\+|\-]?\d+)?(\])?$")
@@ -78,14 +78,14 @@ module Parser =
         let colAbs = groups.[4].Value = "" && groups.[5].Value <> "" && groups.[6].Value = ""
         let (_, col) = Int32.TryParse(groups.[5].Value)
         
-        { cell with Cell = { Col = col ; ColAbs = colAbs ; Row = row ; RowAbs = rowAbs } }
+        { Col = col ; ColAbs = colAbs ; Row = row ; RowAbs = rowAbs }
 
     let resolveRef (cell : CellRef) (ref : UnresolvedRef) =
         match ref with
-            | A1Cell(value) -> resolveA1 cell value
-            | A1SheetRef(sheet, value) -> resolveA1 { cell with Sheet = sheet } value
-            | R1C1Cell(value) -> resolveR1C1 cell value
-            | R1C1SheetRef(sheet, value) -> resolveR1C1 { cell with Sheet = sheet } value
+            | A1Cell(value) -> { cell with Cell = resolveA1 cell value }
+            | A1SheetRef(sheet, value) -> { Sheet = sheet ; Cell = resolveA1 cell value }
+            | R1C1Cell(value) -> { cell with Cell = resolveR1C1 cell value }
+            | R1C1SheetRef(sheet, value) -> { Sheet = sheet ; Cell = resolveR1C1 cell value }
             | _ -> failwith "i dunno yet"
             
 
