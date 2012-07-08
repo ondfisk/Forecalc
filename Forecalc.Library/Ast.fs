@@ -18,6 +18,7 @@ type Expr =
     | Div of Expr * Expr
     | Pow of Expr * Expr
     | UnresolvedRef of UnresolvedRef
+    | Ref of Ref
     | Function of string * Expr List
     | Error of string
 
@@ -30,3 +31,13 @@ and UnresolvedRef =
     | R1C1Range of string * string
     | R1C1SheetRef of string * string
     | R1C1SheetRange of string * string * string
+
+and Cell = { Row : int ; RowAbsolute : bool ; Column : int ; ColumnAbsolute : bool }
+
+and CellRef = { Sheet : string ; Cell : Cell ; Name : string }
+
+and RangeRef = { Sheet : string ; TopLeft : Cell ; BottomRight : Cell ; Name : string }
+
+and Ref =
+    | CellRef of CellRef
+    | RangeRef of RangeRef
