@@ -77,3 +77,8 @@ type ParserResolveReferencesTests () =
     [<Test>]
     member this.``UnresolvedRef(R[+1]C) -> { Sheet = "Sheet1" ; { Row = 1 ; RowAbs = false ; Col = 0 ; ColAbs = false }}``() =
         R1C1Cell("R[+1]C") |> Parser.resolveRef cell |> should equal { Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = false ; Col = 0 ; ColAbs = false } }
+
+    [<Test>]
+    member this.``UnresolvedRef(Sheet2!R1C1) -> { Sheet = "Sheet2" ; { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }}``() =
+        R1C1SheetRef("Sheet2", "R1C1") |> Parser.resolveRef cell |> should equal { Sheet = "Sheet2" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true } }
+

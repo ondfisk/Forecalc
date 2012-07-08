@@ -85,6 +85,7 @@ module Parser =
             | A1Cell(value) -> resolveA1 cell value
             | A1SheetRef(sheet, value) -> resolveA1 { cell with Sheet = sheet } value
             | R1C1Cell(value) -> resolveR1C1 cell value
+            | R1C1SheetRef(sheet, value) -> resolveR1C1 { cell with Sheet = sheet } value
             | _ -> failwith "i dunno yet"
             
 
