@@ -7,7 +7,7 @@ open Forecalc.Library
 
 [<TestFixture>] 
 type ParserResolveReferencesTests () =
-    // Cell = C3 / R3C3
+    // Cell = C3 / ~R3C3
     let cell = { Sheet = "Sheet1" ; Cell = { Row = 3 ; RowAbs = false ; Col = 3 ; ColAbs = false } }
 
     [<Test>]
@@ -87,6 +87,14 @@ type ParserResolveReferencesTests () =
         R1C1Cell("R[+1]C") |> Parser.resolveRef cell |> should equal (CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = false ; Col = 0 ; ColAbs = false } }))
 
     [<Test>]
+    member this.``UnresolvedRef(R[-2]C[-2]:R[-1]C[-1]) -> { Sheet = "Sheet1" ; TopLeft = { Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } ; BottomRight = { Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false }}``() =
+        R1C1Range("R[-2]C[-2]", "R[-1]C[-1]") |> Parser.resolveRef cell |> should equal (RangeRef({ Sheet = "Sheet1" ; TopLeft = { Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } ; BottomRight = { Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false } }))
+        
+    [<Test>]
     member this.``UnresolvedRef(Sheet2!R1C1) -> { Sheet = "Sheet2" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }}``() =
         R1C1SheetRef("Sheet2", "R1C1") |> Parser.resolveRef cell |> should equal (CellRef({ Sheet = "Sheet2" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true } }))
+
+    [<Test>]
+    member this.``UnresolvedRef(Sheet2!R[-2]C[-2]:R[-1]C[-1]) -> { Sheet = "Sheet2" ; TopLeft = { Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } ; BottomRight = { Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false }}``() =
+        R1C1SheetRange("Sheet2", "R[-2]C[-2]", "R[-1]C[-1]") |> Parser.resolveRef cell |> should equal (RangeRef({ Sheet = "Sheet2" ; TopLeft = { Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } ; BottomRight = { Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false } }))
 
