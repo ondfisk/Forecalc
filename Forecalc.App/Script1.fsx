@@ -1,12 +1,17 @@
 ﻿open System
-open System.Diagnostics
+open System.Text.RegularExpressions
 
-let rows = 65536
-let columns = 256
-let proc = Process.GetCurrentProcess()
-let counter = new PerformanceCounter("Process", "Private Bytes", proc.ProcessName)
-let min = counter.NextValue()
-let smallsheet = Array2D.zeroCreate<IntPtr> rows columns
-let mem = counter.NextValue() - min
-printfn "Space usage in megabytes for a %i rows by %i columns sheet: %f" 
-    rows columns (mem/(1024.0f**2.0f))
+let pattern = new Regex(@"^(\$?)([A-Z]+)(\$?)(\d+)$")
+let a1cell = "A1"
+
+let m = pattern.Match(a1cell)
+
+let g = m.Groups
+
+let first = g.[1]
+
+let alphaToNumeric (a : string) =
+    let array = a.ToCharArray() |> Array.map (fun c -> int c - 64) 
+    for c in [ 0 .. array.Length - 1 ] do
+        array.[c] <- array.[c] + c * 25
+    Array.sum array

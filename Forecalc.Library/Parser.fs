@@ -2,6 +2,7 @@
 
 open System
 open System.Globalization
+open System.Text.RegularExpressions
 open System.Threading
 open Microsoft.FSharp.Text.Lexing
 open Ast
@@ -42,3 +43,23 @@ module Parser =
             | _ when isFloat expr -> Float (float expr)
             | _ when isBoolean expr -> Boolean (bool.Parse expr)
             | _ -> String (toString expr)
+
+    let alphaToNumeric (a : string) =
+        let array = a.ToUpper().ToCharArray() |> Array.map (fun c -> int c - 64) 
+        for c in [ 0 .. array.Length - 1 ] do
+            array.[c] <- array.[c] + c * 25
+        Array.sum array
+
+//    let resolveA1 (ref : string) =
+//        let alphaToNumeric (a : string) =
+//            a |> Array.sumBy (fun c -> c - 64)
+//        let pattern = new Regex(@"^(\$?)([A-Z]+)(\$?)(\d+)$")
+//        let groups = pattern.Match(ref).Groups
+//        let columnAbsolute = groups.[1] = "$"
+//        let rowAbsolute = groups.[3] = "$"
+//        let row = int groups.[4]
+//        
+
+            
+
+            
