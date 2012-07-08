@@ -17,16 +17,16 @@ type Expr =
     | Mul of Expr * Expr
     | Div of Expr * Expr
     | Pow of Expr * Expr
-    | Cell of string
-    | Range of string * string
-    | SheetRef of string * string
-    | SheetRange of string * string * string
-    //| Ref of Ref
+    | UnresolvedRef of UnresolvedRef
     | Function of string * Expr List
     | Error of string
-//
-//and Ref =
-//    | Cell of string
-//    | Range of string * string
-//    | SheetRef of string * string
-//    | SheetRange of string * string * string
+
+and UnresolvedRef =
+    | A1Cell of string
+    | A1Range of string * string
+    | A1SheetRef of string * string
+    | A1SheetRange of string * string * string
+    | R1C1Cell of string
+    | R1C1Range of string * string
+    | R1C1SheetRef of string * string
+    | R1C1SheetRange of string * string * string

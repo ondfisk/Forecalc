@@ -13,6 +13,7 @@ open Ast
 %token <string> STRING
 %token <string> NAME 
 %token <string> SHEETNAME
+%token <string> R1C1
 %token <bool> BOOLEAN
 %token COMMA
 %token COLON
@@ -77,10 +78,14 @@ BinaryOperation:
 	| Expr NOTEQ Expr             { NotEq($1, $3) }
 
 Ref:
-    | SHEETNAME NAME              { SheetRef($1, $2) }
-    | SHEETNAME NAME COLON NAME   { SheetRange($1, $2, $4) }
-    | NAME                        { Cell $1 }
-    | NAME COLON NAME             { Range($1, $3) }
+    | SHEETNAME NAME              { UnresolvedRef(A1SheetRef($1, $2)) }
+    | SHEETNAME NAME COLON NAME   { UnresolvedRef(A1SheetRange($1, $2, $4)) }
+    | NAME                        { UnresolvedRef(A1Cell $1) }
+    | NAME COLON NAME             { UnresolvedRef(A1Range($1, $3)) }   
+    | SHEETNAME R1C1              { UnresolvedRef(R1C1SheetRef($1, $2)) }
+    | SHEETNAME R1C1 COLON R1C1   { UnresolvedRef(R1C1SheetRange($1, $2, $4)) }
+    | R1C1                        { UnresolvedRef(R1C1Cell $1) }
+    | R1C1 COLON R1C1             { UnresolvedRef(R1C1Range($1, $3)) }   
 
 ExprList:
     | Expr                        { [$1] }

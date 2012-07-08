@@ -7,8 +7,11 @@ open Microsoft.FSharp.Text.Lexing
 let lexeme lexbuf =
     LexBuffer<char>.LexemeString lexbuf
 
-let upperName (cell : string) =
-    NAME (cell.ToUpper())
+let upperName (s : string) =
+    NAME (s.ToUpper())
+
+let upperR1C1 (s : string) =
+    R1C1 (s.ToUpper())
 
 let fixQuotes (s : string) =
     let s' = s.Substring(1, String.length s - 2)
@@ -65,14 +68,14 @@ rule tokenize = parse
 | int                   { FLOAT (float (lexeme lexbuf)) }
 | float                 { FLOAT (float (lexeme lexbuf)) }
 | true|false            { BOOLEAN (bool.Parse (lexeme lexbuf)) }
-| ref                   { upperName (lexeme lexbuf) }
-| func                  { upperName (lexeme lexbuf) }
-| r1c1                  { upperName (lexeme lexbuf) }
-| r2c1                  { upperName (lexeme lexbuf) }
-| r1c2                  { upperName (lexeme lexbuf) }
-| r2c2                  { upperName (lexeme lexbuf) }
+| r1c1                  { upperR1C1 (lexeme lexbuf) }
+| r2c1                  { upperR1C1 (lexeme lexbuf) }
+| r1c2                  { upperR1C1 (lexeme lexbuf) }
+| r2c2                  { upperR1C1 (lexeme lexbuf) }
 | string+               { fixQuotes (lexeme lexbuf) }
 | sheet                 { fixSheet (lexeme lexbuf) }
 | apossheet             { fixAposSheet (lexeme lexbuf) }
+| ref                   { upperName (lexeme lexbuf) }
+| func                  { upperName (lexeme lexbuf) }
 | eof                   { EOF }
 
