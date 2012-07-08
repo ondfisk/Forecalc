@@ -14,12 +14,12 @@ module Parser =
     Thread.CurrentThread.CurrentUICulture <- CultureInfo("en-US")
 
     let isFloat s =
-        match Double.TryParse(s) with
-            | b, _ -> b
+        let b, _ = Double.TryParse(s)
+        b
 
     let isBoolean s =
-        match bool.TryParse(s) with
-            | b, _ -> b
+        let b, _ = bool.TryParse(s)
+        b
 
     let toString (s : string) =
         match s with
@@ -27,9 +27,7 @@ module Parser =
             | _ -> s
             
     let isFormula (s : string) =
-        match s with
-            | _ when s.StartsWith("=") -> true
-            | _ -> false
+        s.StartsWith("=")
 
     let parse (expr : string) =
         match expr with
