@@ -45,14 +45,14 @@ module Parser =
             | _ -> String (toString expr)
 
     let columnFromAlpha (c: string) =
-        let rec innerSum index acc list =
+        let rec inner index acc list =
             match list with
                 | [] -> acc
-                | x::xs -> innerSum (index + 1) (acc + x + index * 25) xs
+                | x::xs -> inner (index + 1) (acc + x + index * 25) xs
         c.ToUpper().ToCharArray() 
             |> Array.toList 
             |> List.map (fun c -> int c - 64)
-            |> innerSum 0 0
+            |> inner 0 0
 
     let resolveA1 (cell : CellRef) (ref : string) =
         let pattern = new Regex(@"^(\$?)([A-Z]+)(\$?)(\d+)$")
