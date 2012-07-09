@@ -54,13 +54,20 @@ module Parser =
             |> List.map (fun c -> int c - 64)
             |> inner 0 0
 
+    let groups regex str =
+        let p = new Regex(regex)
+        let g = p.Match(str).Groups
+        let a = Array.create<string> (g.Count - 1) ""
+        for i in [ 0 .. g.Count - 2 ] do
+            a.[i] <- g.[i+1].Value
+        a
+
     let resolveA1 (cell : CellRef) (ref : string) =
-        let pattern = new Regex(@"^(\$?)([A-Z]+)(\$?)(\d+)$")
-        let groups = pattern.Match(ref).Groups
-        let colAbs = groups.[1].Value = "$"
-        let colValue = columnFromAlpha groups.[2].Value
-        let rowAbs = groups.[3].Value = "$"
-        let rowValue = int groups.[4].Value
+        let g = groups @"^(\$?)([A-Z]+)(\$?)(\d+)$" ref
+        let colAbs = g.[0] = "$"
+        let colValue = columnFromAlpha g.[1]
+        let rowAbs = g.[2] = "$"
+        let rowValue = int g.[3]
         
         let col =
             match colAbs with

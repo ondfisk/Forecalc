@@ -2,6 +2,7 @@
 
 open Ast
 open Forecalc.Library
+open System.Text.RegularExpressions
 
 //let cell = { Sheet = "Sheet1" ; Cell = { Row = 3 ; RowAbs = false ; Col = 3 ; ColAbs = false } }
 //
@@ -30,3 +31,18 @@ printfn "A: %i = %i" (columnFromAlpha "A") (alphaToNumeric "A")
 printfn "AP: %i = %i" (columnFromAlpha "AP") (alphaToNumeric "AP")
 printfn "Z: %i = %i" (columnFromAlpha "Z") (alphaToNumeric "Z")
 printfn "AA: %i = %i" (columnFromAlpha "AA") (alphaToNumeric "AA")
+  
+let pattern = @"^(\$?)([A-Z]+)(\$?)(\d+)$"
+let ref = "A1"
+
+let groups regex str =
+    let p = new Regex(regex)
+    let g = p.Match(str).Groups
+    let a = Array.create<string> (g.Count - 1) ""
+    for i in [ 0 .. g.Count - 2 ] do
+        a.[i] <- g.[i+1].Value
+    a
+
+let g = groups @"^(\$?)([A-Z]+)(\$?)(\d+)$" ref
+
+printfn "%A" g
