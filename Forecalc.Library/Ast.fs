@@ -19,7 +19,7 @@ type Expr =
     | Pow of Expr * Expr
     | UnresolvedRef of UnresolvedRef
     | Ref of Ref
-    | Function of string * Expr List
+    | Fun of string * Expr List
     | Error of string
 
 and UnresolvedRef =
