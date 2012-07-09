@@ -62,24 +62,21 @@ module Parser =
             a.[i] <- g.[i+1].Value
         a
 
-    let resolveA1 (cell : CellRef) (ref : string) =
-        let g = groups @"^(\$?)([A-Z]+)(\$?)(\d+)$" ref
-        let colAbs = g.[0] = "$"
-        let colValue = columnFromAlpha g.[1]
-        let rowAbs = g.[2] = "$"
-        let rowValue = int g.[3]
-        
-        let col =
-            match colAbs with
-            | true -> colValue
-            | false -> colValue - cell.Cell.Col
+    let (|Groups|_|) str regex =
+        let m = Regex.Match(str, regex)
+        if m.Success then
+            Some (List.tail [ for g in m.Groups -> g.Value ])
+        else
+            None
 
-        let row =
-            match rowAbs with
-            | true -> rowValue
-            | false -> rowValue - cell.Cell.Row
-
-        { Col = col ; ColAbs = colAbs ; Row = row ; RowAbs = rowAbs }
+    let resolveA1 cell ref =
+        let pattern = @"^(\$?)([A-Z]+)(\$?)(\d+)$"
+        match (|Groups|_|) ref pattern with
+            | Some ("" :: col :: "" :: row :: []) -> { Col = columnFromAlpha col - cell.Cell.Col ; ColAbs = false ; Row = int row - cell.Cell.Row ; RowAbs = false }
+            | Some ("$" :: col :: "" :: row :: []) -> { Col = columnFromAlpha col ; ColAbs = true ; Row = int row - cell.Cell.Row ; RowAbs = false }
+            | Some ("" :: col :: "$" :: row :: []) -> { Col = columnFromAlpha col - cell.Cell.Col ; ColAbs = false ; Row = int row ; RowAbs = true }
+            | Some ("$" :: col :: "$" :: row :: []) -> { Col = columnFromAlpha col ; ColAbs = true ; Row = int row ; RowAbs = true }
+            | _ -> failwith "Unknown format"
 
     let resolveR1C1 (cell : CellRef) (ref : string) =
         let g = groups @"^R(\[?)([\+|\-]?\d+)?(\]?)C(\[?)([\+|\-]?\d+)?(\])?$" ref
