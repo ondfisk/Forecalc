@@ -3,7 +3,7 @@
 open NUnit.Framework
 open FsUnit
 open Ast
-open Forecalc.Library.Parser
+open Forecalc.Library.ReferenceResolver
 
 [<TestFixture>] 
 type ParserResolveReferencesTests () =

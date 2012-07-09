@@ -41,7 +41,7 @@
     <Compile Include="ParserOperatorsTests.fs" />
     <Compile Include="ParserFormulasTests.fs" />
     <Compile Include="ParserCellReferencesTests.fs" />
-    <Compile Include="ParserResolveReferencesTests.fs" />
+    <Compile Include="ReferenceResolverTests.fs" />
     <None Include="packages.config" />
     <None Include="App.config" />
   </ItemGroup>
