@@ -57,7 +57,7 @@ module Parser =
     let groups regex str =
         let p = new Regex(regex)
         let g = p.Match(str).Groups
-        let a = Array.create<string> (g.Count - 1) ""
+        let a = Array.create (g.Count - 1) ""
         for i in [ 0 .. g.Count - 2 ] do
             a.[i] <- g.[i+1].Value
         a
@@ -82,12 +82,11 @@ module Parser =
         { Col = col ; ColAbs = colAbs ; Row = row ; RowAbs = rowAbs }
 
     let resolveR1C1 (cell : CellRef) (ref : string) =
-        let pattern = new Regex(@"^R(\[?)([\+|\-]?\d+)?(\]?)C(\[?)([\+|\-]?\d+)?(\])?$")
-        let groups = pattern.Match(ref).Groups
-        let rowAbs = groups.[1].Value = "" && groups.[2].Value <> "" && groups.[3].Value = ""
-        let (_, row) = Int32.TryParse(groups.[2].Value)
-        let colAbs = groups.[4].Value = "" && groups.[5].Value <> "" && groups.[6].Value = ""
-        let (_, col) = Int32.TryParse(groups.[5].Value)
+        let g = groups @"^R(\[?)([\+|\-]?\d+)?(\]?)C(\[?)([\+|\-]?\d+)?(\])?$" ref
+        let rowAbs = g.[0] = "" && g.[1] <> "" && g.[2] = ""
+        let (_, row) = Int32.TryParse(g.[1])
+        let colAbs = g.[3] = "" && g.[4] <> "" && g.[5] = ""
+        let (_, col) = Int32.TryParse(g.[4])
         
         { Col = col ; ColAbs = colAbs ; Row = row ; RowAbs = rowAbs }
         
