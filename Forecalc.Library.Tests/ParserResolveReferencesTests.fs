@@ -11,24 +11,24 @@ type ParserResolveReferencesTests () =
     let cell = { Sheet = "Sheet1" ; Cell = { Row = 3 ; RowAbs = false ; Col = 3 ; ColAbs = false } }
 
     [<Test>]
-    member this.``alphaToNumeric "A" -> 1``() =
-        Parser.alphaToNumeric "A" |> should equal 1
+    member this.``columnFromAlpha "A" -> 1``() =
+        Parser.columnFromAlpha "A" |> should equal 1
 
     [<Test>]
-    member this.``alphaToNumeric "B" -> 2``() =
-        Parser.alphaToNumeric "B" |> should equal 2
+    member this.``columnFromAlpha "B" -> 2``() =
+        Parser.columnFromAlpha "B" |> should equal 2
 
     [<Test>]
-    member this.``alphaToNumeric "Z" -> 26``() =
-        Parser.alphaToNumeric "Z" |> should equal 26
+    member this.``columnFromAlpha "Z" -> 26``() =
+        Parser.columnFromAlpha "Z" |> should equal 26
 
     [<Test>]
-    member this.``alphaToNumeric "AA" -> 27``() =
-        Parser.alphaToNumeric "AA" |> should equal 27
+    member this.``columnFromAlpha "AA" -> 27``() =
+        Parser.columnFromAlpha "AA" |> should equal 27
 
     [<Test>]
-    member this.``alphaToNumeric "AP" -> 42``() =
-        Parser.alphaToNumeric "AP" |> should equal 42
+    member this.``columnFromAlpha "AP" -> 42``() =
+        Parser.columnFromAlpha "AP" |> should equal 42
 
     [<Test>]
     member this.``UnresolvedRef(A1) -> { Sheet = "Sheet1" ;  Cell = { Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false }}``() =

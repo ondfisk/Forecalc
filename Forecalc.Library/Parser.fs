@@ -44,17 +44,21 @@ module Parser =
             | _ when isBoolean expr -> Boolean (bool.Parse expr)
             | _ -> String (toString expr)
 
-    let alphaToNumeric (a : string) =
-        let array = a.ToUpper().ToCharArray() |> Array.map (fun c -> int c - 64) 
-        for c in [ 0 .. array.Length - 1 ] do
-            array.[c] <- array.[c] + c * 25
-        Array.sum array
+    let columnFromAlpha (c: string) =
+        let rec innerSum index acc list =
+            match list with
+                | [] -> acc
+                | x::xs -> innerSum (index + 1) (acc + x + index * 25) xs
+        c.ToUpper().ToCharArray() 
+            |> Array.toList 
+            |> List.map (fun c -> int c - 64)
+            |> innerSum 0 0
 
     let resolveA1 (cell : CellRef) (ref : string) =
         let pattern = new Regex(@"^(\$?)([A-Z]+)(\$?)(\d+)$")
         let groups = pattern.Match(ref).Groups
         let colAbs = groups.[1].Value = "$"
-        let colValue = alphaToNumeric groups.[2].Value
+        let colValue = columnFromAlpha groups.[2].Value
         let rowAbs = groups.[3].Value = "$"
         let rowValue = int groups.[4].Value
         
