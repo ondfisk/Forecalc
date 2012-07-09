@@ -55,5 +55,21 @@ module ReferenceResolver =
             | R1C1SheetRef(sheet, value) -> CellRef({ Sheet = sheet ; Cell = resolveR1C1 value })
             | R1C1SheetRange(sheet, topLeft, bottomRight) -> RangeRef({ Sheet = sheet ; TopLeft = resolveR1C1 topLeft ; BottomRight = resolveR1C1 bottomRight })
             
-    let resolveExpr (cell : CellRef) (expr : Expr) =
-        expr
+    let rec resolveExpr (cell : CellRef) (expr : Expr) =
+        match expr with
+            | Negate(e) -> Negate(resolveExpr cell e)
+            | Eq(e1, e2) -> Eq(resolveExpr cell e1, resolveExpr cell e2)
+            | NotEq(e1, e2) -> NotEq(resolveExpr cell e1, resolveExpr cell e2)
+            | Lt(e1, e2) -> Lt(resolveExpr cell e1, resolveExpr cell e2)
+            | Lte(e1, e2) -> Lte(resolveExpr cell e1, resolveExpr cell e2)
+            | Gt(e1, e2) -> Gt(resolveExpr cell e1, resolveExpr cell e2)
+            | Gte(e1, e2) -> Gte(resolveExpr cell e1, resolveExpr cell e2)
+            | Concat(e1, e2) -> Concat(resolveExpr cell e1, resolveExpr cell e2)
+            | Add(e1, e2) -> Add(resolveExpr cell e1, resolveExpr cell e2)
+            | Sub(e1, e2) -> Sub(resolveExpr cell e1, resolveExpr cell e2)
+            | Mul(e1, e2) -> Mul(resolveExpr cell e1, resolveExpr cell e2)
+            | Div(e1, e2) -> Div(resolveExpr cell e1, resolveExpr cell e2)
+            | Pow(e1, e2) -> Pow(resolveExpr cell e1, resolveExpr cell e2)
+            | UnresolvedRef(ref) -> Ref(resolveRef cell ref)
+            | Fun(name, list) -> Fun(name, List.map (resolveExpr cell) list)
+            | _ -> expr

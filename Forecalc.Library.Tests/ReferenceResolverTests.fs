@@ -97,3 +97,68 @@ type ReferenceResolverTests () =
     [<Test>]
     member this.``Sheet2!R[-2]C[-2]:R[-1]C[-1] -> { Sheet = "Sheet2" ; TopLeft = { Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } ; BottomRight = { Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false }}``() =
         R1C1SheetRange("Sheet2", "R[-2]C[-2]", "R[-1]C[-1]") |> resolveRef cell |> should equal (RangeRef({ Sheet = "Sheet2" ; TopLeft = { Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } ; BottomRight = { Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false } }))
+
+    [<Test>]
+    member this.``R1C1 -> Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})``() =
+        UnresolvedRef(R1C1Cell("R1C1")) |> resolveExpr cell |> should equal (Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})))
+
+    [<Test>]
+    member this.``42.0 -> Float 42.0``() =
+        Float 42.0 |> resolveExpr cell |> should equal (Float 42.0)
+
+    [<Test>]
+    member this.``-R1C1 -> Negate(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})))``() =
+        Negate(UnresolvedRef(R1C1Cell("R1C1"))) |> resolveExpr cell |> should equal (Negate(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }}))))
+
+    [<Test>]
+    member this.``R1C1=R2C2 -> Eq(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})), Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 2 ; RowAbs = true ; Col = 2 ; ColAbs = true }})))``() =
+        Eq(UnresolvedRef(R1C1Cell("R1C1")), UnresolvedRef(R1C1Cell("R2C2"))) |> resolveExpr cell |> should equal (Eq(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})), Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 2 ; RowAbs = true ; Col = 2 ; ColAbs = true }}))))
+
+    [<Test>]
+    member this.``R1C1*R2C2 -> NotEq(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})), Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 2 ; RowAbs = true ; Col = 2 ; ColAbs = true }})))``() =
+        NotEq(UnresolvedRef(R1C1Cell("R1C1")), UnresolvedRef(R1C1Cell("R2C2"))) |> resolveExpr cell |> should equal (NotEq(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})), Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 2 ; RowAbs = true ; Col = 2 ; ColAbs = true }}))))
+
+    [<Test>]
+    member this.``R1C1*R2C2 -> Lt(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})), Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 2 ; RowAbs = true ; Col = 2 ; ColAbs = true }})))``() =
+        Lt(UnresolvedRef(R1C1Cell("R1C1")), UnresolvedRef(R1C1Cell("R2C2"))) |> resolveExpr cell |> should equal (Lt(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})), Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 2 ; RowAbs = true ; Col = 2 ; ColAbs = true }}))))
+
+    [<Test>]
+    member this.``R1C1*R2C2 -> Lte(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})), Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 2 ; RowAbs = true ; Col = 2 ; ColAbs = true }})))``() =
+        Lte(UnresolvedRef(R1C1Cell("R1C1")), UnresolvedRef(R1C1Cell("R2C2"))) |> resolveExpr cell |> should equal (Lte(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})), Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 2 ; RowAbs = true ; Col = 2 ; ColAbs = true }}))))
+
+    [<Test>]
+    member this.``R1C1*R2C2 -> Gt(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})), Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 2 ; RowAbs = true ; Col = 2 ; ColAbs = true }})))``() =
+        Gt(UnresolvedRef(R1C1Cell("R1C1")), UnresolvedRef(R1C1Cell("R2C2"))) |> resolveExpr cell |> should equal (Gt(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})), Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 2 ; RowAbs = true ; Col = 2 ; ColAbs = true }}))))
+
+    [<Test>]
+    member this.``R1C1*R2C2 -> Gte(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})), Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 2 ; RowAbs = true ; Col = 2 ; ColAbs = true }})))``() =
+        Gte(UnresolvedRef(R1C1Cell("R1C1")), UnresolvedRef(R1C1Cell("R2C2"))) |> resolveExpr cell |> should equal (Gte(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})), Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 2 ; RowAbs = true ; Col = 2 ; ColAbs = true }}))))
+
+    [<Test>]
+    member this.``R1C1*R2C2 -> Concat(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})), Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 2 ; RowAbs = true ; Col = 2 ; ColAbs = true }})))``() =
+        Concat(UnresolvedRef(R1C1Cell("R1C1")), UnresolvedRef(R1C1Cell("R2C2"))) |> resolveExpr cell |> should equal (Concat(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})), Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 2 ; RowAbs = true ; Col = 2 ; ColAbs = true }}))))
+
+    [<Test>]
+    member this.``R1C1*R2C2 -> Add(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})), Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 2 ; RowAbs = true ; Col = 2 ; ColAbs = true }})))``() =
+        Add(UnresolvedRef(R1C1Cell("R1C1")), UnresolvedRef(R1C1Cell("R2C2"))) |> resolveExpr cell |> should equal (Add(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})), Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 2 ; RowAbs = true ; Col = 2 ; ColAbs = true }}))))
+
+    [<Test>]
+    member this.``R1C1*R2C2 -> Sub(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})), Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 2 ; RowAbs = true ; Col = 2 ; ColAbs = true }})))``() =
+        Sub(UnresolvedRef(R1C1Cell("R1C1")), UnresolvedRef(R1C1Cell("R2C2"))) |> resolveExpr cell |> should equal (Sub(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})), Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 2 ; RowAbs = true ; Col = 2 ; ColAbs = true }}))))
+
+    [<Test>]
+    member this.``R1C1*R2C2 -> Mul(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})), Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 2 ; RowAbs = true ; Col = 2 ; ColAbs = true }})))``() =
+        Mul(UnresolvedRef(R1C1Cell("R1C1")), UnresolvedRef(R1C1Cell("R2C2"))) |> resolveExpr cell |> should equal (Mul(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})), Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 2 ; RowAbs = true ; Col = 2 ; ColAbs = true }}))))
+
+    [<Test>]
+    member this.``R1C1*R2C2 -> Div(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})), Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 2 ; RowAbs = true ; Col = 2 ; ColAbs = true }})))``() =
+        Div(UnresolvedRef(R1C1Cell("R1C1")), UnresolvedRef(R1C1Cell("R2C2"))) |> resolveExpr cell |> should equal (Div(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})), Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 2 ; RowAbs = true ; Col = 2 ; ColAbs = true }}))))
+
+    [<Test>]
+    member this.``R1C1*R2C2 -> Pow(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})), Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 2 ; RowAbs = true ; Col = 2 ; ColAbs = true }})))``() =
+        Pow(UnresolvedRef(R1C1Cell("R1C1")), UnresolvedRef(R1C1Cell("R2C2"))) |> resolveExpr cell |> should equal (Pow(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})), Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 2 ; RowAbs = true ; Col = 2 ; ColAbs = true }}))))
+
+    [<Test>]
+    member this.``Sum(42.0, R1C1) -> Fun("Sum", [Float 42.0 ; Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }}))])``() =
+        Fun("Sum", [Float 42.0 ; UnresolvedRef(R1C1Cell("R1C1"))]) |> resolveExpr cell |> should equal (Fun("Sum", [Float 42.0 ; Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }}))]))
+
