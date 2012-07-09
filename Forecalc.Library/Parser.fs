@@ -54,14 +54,6 @@ module Parser =
             |> List.map (fun c -> int c - 64)
             |> inner 0 0
 
-    let groups regex str =
-        let p = new Regex(regex)
-        let g = p.Match(str).Groups
-        let a = Array.create (g.Count - 1) ""
-        for i in [ 0 .. g.Count - 2 ] do
-            a.[i] <- g.[i+1].Value
-        a
-
     let (|Groups|_|) str regex =
         let m = Regex.Match(str, regex)
         if m.Success then
@@ -70,41 +62,36 @@ module Parser =
             None
 
     let resolveA1 cell ref =
-        let pattern = @"^(\$?)([A-Z]+)(\$?)(\d+)$"
-        match (|Groups|_|) ref pattern with
-            | Some ("" :: col :: "" :: row :: []) -> { Col = columnFromAlpha col - cell.Cell.Col ; ColAbs = false ; Row = int row - cell.Cell.Row ; RowAbs = false }
-            | Some ("$" :: col :: "" :: row :: []) -> { Col = columnFromAlpha col ; ColAbs = true ; Row = int row - cell.Cell.Row ; RowAbs = false }
-            | Some ("" :: col :: "$" :: row :: []) -> { Col = columnFromAlpha col - cell.Cell.Col ; ColAbs = false ; Row = int row ; RowAbs = true }
-            | Some ("$" :: col :: "$" :: row :: []) -> { Col = columnFromAlpha col ; ColAbs = true ; Row = int row ; RowAbs = true }
-            | _ -> failwith "Unknown format"
+        let p = @"^(\$?)([A-Z]+)(\$?)(\d+)$"
+        match (|Groups|_|) ref p with
+            | Some ("" :: col :: "" :: row :: []) -> { Row = int row - cell.Cell.Row ; RowAbs = false ; Col = columnFromAlpha col - cell.Cell.Col ; ColAbs = false }
+            | Some ("$" :: col :: "" :: row :: []) -> { Row = int row - cell.Cell.Row ; RowAbs = false ; Col = columnFromAlpha col ; ColAbs = true }
+            | Some ("" :: col :: "$" :: row :: []) -> { Row = int row ; RowAbs = true ; Col = columnFromAlpha col - cell.Cell.Col ; ColAbs = false }
+            | Some ("$" :: col :: "$" :: row :: []) -> { Row = int row ; RowAbs = true ; Col = columnFromAlpha col ; ColAbs = true }
+            | _ -> failwith "Invalid ref format"
 
-    let resolveR1C1 (cell : CellRef) (ref : string) =
-        let g = groups @"^R(\[?)([\+|\-]?\d+)?(\]?)C(\[?)([\+|\-]?\d+)?(\])?$" ref
-        let rowAbs = g.[0] = "" && g.[1] <> "" && g.[2] = ""
-        let (_, row) = Int32.TryParse(g.[1])
-        let colAbs = g.[3] = "" && g.[4] <> "" && g.[5] = ""
-        let (_, col) = Int32.TryParse(g.[4])
-        
-        { Col = col ; ColAbs = colAbs ; Row = row ; RowAbs = rowAbs }
+    let resolveR1C1 ref =
+        let getInt s = 
+            let (_, i) = Int32.TryParse s
+            i
+        let p = @"^R(\[?)([\+|\-]?\d+)?(\]?)C(\[?)([\+|\-]?\d+)?(\])?$"
+        match (|Groups|_|) ref p with
+            | Some ("[" :: row :: "]" :: "[" :: col :: "]" :: []) -> { Row = getInt row ; RowAbs = false ; Col = getInt col ; ColAbs = false }
+            | Some ("" :: row :: "" :: "[" :: col :: "]" :: []) -> { Row = getInt row ; RowAbs = row <> "" ; Col = getInt col ; ColAbs = false }
+            | Some ("[" :: row :: "]" :: "" :: col :: "" :: []) -> { Row = getInt row ; RowAbs = false ; Col = getInt col ; ColAbs = col <> "" }
+            | Some ("" :: row :: "" :: "" :: col :: "" :: []) -> { Row = getInt row ; RowAbs = row <> "" ; Col = getInt col ; ColAbs = col <> "" }
+            | _ -> failwith "Invalid ref format"
         
     let resolveRef (cell : CellRef) (ref : UnresolvedRef) =
         match ref with
-            | A1Cell(value) -> 
-                CellRef({ Sheet = cell.Sheet ; Cell = resolveA1 cell value })
-            | A1Range(topLeft, bottomRight) -> 
-                RangeRef({ Sheet = cell.Sheet ; TopLeft = resolveA1 cell topLeft ; BottomRight = resolveA1 cell bottomRight })
-            | A1SheetRef(sheet, value) -> 
-                CellRef({ Sheet = sheet ; Cell = resolveA1 cell value })
-            | A1SheetRange(sheet, topLeft, bottomRight) -> 
-                RangeRef({ Sheet = sheet ; TopLeft = resolveA1 cell topLeft ; BottomRight = resolveA1 cell bottomRight })
-            | R1C1Cell(value) -> 
-                CellRef({ Sheet = cell.Sheet ; Cell = resolveR1C1 cell value })
-            | R1C1Range(topLeft, bottomRight) -> 
-                RangeRef({ Sheet = cell.Sheet ; TopLeft = resolveR1C1 cell topLeft ; BottomRight = resolveR1C1 cell bottomRight })
-            | R1C1SheetRef(sheet, value) -> 
-                CellRef({ Sheet = sheet ; Cell = resolveR1C1 cell value })
-            | R1C1SheetRange(sheet, topLeft, bottomRight) -> 
-                RangeRef({ Sheet = sheet ; TopLeft = resolveR1C1 cell topLeft ; BottomRight = resolveR1C1 cell bottomRight })
+            | A1Cell(value) -> CellRef({ Sheet = cell.Sheet ; Cell = resolveA1 cell value })
+            | A1Range(topLeft, bottomRight) -> RangeRef({ Sheet = cell.Sheet ; TopLeft = resolveA1 cell topLeft ; BottomRight = resolveA1 cell bottomRight })
+            | A1SheetRef(sheet, value) -> CellRef({ Sheet = sheet ; Cell = resolveA1 cell value })
+            | A1SheetRange(sheet, topLeft, bottomRight) -> RangeRef({ Sheet = sheet ; TopLeft = resolveA1 cell topLeft ; BottomRight = resolveA1 cell bottomRight })
+            | R1C1Cell(value) -> CellRef({ Sheet = cell.Sheet ; Cell = resolveR1C1 value })
+            | R1C1Range(topLeft, bottomRight) -> RangeRef({ Sheet = cell.Sheet ; TopLeft = resolveR1C1 topLeft ; BottomRight = resolveR1C1 bottomRight })
+            | R1C1SheetRef(sheet, value) -> CellRef({ Sheet = sheet ; Cell = resolveR1C1 value })
+            | R1C1SheetRange(sheet, topLeft, bottomRight) -> RangeRef({ Sheet = sheet ; TopLeft = resolveR1C1 topLeft ; BottomRight = resolveR1C1 bottomRight })
             
 
             
