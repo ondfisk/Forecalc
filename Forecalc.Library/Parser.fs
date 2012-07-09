@@ -44,7 +44,7 @@ module Parser =
             | _ when isBoolean expr -> Boolean (bool.Parse expr)
             | _ -> String (toString expr)
 
-    let columnFromAlpha (c: string) =
+    let columnFromAlpha (c : string) =
         let rec inner index acc list =
             match list with
                 | [] -> acc
