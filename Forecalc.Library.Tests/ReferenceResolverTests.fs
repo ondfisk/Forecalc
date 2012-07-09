@@ -6,7 +6,7 @@ open Ast
 open Forecalc.Library.ReferenceResolver
 
 [<TestFixture>] 
-type ParserResolveReferencesTests () =
+type ReferenceResolverTests () =
     // Cell = C3 / ~R3C3
     let cell = { Sheet = "Sheet1" ; Cell = { Row = 3 ; RowAbs = false ; Col = 3 ; ColAbs = false } }
 
