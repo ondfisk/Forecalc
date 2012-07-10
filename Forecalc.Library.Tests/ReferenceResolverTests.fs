@@ -1,5 +1,6 @@
 ﻿module ReferenceResolverTests
 
+open System
 open NUnit.Framework
 open FsUnit
 open Ast
@@ -59,6 +60,10 @@ let ``Sheet2!A1 -> { Sheet = "Sheet2" ;  Cell = { Row = -2 ; RowAbs = false ; Co
 [<Test>]
 let ``Sheet2!A1:B2 -> { Sheet = "Sheet2" ; TopLeft = { Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } ; BottomRight = { Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false }}``() =
     A1SheetRange("Sheet2", "A1", "B2") |> resolveRef cell |> should equal (RangeRef({ Sheet = "Sheet2" ; TopLeft = { Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } ; BottomRight = { Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false } }))
+    
+[<Test>]
+let ``A1Cell(R1C1) -> fail``() =
+    (fun () -> A1Cell("R1C1") |> resolveRef cell |> ignore) |> should throw typeof<System.Exception>
 
 [<Test>]
 let ``R1C1 -> { Sheet = "Sheet1" ;  Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }}``() =
@@ -95,6 +100,10 @@ let ``Sheet2!R1C1 -> { Sheet = "Sheet2" ; Cell = { Row = 1 ; RowAbs = true ; Col
 [<Test>]
 let ``Sheet2!R[-2]C[-2]:R[-1]C[-1] -> { Sheet = "Sheet2" ; TopLeft = { Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } ; BottomRight = { Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false }}``() =
     R1C1SheetRange("Sheet2", "R[-2]C[-2]", "R[-1]C[-1]") |> resolveRef cell |> should equal (RangeRef({ Sheet = "Sheet2" ; TopLeft = { Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } ; BottomRight = { Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false } }))
+
+[<Test>]
+let ``R1C1Cell(A1) -> fail``() =
+    (fun () -> R1C1Cell("A1") |> resolveRef cell |> ignore) |> should throw typeof<System.Exception>
 
 [<Test>]
 let ``42.0 -> Float 42.0``() =
