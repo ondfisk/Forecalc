@@ -57,9 +57,7 @@ module ReferenceResolver =
             
     let rec resolveRefs (cell : CellRef) (expr : Expr) =
         match expr with
-            | Float(f) -> Float(f)
-            | Boolean(b) -> Boolean(b)
-            | String(s) -> String(s)
+            | Float(_) | Boolean(_) | String(_) | Ref(_) | Error(_) -> expr
             | Negate(e) -> Negate(resolveRefs cell e)
             | Eq(e1, e2) -> Eq(resolveRefs cell e1, resolveRefs cell e2)
             | NotEq(e1, e2) -> NotEq(resolveRefs cell e1, resolveRefs cell e2)
@@ -74,6 +72,4 @@ module ReferenceResolver =
             | Div(e1, e2) -> Div(resolveRefs cell e1, resolveRefs cell e2)
             | Pow(e1, e2) -> Pow(resolveRefs cell e1, resolveRefs cell e2)
             | UnresolvedRef(ref) -> Ref(resolveRef cell ref)
-            | Ref(ref) -> Ref(ref)
             | Fun(name, list) -> Fun(name, List.map (resolveRefs cell) list)
-            | Error(s) -> Error(s)
