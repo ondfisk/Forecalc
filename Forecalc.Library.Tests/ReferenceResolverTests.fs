@@ -99,12 +99,16 @@ type ReferenceResolverTests () =
         R1C1SheetRange("Sheet2", "R[-2]C[-2]", "R[-1]C[-1]") |> resolveRef cell |> should equal (RangeRef({ Sheet = "Sheet2" ; TopLeft = { Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } ; BottomRight = { Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false } }))
 
     [<Test>]
-    member this.``R1C1 -> Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})``() =
-        UnresolvedRef(R1C1Cell("R1C1")) |> resolveExpr cell |> should equal (Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})))
-
-    [<Test>]
     member this.``42.0 -> Float 42.0``() =
         Float 42.0 |> resolveExpr cell |> should equal (Float 42.0)
+
+    [<Test>]
+    member this.``true -> Boolean true``() =
+        Boolean true |> resolveExpr cell |> should equal (Boolean true)
+
+    [<Test>]
+    member this.``"42" -> String "42"``() =
+        String "42" |> resolveExpr cell |> should equal (String "42")
 
     [<Test>]
     member this.``-R1C1 -> Negate(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})))``() =
@@ -159,6 +163,17 @@ type ReferenceResolverTests () =
         Pow(UnresolvedRef(R1C1Cell("R1C1")), UnresolvedRef(R1C1Cell("R2C2"))) |> resolveExpr cell |> should equal (Pow(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})), Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 2 ; RowAbs = true ; Col = 2 ; ColAbs = true }}))))
 
     [<Test>]
+    member this.``Ref -> Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})``() =
+        Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})) |> resolveExpr cell |> should equal (Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})))
+
+    [<Test>]
+    member this.``R1C1 -> Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})``() =
+        UnresolvedRef(R1C1Cell("R1C1")) |> resolveExpr cell |> should equal (Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})))
+
+    [<Test>]
     member this.``Sum(42.0, R1C1) -> Fun("Sum", [Float 42.0 ; Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }}))])``() =
         Fun("Sum", [Float 42.0 ; UnresolvedRef(R1C1Cell("R1C1"))]) |> resolveExpr cell |> should equal (Fun("Sum", [Float 42.0 ; Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }}))]))
 
+    [<Test>]
+    member this.``Error "42" -> Error "42"``() =
+        Error "42" |> resolveExpr cell |> should equal (Error "42")
