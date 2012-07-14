@@ -17,10 +17,9 @@ module ReferenceResolver =
 
     let (|Groups|_|) str regex =
         let m = Regex.Match(str, regex)
-        if m.Success then
-            Some (List.tail [ for g in m.Groups -> g.Value ])
-        else
-            None
+        match m.Success with
+            | true -> Some (List.tail [ for g in m.Groups -> g.Value ])
+            | false -> None
 
     let resolveA1 cell ref =
         let p = @"^(\$?)([A-Z]+)(\$?)(\d+)$"
