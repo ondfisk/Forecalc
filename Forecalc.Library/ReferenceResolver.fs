@@ -7,14 +7,13 @@ open Ast
 module ReferenceResolver =
 
     let columnFromAlpha (c : string) =
-        let rec inner index acc list =
+        let rec inner acc list =
             match list with
-                | [] -> acc
-                | x::xs -> inner (index + 1) (acc + x + index * 25) xs
+                | [] -> acc + 1
+                | x::xs -> inner ((acc + 1) * 26 + int x - 65) xs
         c.ToUpper().ToCharArray() 
             |> Array.toList 
-            |> List.map (fun c -> int c - 64)
-            |> inner 0 0
+            |> inner -1
 
     let (|Groups|_|) str regex =
         let m = Regex.Match(str, regex)

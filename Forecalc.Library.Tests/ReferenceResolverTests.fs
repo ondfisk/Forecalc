@@ -30,6 +30,10 @@ let ``columnFromAlpha "AP" -> 42``() =
     columnFromAlpha "AP" |> should equal 42
 
 [<Test>]
+let ``columnFromAlpha "RC" -> 471``() =
+    columnFromAlpha "RC" |> should equal 471
+
+[<Test>]
 let ``A1 -> { Sheet = "Sheet1" ;  Cell = { Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false }}``() =
     A1Cell("A1") |> resolveRef cell |> should equal (CellRef({ Sheet = "Sheet1" ; Cell = { Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } }))
 
