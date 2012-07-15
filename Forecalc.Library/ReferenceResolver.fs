@@ -31,7 +31,7 @@ module ReferenceResolver =
             | _ -> failwith "Invalid ref format"
 
     let resolveR1C1 ref =
-        let parseInt s = (Int32.TryParse >> snd) s
+        let parseInt = Int32.TryParse >> snd
         let p = @"^R(\[?)([\+|\-]?\d+)?(\]?)C(\[?)([\+|\-]?\d+)?(\])?$"
         match (|Groups|_|) ref p with
             | Some ("[" :: row :: "]" :: "[" :: col :: "]" :: []) -> { Row = parseInt row ; RowAbs = false ; Col = parseInt col ; ColAbs = false }
