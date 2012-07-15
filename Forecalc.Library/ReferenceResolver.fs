@@ -31,15 +31,13 @@ module ReferenceResolver =
             | _ -> failwith "Invalid ref format"
 
     let resolveR1C1 ref =
-        let getInt s = 
-            let (_, i) = Int32.TryParse s
-            i
+        let parseInt s = (Int32.TryParse >> snd) s
         let p = @"^R(\[?)([\+|\-]?\d+)?(\]?)C(\[?)([\+|\-]?\d+)?(\])?$"
         match (|Groups|_|) ref p with
-            | Some ("[" :: row :: "]" :: "[" :: col :: "]" :: []) -> { Row = getInt row ; RowAbs = false ; Col = getInt col ; ColAbs = false }
-            | Some ("" :: row :: "" :: "[" :: col :: "]" :: []) -> { Row = getInt row ; RowAbs = row <> "" ; Col = getInt col ; ColAbs = false }
-            | Some ("[" :: row :: "]" :: "" :: col :: "" :: []) -> { Row = getInt row ; RowAbs = false ; Col = getInt col ; ColAbs = col <> "" }
-            | Some ("" :: row :: "" :: "" :: col :: "" :: []) -> { Row = getInt row ; RowAbs = row <> "" ; Col = getInt col ; ColAbs = col <> "" }
+            | Some ("[" :: row :: "]" :: "[" :: col :: "]" :: []) -> { Row = parseInt row ; RowAbs = false ; Col = parseInt col ; ColAbs = false }
+            | Some ("" :: row :: "" :: "[" :: col :: "]" :: []) -> { Row = parseInt row ; RowAbs = row <> "" ; Col = parseInt col ; ColAbs = false }
+            | Some ("[" :: row :: "]" :: "" :: col :: "" :: []) -> { Row = parseInt row ; RowAbs = false ; Col = parseInt col ; ColAbs = col <> "" }
+            | Some ("" :: row :: "" :: "" :: col :: "" :: []) -> { Row = parseInt row ; RowAbs = row <> "" ; Col = parseInt col ; ColAbs = col <> "" }
             | _ -> failwith "Invalid ref format"
         
     let resolveRef (cell : CellRef) (ref : UnresolvedRef) =
