@@ -35,9 +35,9 @@ module ReferenceResolver =
         let p = @"^R(\[?)([\+|\-]?\d+)?(\]?)C(\[?)([\+|\-]?\d+)?(\])?$"
         match (|Groups|_|) ref p with
             | Some ("[" :: row :: "]" :: "[" :: col :: "]" :: []) -> { Row = parseInt row ; RowAbs = false ; Col = parseInt col ; ColAbs = false }
-            | Some ("" :: row :: "" :: "[" :: col :: "]" :: []) -> { Row = parseInt row ; RowAbs = row <> "" ; Col = parseInt col ; ColAbs = false }
-            | Some ("[" :: row :: "]" :: "" :: col :: "" :: []) -> { Row = parseInt row ; RowAbs = false ; Col = parseInt col ; ColAbs = col <> "" }
-            | Some ("" :: row :: "" :: "" :: col :: "" :: []) -> { Row = parseInt row ; RowAbs = row <> "" ; Col = parseInt col ; ColAbs = col <> "" }
+            | Some ("" :: row :: "" :: "[" :: col :: "]" :: []) -> { Row = parseInt row ; RowAbs = parseInt row <> 0 ; Col = parseInt col ; ColAbs = false }
+            | Some ("[" :: row :: "]" :: "" :: col :: "" :: []) -> { Row = parseInt row ; RowAbs = false ; Col = parseInt col ; ColAbs = parseInt col <> 0 }
+            | Some ("" :: row :: "" :: "" :: col :: "" :: []) -> { Row = parseInt row ; RowAbs = parseInt row <> 0 ; Col = parseInt col ; ColAbs = parseInt col <> 0 }
             | _ -> failwith "Invalid ref format"
         
     let resolveRef (cell : CellRef) (ref : UnresolvedRef) =
