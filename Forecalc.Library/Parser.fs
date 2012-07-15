@@ -12,26 +12,15 @@ module Parser =
 
     Thread.CurrentThread.CurrentCulture <- CultureInfo("en-US")
     Thread.CurrentThread.CurrentUICulture <- CultureInfo("en-US")
-
-    let isFloat s =
-        let b, _ = Double.TryParse(s)
-        b
-
-    let isBoolean s =
-        let b, _ = bool.TryParse(s)
-        b
-
+    
     let toString (s : string) =
         match s with
             | _ when s.StartsWith("'") -> s.Substring 1
             | _ -> s
             
-    let isFormula (s : string) =
-        s.StartsWith("=")
-
     let parse (expr : string) =
         match expr with
-            | _ when isFormula expr ->
+            | _ when expr.StartsWith("=") ->
                     let e = expr.Substring 1
                     try
                         let lexbuff = LexBuffer<char>.FromString(e)
@@ -39,8 +28,8 @@ module Parser =
                         expression
                     with
                         | ex -> Error ex.Message
-            | _ when isFloat expr -> Float (float expr)
-            | _ when isBoolean expr -> Boolean (bool.Parse expr)
+            | _ when (Double.TryParse >> fst) expr -> Float (float expr)
+            | _ when (bool.TryParse >> fst) expr -> Boolean (bool.Parse expr)
             | _ -> String (toString expr)
 
             
