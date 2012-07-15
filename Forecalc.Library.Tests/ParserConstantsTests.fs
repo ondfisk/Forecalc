@@ -30,6 +30,10 @@ let ``"\"Forty-two\"" -> "Forty-two"``() =
     "\"Forty-two\"" |> parse |> should equal (String "\"Forty-two\"")
 
 [<Test>]
+let ``'Escaped string... -> Escaped string...``() =
+    "'Escaped string..." |> parse |> should equal (EscapedString "Escaped string...")
+
+[<Test>]
 let ``"=42" -> 42``() =
     "=42" |> parse |> should equal (Float 42.0)
 

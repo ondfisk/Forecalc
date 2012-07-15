@@ -13,11 +13,6 @@ module Parser =
     Thread.CurrentThread.CurrentCulture <- CultureInfo("en-US")
     Thread.CurrentThread.CurrentUICulture <- CultureInfo("en-US")
     
-    let toString (s : string) =
-        match s with
-            | _ when s.StartsWith("'") -> s.Substring 1
-            | _ -> s
-            
     let parse (expr : string) =
         match expr with
             | _ when expr.StartsWith("=") ->
@@ -30,6 +25,7 @@ module Parser =
                         | ex -> Error ex.Message
             | _ when (Double.TryParse >> fst) expr -> Float (float expr)
             | _ when (bool.TryParse >> fst) expr -> Boolean (bool.Parse expr)
-            | _ -> String (toString expr)
+            | _ when expr.StartsWith("'") -> EscapedString(expr.Substring 1)
+            | _ -> String expr
 
             

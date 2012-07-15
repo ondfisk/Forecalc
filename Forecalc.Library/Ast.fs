@@ -4,6 +4,7 @@ type Expr =
     | Float of float
     | Boolean of bool
     | String of string
+    | EscapedString of string
     | Negate of Expr
     | Eq of Expr * Expr 
     | NotEq of Expr * Expr
