@@ -66,9 +66,9 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Forecalc.Library\Forecalc.Library.fsproj">
-      <Name>Forecalc.Library</Name>
-      <Project>{ed5d0555-0cea-4203-bd7c-1571da65751e}</Project>
+    <ProjectReference Include="..\Forecalc.Library.Portable\Forecalc.Library.Portable.fsproj">
+      <Name>Forecalc.Library.Portable</Name>
+      <Project>{fb9ce458-08db-4fa5-927f-8100f993b6cb}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>

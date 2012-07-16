@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{DD5F65
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Forecalc.Library.Portable", "Forecalc.Library.Portable\Forecalc.Library.Portable.fsproj", "{FB9CE458-08DB-4FA5-927F-8100F993B6CB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -70,6 +72,20 @@ Global
 		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Release|x64.ActiveCfg = Release|x86
 		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Release|x86.ActiveCfg = Release|x86
 		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Release|x86.Build.0 = Release|x86
+		{FB9CE458-08DB-4FA5-927F-8100F993B6CB}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{FB9CE458-08DB-4FA5-927F-8100F993B6CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB9CE458-08DB-4FA5-927F-8100F993B6CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB9CE458-08DB-4FA5-927F-8100F993B6CB}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{FB9CE458-08DB-4FA5-927F-8100F993B6CB}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{FB9CE458-08DB-4FA5-927F-8100F993B6CB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FB9CE458-08DB-4FA5-927F-8100F993B6CB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FB9CE458-08DB-4FA5-927F-8100F993B6CB}.Release|ARM.ActiveCfg = Release|Any CPU
+		{FB9CE458-08DB-4FA5-927F-8100F993B6CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB9CE458-08DB-4FA5-927F-8100F993B6CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB9CE458-08DB-4FA5-927F-8100F993B6CB}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{FB9CE458-08DB-4FA5-927F-8100F993B6CB}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{FB9CE458-08DB-4FA5-927F-8100F993B6CB}.Release|x64.ActiveCfg = Release|Any CPU
+		{FB9CE458-08DB-4FA5-927F-8100F993B6CB}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
