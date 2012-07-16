@@ -14,16 +14,16 @@ let upperR1C1 (s : string) =
     R1C1 (s.ToUpper())
 
 let fixQuotes (s : string) =
-    let s' = s.Substring(1, String.length s - 2)
+    let s' = s.[1..String.length s - 2]
     let s'' = s'.Replace("\"\"", "\"")
     STRING s''
 
 let fixSheet (s : string) =
-    let s' = s.Substring(0, String.length s - 1)
+    let s' = s.[0..String.length s - 2]
     SHEETNAME s'
 
 let fixAposSheet (s : string) =
-    let s' = s.Substring(1, String.length s - 3)
+    let s' = s.[1..String.length s - 3]
     SHEETNAME s'
 }
 

@@ -4,15 +4,22 @@ open System
 open Ast
 open Forecalc.Library.ReferenceResolver
 
-let columnFromAlpha (c : string) =
-    let rec inner acc list =
-        match list with
-            | [] -> acc + 1
-            | x::xs -> inner ((acc + 1) * 26 + int x - 65) xs
-    c.ToUpper().ToCharArray() 
-        |> Array.toList 
-        |> inner -1
+let fixQuotes (s : string) =
+    let s' = s.[1..String.length s - 2]
+    let s'' = s'.Replace("\"\"", "\"")
+    s''
 
-let col = "RC"
+let fixSheet (s : string) =
+    let s' = s.[0..String.length s - 2]
+    s'
 
-printfn "%s: %i" col (columnFromAlpha(col)) 
+let fixAposSheet (s : string) =
+    let s' = s.[1..String.length s - 3]
+    s'
+
+let res1 = fixSheet "dingo!"
+let res2 = fixAposSheet "'dingo'!"
+
+printfn "%s" res1
+printfn "%s" res2
+

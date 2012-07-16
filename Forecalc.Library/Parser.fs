@@ -16,7 +16,7 @@ module Parser =
     let parse (expr : string) =
         match expr with
             | _ when expr.StartsWith("=") ->
-                    let e = expr.Substring 1
+                    let e = expr.[1..]
                     try
                         let lexbuff = LexBuffer<char>.FromString(e)
                         let expression = ParserSpecification.start LexerSpecification.tokenize lexbuff
@@ -25,7 +25,7 @@ module Parser =
                         | ex -> Error ex.Message
             | _ when (Double.TryParse >> fst) expr -> Float (float expr)
             | _ when (bool.TryParse >> fst) expr -> Boolean (bool.Parse expr)
-            | _ when expr.StartsWith("'") -> EscapedString(expr.Substring 1)
+            | _ when expr.StartsWith("'") -> EscapedString(expr.[1..])
             | _ -> String expr
 
             
