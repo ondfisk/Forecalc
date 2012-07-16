@@ -126,6 +126,10 @@ let ``"42" -> String "42"``() =
     String "42" |> resolveRefs cell |> should equal (String "42")
 
 [<Test>]
+let ``"42" -> EscapedString "42"``() =
+    EscapedString "42" |> resolveRefs cell |> should equal (EscapedString "42")
+
+[<Test>]
 let ``-R1C1 -> Negate(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }})))``() =
     Negate(UnresolvedRef(R1C1Cell("R1C1"))) |> resolveRefs cell |> should equal (Negate(Ref(CellRef({ Sheet = "Sheet1" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }}))))
 
