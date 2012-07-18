@@ -15,29 +15,29 @@ module ReferenceResolver =
             |> Array.toList 
             |> inner -1
 
-    let (|Groups|_|) str regex =
+    let groups str regex =
         let m = Regex.Match(str, regex)
         match m.Success with
-            | true -> Some (List.tail [ for g in m.Groups -> g.Value ])
-            | false -> None
+            | true -> List.tail [ for g in m.Groups -> g.Value ]
+            | false -> []
 
     let resolveA1 cell ref =
         let p = @"^(\$?)([A-Z]+)(\$?)(\d+)$"
-        match (|Groups|_|) ref p with
-            | Some ("" :: col :: "" :: row :: []) -> { Row = int row - cell.Cell.Row ; RowAbs = false ; Col = columnFromAlpha col - cell.Cell.Col ; ColAbs = false }
-            | Some ("$" :: col :: "" :: row :: []) -> { Row = int row - cell.Cell.Row ; RowAbs = false ; Col = columnFromAlpha col ; ColAbs = true }
-            | Some ("" :: col :: "$" :: row :: []) -> { Row = int row ; RowAbs = true ; Col = columnFromAlpha col - cell.Cell.Col ; ColAbs = false }
-            | Some ("$" :: col :: "$" :: row :: []) -> { Row = int row ; RowAbs = true ; Col = columnFromAlpha col ; ColAbs = true }
+        match groups ref p with
+            | "" :: col :: "" :: row :: [] -> { Row = int row - cell.Cell.Row ; RowAbs = false ; Col = columnFromAlpha col - cell.Cell.Col ; ColAbs = false }
+            | "$" :: col :: "" :: row :: [] -> { Row = int row - cell.Cell.Row ; RowAbs = false ; Col = columnFromAlpha col ; ColAbs = true }
+            | "" :: col :: "$" :: row :: [] -> { Row = int row ; RowAbs = true ; Col = columnFromAlpha col - cell.Cell.Col ; ColAbs = false }
+            | "$" :: col :: "$" :: row :: [] -> { Row = int row ; RowAbs = true ; Col = columnFromAlpha col ; ColAbs = true }
             | _ -> failwith "Invalid ref format"
 
     let resolveR1C1 ref =
         let parseInt = Int32.TryParse >> snd
         let p = @"^R(\[?)([\+|\-]?\d+)?(\]?)C(\[?)([\+|\-]?\d+)?(\])?$"
-        match (|Groups|_|) ref p with
-            | Some ("[" :: row :: "]" :: "[" :: col :: "]" :: []) -> { Row = parseInt row ; RowAbs = false ; Col = parseInt col ; ColAbs = false }
-            | Some ("" :: row :: "" :: "[" :: col :: "]" :: []) -> { Row = parseInt row ; RowAbs = parseInt row <> 0 ; Col = parseInt col ; ColAbs = false }
-            | Some ("[" :: row :: "]" :: "" :: col :: "" :: []) -> { Row = parseInt row ; RowAbs = false ; Col = parseInt col ; ColAbs = parseInt col <> 0 }
-            | Some ("" :: row :: "" :: "" :: col :: "" :: []) -> { Row = parseInt row ; RowAbs = parseInt row <> 0 ; Col = parseInt col ; ColAbs = parseInt col <> 0 }
+        match groups ref p with
+            | "[" :: row :: "]" :: "[" :: col :: "]" :: [] -> { Row = parseInt row ; RowAbs = false ; Col = parseInt col ; ColAbs = false }
+            | "" :: row :: "" :: "[" :: col :: "]" :: [] -> { Row = parseInt row ; RowAbs = parseInt row <> 0 ; Col = parseInt col ; ColAbs = false }
+            | "[" :: row :: "]" :: "" :: col :: "" :: [] -> { Row = parseInt row ; RowAbs = false ; Col = parseInt col ; ColAbs = parseInt col <> 0 }
+            | "" :: row :: "" :: "" :: col :: "" :: [] -> { Row = parseInt row ; RowAbs = parseInt row <> 0 ; Col = parseInt col ; ColAbs = parseInt col <> 0 }
             | _ -> failwith "Invalid ref format"
         
     let resolveRef (cell : CellRef) (ref : UnresolvedRef) =
