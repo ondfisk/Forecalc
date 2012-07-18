@@ -40,7 +40,7 @@ module ReferenceResolver =
             | "" :: row :: "" :: "" :: col :: "" :: [] -> { Row = parseInt row ; RowAbs = parseInt row <> 0 ; Col = parseInt col ; ColAbs = parseInt col <> 0 }
             | _ -> failwith "Invalid ref format"
         
-    let resolveRef (cell : CellRef) (ref : UnresolvedRef) =
+    let resolveRef (cell : CellRef) ref =
         match ref with
             | A1Cell(value) -> CellRef({ Sheet = cell.Sheet ; Cell = resolveA1 cell value })
             | A1Range(topLeft, bottomRight) -> RangeRef({ Sheet = cell.Sheet ; TopLeft = resolveA1 cell topLeft ; BottomRight = resolveA1 cell bottomRight })
