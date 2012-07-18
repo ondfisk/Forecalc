@@ -10,7 +10,7 @@ module ReferenceResolver =
         let rec inner acc list =
             match list with
                 | [] -> acc + 1
-                | x::xs -> inner ((acc + 1) * 26 + int x - 65) xs
+                | head :: tail -> inner ((acc + 1) * 26 + int head - 65) tail
         c.ToUpper().ToCharArray() 
             |> Array.toList 
             |> inner -1
