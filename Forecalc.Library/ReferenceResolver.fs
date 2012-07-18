@@ -6,24 +6,25 @@ open Ast
 
 module ReferenceResolver =
 
+    let regexA1 = Regex(@"^(\$?)([A-Z]+)(\$?)(\d+)$")
+    let regexR1C1 = Regex(@"^R(\[?)([\+|\-]?\d+)?(\]?)C(\[?)([\+|\-]?\d+)?(\])?$")
+
     let columnFromAlpha (c : string) =
-        let rec inner acc list =
-            match list with
-                | [] -> acc + 1
-                | head :: tail -> inner ((acc + 1) * 26 + int head - 65) tail
+        let rec inner acc = function
+            | [] -> acc + 1
+            | head :: tail -> inner ((acc + 1) * 26 + int head - 65) tail
         c.ToUpper().ToCharArray() 
             |> Array.toList 
             |> inner -1
 
-    let groups str regex =
-        let m = Regex.Match(str, regex)
+    let groups (regex : Regex) ref =
+        let m = regex.Match(ref)
         match m.Success with
             | true -> List.tail [ for g in m.Groups -> g.Value ]
             | false -> []
 
     let resolveA1 cell ref =
-        let p = @"^(\$?)([A-Z]+)(\$?)(\d+)$"
-        match groups ref p with
+        match groups regexA1 ref with
             | "" :: col :: "" :: row :: [] -> { Row = int row - cell.Cell.Row ; RowAbs = false ; Col = columnFromAlpha col - cell.Cell.Col ; ColAbs = false }
             | "$" :: col :: "" :: row :: [] -> { Row = int row - cell.Cell.Row ; RowAbs = false ; Col = columnFromAlpha col ; ColAbs = true }
             | "" :: col :: "$" :: row :: [] -> { Row = int row ; RowAbs = true ; Col = columnFromAlpha col - cell.Cell.Col ; ColAbs = false }
@@ -32,8 +33,7 @@ module ReferenceResolver =
 
     let resolveR1C1 ref =
         let parseInt = Int32.TryParse >> snd
-        let p = @"^R(\[?)([\+|\-]?\d+)?(\]?)C(\[?)([\+|\-]?\d+)?(\])?$"
-        match groups ref p with
+        match groups regexR1C1 ref with
             | "[" :: row :: "]" :: "[" :: col :: "]" :: [] -> { Row = parseInt row ; RowAbs = false ; Col = parseInt col ; ColAbs = false }
             | "" :: row :: "" :: "[" :: col :: "]" :: [] -> { Row = parseInt row ; RowAbs = parseInt row <> 0 ; Col = parseInt col ; ColAbs = false }
             | "[" :: row :: "]" :: "" :: col :: "" :: [] -> { Row = parseInt row ; RowAbs = false ; Col = parseInt col ; ColAbs = parseInt col <> 0 }
