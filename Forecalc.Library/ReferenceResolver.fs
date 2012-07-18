@@ -51,7 +51,7 @@ module ReferenceResolver =
             | R1C1SheetRef(sheet, value) -> CellRef({ Sheet = sheet ; Cell = resolveR1C1 value })
             | R1C1SheetRange(sheet, topLeft, bottomRight) -> RangeRef({ Sheet = sheet ; TopLeft = resolveR1C1 topLeft ; BottomRight = resolveR1C1 bottomRight })
             
-    let rec resolveRefs (cell : CellRef) (expr : Expr) =
+    let rec resolveRefs cell expr =
         match expr with
             | Float(_) | Boolean(_) | String(_) | EscapedString(_) | Ref(_) | Error(_) -> expr
             | Negate(e) -> Negate(resolveRefs cell e)
