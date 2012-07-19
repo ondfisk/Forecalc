@@ -10,12 +10,11 @@ module ReferenceResolver =
     let regexR1C1 = Regex(@"^R(\[?)([\+|\-]?\d+)?(\]?)C(\[?)([\+|\-]?\d+)?(\])?$")
 
     let columnFromAlpha (c : string) =
-        let rec inner acc = function
-            | [] -> acc + 1
-            | head :: tail -> inner ((acc + 1) * 26 + int head - 65) tail
-        c.ToUpper().ToCharArray() 
-            |> Array.toList 
-            |> inner -1
+        c.ToUpper().ToCharArray()
+            |> Array.toList
+            |> List.rev
+            |> List.mapi (fun i c -> (int c - 64) * int (26.0 ** float i))
+            |> List.sum
 
     let groups (regex : Regex) ref =
         let m = regex.Match(ref)
