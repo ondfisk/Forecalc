@@ -24,7 +24,7 @@ module ReferenceResolver =
 
     let resolveA1 cell ref =
         match groups regexA1 ref with
-            | "" :: col :: "" :: row :: [] -> { Row = int row - cell.Cell.Row ; RowAbs = false ; Col = columnFromAlpha col - cell.Cell.Col ; ColAbs = false }
+            | [ "" ; col ; "" ; row ] -> { Row = int row - cell.Cell.Row ; RowAbs = false ; Col = columnFromAlpha col - cell.Cell.Col ; ColAbs = false }
             | "$" :: col :: "" :: row :: [] -> { Row = int row - cell.Cell.Row ; RowAbs = false ; Col = columnFromAlpha col ; ColAbs = true }
             | "" :: col :: "$" :: row :: [] -> { Row = int row ; RowAbs = true ; Col = columnFromAlpha col - cell.Cell.Col ; ColAbs = false }
             | "$" :: col :: "$" :: row :: [] -> { Row = int row ; RowAbs = true ; Col = columnFromAlpha col ; ColAbs = true }
