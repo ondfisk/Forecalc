@@ -25,18 +25,18 @@ module ReferenceResolver =
     let resolveA1 cell ref =
         match groups regexA1 ref with
             | [ "" ; col ; "" ; row ] -> { Row = int row - cell.Cell.Row ; RowAbs = false ; Col = columnFromAlpha col - cell.Cell.Col ; ColAbs = false }
-            | "$" :: col :: "" :: row :: [] -> { Row = int row - cell.Cell.Row ; RowAbs = false ; Col = columnFromAlpha col ; ColAbs = true }
-            | "" :: col :: "$" :: row :: [] -> { Row = int row ; RowAbs = true ; Col = columnFromAlpha col - cell.Cell.Col ; ColAbs = false }
-            | "$" :: col :: "$" :: row :: [] -> { Row = int row ; RowAbs = true ; Col = columnFromAlpha col ; ColAbs = true }
+            | [ "$" ; col ; "" ; row ] -> { Row = int row - cell.Cell.Row ; RowAbs = false ; Col = columnFromAlpha col ; ColAbs = true }
+            | [ "" ; col ; "$" ; row ] -> { Row = int row ; RowAbs = true ; Col = columnFromAlpha col - cell.Cell.Col ; ColAbs = false }
+            | [ "$" ; col ; "$" ; row ] -> { Row = int row ; RowAbs = true ; Col = columnFromAlpha col ; ColAbs = true }
             | _ -> failwith "Invalid ref format"
 
     let resolveR1C1 ref =
         let parseInt = Int32.TryParse >> snd
         match groups regexR1C1 ref with
-            | "[" :: row :: "]" :: "[" :: col :: "]" :: [] -> { Row = parseInt row ; RowAbs = false ; Col = parseInt col ; ColAbs = false }
-            | "" :: row :: "" :: "[" :: col :: "]" :: [] -> { Row = parseInt row ; RowAbs = parseInt row <> 0 ; Col = parseInt col ; ColAbs = false }
-            | "[" :: row :: "]" :: "" :: col :: "" :: [] -> { Row = parseInt row ; RowAbs = false ; Col = parseInt col ; ColAbs = parseInt col <> 0 }
-            | "" :: row :: "" :: "" :: col :: "" :: [] -> { Row = parseInt row ; RowAbs = parseInt row <> 0 ; Col = parseInt col ; ColAbs = parseInt col <> 0 }
+            | [ "[" ; row ; "]" ; "[" ; col ; "]" ] -> { Row = parseInt row ; RowAbs = false ; Col = parseInt col ; ColAbs = false }
+            | [ "" ; row ; "" ; "[" ; col ; "]" ] -> { Row = parseInt row ; RowAbs = parseInt row <> 0 ; Col = parseInt col ; ColAbs = false }
+            | [ "[" ; row ; "]" ; "" ; col ; "" ] -> { Row = parseInt row ; RowAbs = false ; Col = parseInt col ; ColAbs = parseInt col <> 0 }
+            | [ "" ; row ; "" ; "" ; col ; "" ] -> { Row = parseInt row ; RowAbs = parseInt row <> 0 ; Col = parseInt col ; ColAbs = parseInt col <> 0 }
             | _ -> failwith "Invalid ref format"
         
     let resolveRef (cell : CellRef) ref =
