@@ -10,14 +10,18 @@ open ParserSpecification
 
 module Eval =
 
-    let rec isConstant expr =
+    let rec isVolatile expr =
+        let isVolatileFun = function
+            | "NOW"
+            | "RAND" -> true
+            | _ -> false
         match expr with
             | Float(_) 
             | Boolean(_) 
             | String(_) 
             | EscapedString(_) 
-            | Error(_) -> false
-            | Negate(e) -> isConstant expr
+            | Error(_) -> true
+            | Negate(e) -> isVolatile expr
             | Eq(e1, e2)
             | NotEq(e1, e2)
             | Lt(e1, e2)
@@ -29,10 +33,12 @@ module Eval =
             | Sub(e1, e2)
             | Mul(e1, e2)
             | Div(e1, e2)
-            | Pow(e1, e2) -> isConstant e1 || isConstant e2
-            | UnresolvedRef(ref) -> true
-            | Fun(name, list) -> List.map isConstant list |> List.exists (fun f -> f)
-            | Ref(_) -> true
+            | Pow(e1, e2) -> isVolatile e1 || isVolatile e2
+            | UnresolvedRef(ref) -> false
+            | Fun(name, list) -> isVolatileFun name || List.exists (fun e -> isVolatile e) list
+            | Ref(_) -> false
 
     let rec eval cell expr workbook =
-        Value({ Float = 42.0 ; Boolean = true ; String = "42" ; Constant = true })
+        Float 42.0
+
+    

@@ -48,9 +48,3 @@ and Ref =
     | RangeRef of RangeRef
 
 and AbsCell = { Sheet : string ; Row : int ; Col : int }
-
-and Value = { Float : float ; Boolean : bool ; String : string ; Constant : bool }
-
-and CellValue = 
-    | Value of Value
-    | ErrorValue of string
