@@ -7,7 +7,7 @@ open Ast
 open Forecalc.Library.ReferenceResolver
 
 // Cell = C3 / ~R3C3
-let cell = { Sheet = "Sheet1" ; Cell = { Row = 3 ; RowAbs = false ; Col = 3 ; ColAbs = false } }
+let cell = { Sheet = "Sheet1" ; Row = 3 ; Col = 3 }
 
 [<Test>]
 let ``columnFromAlpha "A" -> 1``() =

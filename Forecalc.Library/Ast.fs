@@ -42,3 +42,5 @@ and RangeRef = { Sheet : string ; TopLeft : Cell ; BottomRight : Cell }
 and Ref =
     | CellRef of CellRef
     | RangeRef of RangeRef
+
+and AbsCell = { Sheet : string ; Row : int ; Col : int }

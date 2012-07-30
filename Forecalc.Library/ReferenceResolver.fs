@@ -24,9 +24,9 @@ module ReferenceResolver =
 
     let resolveA1 cell ref =
         match groups regexA1 ref with
-            | [ "" ; col ; "" ; row ] -> { Row = int row - cell.Cell.Row ; RowAbs = false ; Col = columnFromAlpha col - cell.Cell.Col ; ColAbs = false }
-            | [ "$" ; col ; "" ; row ] -> { Row = int row - cell.Cell.Row ; RowAbs = false ; Col = columnFromAlpha col ; ColAbs = true }
-            | [ "" ; col ; "$" ; row ] -> { Row = int row ; RowAbs = true ; Col = columnFromAlpha col - cell.Cell.Col ; ColAbs = false }
+            | [ "" ; col ; "" ; row ] -> { Row = int row - cell.Row ; RowAbs = false ; Col = columnFromAlpha col - cell.Col ; ColAbs = false }
+            | [ "$" ; col ; "" ; row ] -> { Row = int row - cell.Row ; RowAbs = false ; Col = columnFromAlpha col ; ColAbs = true }
+            | [ "" ; col ; "$" ; row ] -> { Row = int row ; RowAbs = true ; Col = columnFromAlpha col - cell.Col ; ColAbs = false }
             | [ "$" ; col ; "$" ; row ] -> { Row = int row ; RowAbs = true ; Col = columnFromAlpha col ; ColAbs = true }
             | _ -> failwith "Invalid ref format"
 
@@ -39,7 +39,7 @@ module ReferenceResolver =
             | [ "" ; row ; "" ; "" ; col ; "" ] -> { Row = parseInt row ; RowAbs = parseInt row <> 0 ; Col = parseInt col ; ColAbs = parseInt col <> 0 }
             | _ -> failwith "Invalid ref format"
         
-    let resolveRef (cell : CellRef) ref =
+    let resolveRef cell ref =
         match ref with
             | A1Cell(value) -> CellRef({ Sheet = cell.Sheet ; Cell = resolveA1 cell value })
             | A1Range(topLeft, bottomRight) -> RangeRef({ Sheet = cell.Sheet ; TopLeft = resolveA1 cell topLeft ; BottomRight = resolveA1 cell bottomRight })
