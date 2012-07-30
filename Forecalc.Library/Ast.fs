@@ -37,10 +37,14 @@ and Cell = { Row : int ; RowAbs : bool ; Col : int ; ColAbs : bool }
 
 and CellRef = { Sheet : string ; Cell : Cell }
 
-and RangeRef = { Sheet : string ; TopLeft : Cell ; BottomRight : Cell }
+and Range = { TopLeft : Cell ; BottomRight : Cell }
+
+and RangeRef = { Sheet : string ; Range : Range }
 
 and Ref =
+    | Cell of Cell
     | CellRef of CellRef
+    | Range of Range
     | RangeRef of RangeRef
 
 and AbsCell = { Sheet : string ; Row : int ; Col : int }

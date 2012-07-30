@@ -41,14 +41,14 @@ module ReferenceResolver =
         
     let resolveRef cell ref =
         match ref with
-            | A1Cell(value) -> CellRef({ Sheet = cell.Sheet ; Cell = resolveA1 cell value })
-            | A1Range(topLeft, bottomRight) -> RangeRef({ Sheet = cell.Sheet ; TopLeft = resolveA1 cell topLeft ; BottomRight = resolveA1 cell bottomRight })
+            | A1Cell(value) -> Cell(resolveA1 cell value)
+            | A1Range(topLeft, bottomRight) -> Range({ TopLeft = resolveA1 cell topLeft ; BottomRight = resolveA1 cell bottomRight })
             | A1SheetRef(sheet, value) -> CellRef({ Sheet = sheet ; Cell = resolveA1 cell value })
-            | A1SheetRange(sheet, topLeft, bottomRight) -> RangeRef({ Sheet = sheet ; TopLeft = resolveA1 cell topLeft ; BottomRight = resolveA1 cell bottomRight })
-            | R1C1Cell(value) -> CellRef({ Sheet = cell.Sheet ; Cell = resolveR1C1 value })
-            | R1C1Range(topLeft, bottomRight) -> RangeRef({ Sheet = cell.Sheet ; TopLeft = resolveR1C1 topLeft ; BottomRight = resolveR1C1 bottomRight })
+            | A1SheetRange(sheet, topLeft, bottomRight) -> RangeRef({ Sheet = sheet ; Range = { TopLeft = resolveA1 cell topLeft ; BottomRight = resolveA1 cell bottomRight } })
+            | R1C1Cell(value) -> Cell(resolveR1C1 value)
+            | R1C1Range(topLeft, bottomRight) -> Range({ TopLeft = resolveR1C1 topLeft ; BottomRight = resolveR1C1 bottomRight })
             | R1C1SheetRef(sheet, value) -> CellRef({ Sheet = sheet ; Cell = resolveR1C1 value })
-            | R1C1SheetRange(sheet, topLeft, bottomRight) -> RangeRef({ Sheet = sheet ; TopLeft = resolveR1C1 topLeft ; BottomRight = resolveR1C1 bottomRight })
+            | R1C1SheetRange(sheet, topLeft, bottomRight) -> RangeRef({ Sheet = sheet ; Range = { TopLeft = resolveR1C1 topLeft ; BottomRight = resolveR1C1 bottomRight } })
             
     let rec resolveRefs cell expr =
         match expr with
