@@ -33,20 +33,12 @@ and UnresolvedRef =
     | R1C1SheetRef of string * string
     | R1C1SheetRange of string * string * string
 
-and Cell = { Row : int ; RowAbs : bool ; Col : int ; ColAbs : bool }
+and Cell = { Sheet : string option ; Row : int ; RowAbs : bool ; Col : int ; ColAbs : bool }
 
-and CellRef = { Sheet : string ; Cell : Cell }
-
-and Range = { TopLeft : Cell ; BottomRight : Cell }
-
-and RangeRef = { Sheet : string ; Range : Range }
-
-// Lav RangeRef.Sheet til string option...
+and Range = { Sheet : string option ; TopLeft : Cell ; BottomRight : Cell }
 
 and Ref =
     | Cell of Cell
-    | CellRef of CellRef
     | Range of Range
-    | RangeRef of RangeRef
 
 and AbsCell = { Sheet : string ; Row : int ; Col : int }

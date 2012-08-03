@@ -24,31 +24,31 @@ module ReferenceResolver =
 
     let resolveA1 cell ref =
         match groups regexA1 ref with
-            | [ "" ; col ; "" ; row ] -> { Row = int row - cell.Row ; RowAbs = false ; Col = columnFromAlpha col - cell.Col ; ColAbs = false }
-            | [ "$" ; col ; "" ; row ] -> { Row = int row - cell.Row ; RowAbs = false ; Col = columnFromAlpha col ; ColAbs = true }
-            | [ "" ; col ; "$" ; row ] -> { Row = int row ; RowAbs = true ; Col = columnFromAlpha col - cell.Col ; ColAbs = false }
-            | [ "$" ; col ; "$" ; row ] -> { Row = int row ; RowAbs = true ; Col = columnFromAlpha col ; ColAbs = true }
+            | [ "" ; col ; "" ; row ] -> { Sheet = Option.None ; Row = int row - cell.Row ; RowAbs = false ; Col = columnFromAlpha col - cell.Col ; ColAbs = false }
+            | [ "$" ; col ; "" ; row ] -> { Sheet = Option.None ; Row = int row - cell.Row ; RowAbs = false ; Col = columnFromAlpha col ; ColAbs = true }
+            | [ "" ; col ; "$" ; row ] -> { Sheet = Option.None ; Row = int row ; RowAbs = true ; Col = columnFromAlpha col - cell.Col ; ColAbs = false }
+            | [ "$" ; col ; "$" ; row ] -> { Sheet = Option.None ; Row = int row ; RowAbs = true ; Col = columnFromAlpha col ; ColAbs = true }
             | _ -> failwith "Invalid ref format"
 
     let resolveR1C1 ref =
         let parseInt = Int32.TryParse >> snd
         match groups regexR1C1 ref with
-            | [ "[" ; row ; "]" ; "[" ; col ; "]" ] -> { Row = parseInt row ; RowAbs = false ; Col = parseInt col ; ColAbs = false }
-            | [ "" ; row ; "" ; "[" ; col ; "]" ] -> { Row = parseInt row ; RowAbs = parseInt row <> 0 ; Col = parseInt col ; ColAbs = false }
-            | [ "[" ; row ; "]" ; "" ; col ; "" ] -> { Row = parseInt row ; RowAbs = false ; Col = parseInt col ; ColAbs = parseInt col <> 0 }
-            | [ "" ; row ; "" ; "" ; col ; "" ] -> { Row = parseInt row ; RowAbs = parseInt row <> 0 ; Col = parseInt col ; ColAbs = parseInt col <> 0 }
+            | [ "[" ; row ; "]" ; "[" ; col ; "]" ] -> { Sheet = Option.None ; Row = parseInt row ; RowAbs = false ; Col = parseInt col ; ColAbs = false }
+            | [ "" ; row ; "" ; "[" ; col ; "]" ] -> { Sheet = Option.None ; Row = parseInt row ; RowAbs = parseInt row <> 0 ; Col = parseInt col ; ColAbs = false }
+            | [ "[" ; row ; "]" ; "" ; col ; "" ] -> { Sheet = Option.None ; Row = parseInt row ; RowAbs = false ; Col = parseInt col ; ColAbs = parseInt col <> 0 }
+            | [ "" ; row ; "" ; "" ; col ; "" ] -> { Sheet = Option.None ; Row = parseInt row ; RowAbs = parseInt row <> 0 ; Col = parseInt col ; ColAbs = parseInt col <> 0 }
             | _ -> failwith "Invalid ref format"
         
     let resolveRef cell ref =
         match ref with
             | A1Cell(value) -> Cell(resolveA1 cell value)
-            | A1Range(topLeft, bottomRight) -> Range({ TopLeft = resolveA1 cell topLeft ; BottomRight = resolveA1 cell bottomRight })
-            | A1SheetRef(sheet, value) -> CellRef({ Sheet = sheet ; Cell = resolveA1 cell value })
-            | A1SheetRange(sheet, topLeft, bottomRight) -> RangeRef({ Sheet = sheet ; Range = { TopLeft = resolveA1 cell topLeft ; BottomRight = resolveA1 cell bottomRight } })
+            | A1Range(topLeft, bottomRight) -> Range({ Sheet = Option.None ; TopLeft = resolveA1 cell topLeft ; BottomRight = resolveA1 cell bottomRight })
+            | A1SheetRef(sheet, value) -> Cell({ resolveA1 cell value with Sheet = Some sheet })
+            | A1SheetRange(sheet, topLeft, bottomRight) -> Range({ Sheet = Some sheet ; TopLeft = { resolveA1 cell topLeft with Sheet = Some sheet } ; BottomRight = { resolveA1 cell bottomRight with Sheet = Some sheet } } )
             | R1C1Cell(value) -> Cell(resolveR1C1 value)
-            | R1C1Range(topLeft, bottomRight) -> Range({ TopLeft = resolveR1C1 topLeft ; BottomRight = resolveR1C1 bottomRight })
-            | R1C1SheetRef(sheet, value) -> CellRef({ Sheet = sheet ; Cell = resolveR1C1 value })
-            | R1C1SheetRange(sheet, topLeft, bottomRight) -> RangeRef({ Sheet = sheet ; Range = { TopLeft = resolveR1C1 topLeft ; BottomRight = resolveR1C1 bottomRight } })
+            | R1C1Range(topLeft, bottomRight) -> Range({ Sheet = Option.None ; TopLeft = resolveR1C1 topLeft ; BottomRight = resolveR1C1 bottomRight })
+            | R1C1SheetRef(sheet, value) -> Cell({ resolveR1C1 value with Sheet = Some sheet })
+            | R1C1SheetRange(sheet, topLeft, bottomRight) -> Range({ Sheet = Some sheet ; TopLeft = { resolveR1C1 topLeft with Sheet = Some sheet } ; BottomRight = { resolveR1C1 bottomRight with Sheet = Some sheet } })
             
     let rec resolveRefs cell expr =
         match expr with
