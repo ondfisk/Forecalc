@@ -41,6 +41,8 @@ and Range = { TopLeft : Cell ; BottomRight : Cell }
 
 and RangeRef = { Sheet : string ; Range : Range }
 
+// Lav RangeRef.Sheet til string option...
+
 and Ref =
     | Cell of Cell
     | CellRef of CellRef

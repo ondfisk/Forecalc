@@ -2,6 +2,12 @@
 
 open Ast
 
+type CellValue =
+    | StringValue of string
+    | BooleanValue of bool
+    | FloatValue of float
+    | ErrorValue of string 
+
 module Eval =
 
     let rec isVolatile expr =
@@ -29,8 +35,8 @@ module Eval =
             | Div(e1, e2)
             | Pow(e1, e2) -> isVolatile e1 || isVolatile e2
             | UnresolvedRef(ref) -> false
-            | Fun(name, list) -> isVolatileFun name || List.exists (fun e -> isVolatile e) list
-            | Ref(_) -> false
+            | Fun(name, list) -> isVolatileFun name || List.exists isVolatile list
+            | Ref(_) -> true
 
     let rec eval cell expr workbook =
         Float 42.0
