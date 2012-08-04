@@ -1,4 +1,4 @@
-﻿namespace Ast
+﻿module Ast
 
 type Expr =
     | Float of float

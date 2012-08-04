@@ -40,5 +40,3 @@ module Eval =
 
     let rec eval cell expr workbook =
         Float 42.0
-
-    
