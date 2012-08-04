@@ -47,4 +47,3 @@ let ``QuadTree.toSeq returns sequence``() =
     quadtree |> QuadTree.set (1000, 1000) 1000
     quadtree |> QuadTree.set (10000, 1000000) 1000000
     quadtree |> QuadTree.toSeq |> should equal (List.toSeq [ 0 ; 42 ; 1000 ; 1000000 ])
-

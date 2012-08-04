@@ -1,10 +1,5 @@
 ﻿namespace Forecalc.Library
 
-type quadtree<'a>(w, h) =
-    let item = Array2D.zeroCreate<'a option [,] [,] [,]> w h
-    with 
-        member internal this.Item = item
-
 module QuadTree =
 
     let private logw = 4
@@ -23,7 +18,13 @@ module QuadTree =
         if r < 0 || r > maxh then
             failwithf "r must be between 0 and %i" maxh
 
-    let create<'a> = quadtree<'a>(w, h)
+    type quadtree<'a> internal() =
+        let item = Array2D.zeroCreate<'a option [,] [,] [,]> w h
+        with 
+            member internal this.Item 
+                with get() = item
+
+    let create<'a> = quadtree<'a>()
 
     let get (c, r) (quadtree : quadtree<'a>) =
         validate (c, r)
