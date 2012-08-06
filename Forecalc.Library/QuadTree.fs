@@ -25,16 +25,16 @@ module QuadTree =
             member this.Item
                 with get(c, r) =
                     validate (c, r)
-                    let o = t0.[(((c >>> (3 * logw)) &&& mw) <<< logh) + ((r >>> (3 * logh)) &&& mh)]
-                    match o with
+                    let v = t0.[(((c >>> (3 * logw)) &&& mw) <<< logh) + ((r >>> (3 * logh)) &&& mh)]
+                    match v with
                         | None -> None
                         | Some(t1) ->
-                            let o = t1.[(((c >>> (2 * logw)) &&& mw) <<< logh) + ((r >>> (2 * logh)) &&& mh)]
-                            match o with
+                            let v = t1.[(((c >>> (2 * logw)) &&& mw) <<< logh) + ((r >>> (2 * logh)) &&& mh)]
+                            match v with
                                 | None -> None
                                 | Some(t2) ->
-                                    let o = t2.[(((c >>> (1 * logw)) &&& mw) <<< logh) + ((r >>> (1 * logh)) &&& mh)]
-                                    match o with
+                                    let v = t2.[(((c >>> (1 * logw)) &&& mw) <<< logh) + ((r >>> (1 * logh)) &&& mh)]
+                                    match v with
                                         | None -> None
                                         | Some(t3) -> t3.[((c &&& mw) <<< logh) + (r &&& mh)]
                 and set(c, r) (v : 'a option) =
@@ -65,24 +65,6 @@ module QuadTree =
     let set (c, r) v (quadtree : quadtree<'a>) =
         quadtree.[c, r] <- v
 
-    let iter f (quadtree : quadtree<'a>) =
-        for l in quadtree.Tile0 do
-                match l with
-                    | None -> ()
-                    | Some(v) ->
-                        for l in v do
-                            match l with
-                                | None -> ()
-                                | Some(v) ->
-                                    for l in v do
-                                        match l with
-                                            | None -> ()
-                                            | Some(v) ->
-                                                for l in v do
-                                                    match l with
-                                                        | None -> ()
-                                                        | Some(v) -> f v
-
     let apply f (quadtree : quadtree<'a>) =
         quadtree.Tile0 |> Array.iteri (fun i0 t0 ->
             match t0 with
@@ -100,114 +82,159 @@ module QuadTree =
                                                 match t3 with
                                                     | Some(v) -> quadtree.Tile0.[i0].Value.[i1].Value.[i2].Value.[i3] <- Some(f v)
                                                     | None -> ()))))
+
+    let filter f (source : quadtree<'a>) =
+        let l = w * h - 1
+        let target = quadtree<'a>()
+        for i0 in [ 0 .. l ] do
+            let v1 = source.Tile0.[i0]
+            let c0 = (i0 >>> logh) <<< (3 * logw)
+            let r0 = (i0 &&& mh) <<< (3 * logh)
+            match v1 with
+                | None -> ()
+                | Some(t1) ->
+                    for i1 in [ 0 .. l ] do
+                        let v2 = t1.[i1]
+                        let c1 = (i1 >>> logh) <<< (2 * logw)
+                        let r1 = (i1 &&& mh) <<< (2 * logh)
+                        match v2 with
+                            | None -> ()
+                            | Some(t2) ->
+                                for i2 in [ 0 .. l ] do
+                                    let v3 = t2.[i2]
+                                    let c2 = (i2 >>> logh) <<< logw
+                                    let r2 = (i2 &&& mh) <<< logh
+                                    match v3 with
+                                        | None -> ()
+                                        | Some(t3) ->
+                                            for i3 in [ 0 .. l ] do
+                                                let v = t3.[i3]
+                                                match v with
+                                                    | None -> ()
+                                                    | Some(t) ->
+                                                        let c = c0 ||| c1 ||| c2 ||| (i3 >>> logh)
+                                                        let r = r0 ||| r1 ||| r2 ||| (i3 &&& mh)
+                                                        if f t then
+                                                            target.[c, r] <- Some(t)
+        target
+
+    let iter f (quadtree : quadtree<'a>) =
+        for l in quadtree.Tile0 do
+                match l with
+                    | None -> ()
+                    | Some(v) ->
+                        for l in v do
+                            match l with
+                                | None -> ()
+                                | Some(v) ->
+                                    for l in v do
+                                        match l with
+                                            | None -> ()
+                                            | Some(v) ->
+                                                for l in v do
+                                                    match l with
+                                                        | None -> ()
+                                                        | Some(v) -> f v
+                                                                      
+    let iteri f (quadtree : quadtree<'a>) =
+        let l = w * h - 1
+        for i0 in [ 0 .. l ] do
+            let v1 = quadtree.Tile0.[i0]
+            let c0 = (i0 >>> logh) <<< (3 * logw)
+            let r0 = (i0 &&& mh) <<< (3 * logh)
+            match v1 with
+                | None -> ()
+                | Some(t1) ->
+                    for i1 in [ 0 .. l ] do
+                        let v2 = t1.[i1]
+                        let c1 = (i1 >>> logh) <<< (2 * logw)
+                        let r1 = (i1 &&& mh) <<< (2 * logh)
+                        match v2 with
+                            | None -> ()
+                            | Some(t2) ->
+                                for i2 in [ 0 .. l ] do
+                                    let v3 = t2.[i2]
+                                    let c2 = (i2 >>> logh) <<< logw
+                                    let r2 = (i2 &&& mh) <<< logh
+                                    match v3 with
+                                        | None -> ()
+                                        | Some(t3) ->
+                                            for i3 in [ 0 .. l ] do
+                                                let v = t3.[i3]
+                                                match v with
+                                                    | None -> ()
+                                                    | Some(t) ->
+                                                        let c = c0 ||| c1 ||| c2 ||| (i3 >>> logh)
+                                                        let r = r0 ||| r1 ||| r2 ||| (i3 &&& mh)
+                                                        f c r t
     
     let map f (source : quadtree<'a>) =
         let l = w * h - 1
         let target = quadtree<'b>()
         for i0 in [ 0 .. l ] do
-            let t1 = source.Tile0.[i0]
+            let v1 = source.Tile0.[i0]
             let c0 = (i0 >>> logh) <<< (3 * logw)
             let r0 = (i0 &&& mh) <<< (3 * logh)
-            if t1.IsSome then
-                for i1 in [ 0 .. l ] do
-                    let t2 = t1.Value.[i1]
-                    let c1 = (i1 >>> logh) <<< (2 * logw)
-                    let r1 = (i1 &&& mh) <<< (2 * logh)
-                    if t2.IsSome then
-                        for i2 in [ 0 .. l ] do
-                            let t3 = t2.Value.[i2]
-                            let c2 = (i2 >>> logh) <<< logw
-                            let r2 = (i2 &&& mh) <<< logh
-                            if t3.IsSome then
-                                for i3 in [ 0 .. l ] do
-                                    let t = t3.Value.[i3]
-                                    if t.IsSome then
-                                        let c = c0 ||| c1 ||| c2 ||| (i3 >>> logh)
-                                        let r = r0 ||| r1 ||| r2 ||| (i3 &&& mh)
-                                        target.[c, r] <- Some(f t.Value)
+            match v1 with
+                | None -> ()
+                | Some(t1) ->
+                    for i1 in [ 0 .. l ] do
+                        let v2 = t1.[i1]
+                        let c1 = (i1 >>> logh) <<< (2 * logw)
+                        let r1 = (i1 &&& mh) <<< (2 * logh)
+                        match v2 with
+                            | None -> ()
+                            | Some(t2) ->
+                                for i2 in [ 0 .. l ] do
+                                    let v3 = t2.[i2]
+                                    let c2 = (i2 >>> logh) <<< logw
+                                    let r2 = (i2 &&& mh) <<< logh
+                                    match v3 with
+                                        | None -> ()
+                                        | Some(t3) ->
+                                            for i3 in [ 0 .. l ] do
+                                                let v = t3.[i3]
+                                                match v with
+                                                    | None -> ()
+                                                    | Some(t) ->
+                                                        let c = c0 ||| c1 ||| c2 ||| (i3 >>> logh)
+                                                        let r = r0 ||| r1 ||| r2 ||| (i3 &&& mh)
+                                                        target.[c, r] <- Some(f t)
         target
        
     let mapi f (source : quadtree<'a>) =
         let l = w * h - 1
         let target = quadtree<'b>()
         for i0 in [ 0 .. l ] do
-            let t1 = source.Tile0.[i0]
+            let v1 = source.Tile0.[i0]
             let c0 = (i0 >>> logh) <<< (3 * logw)
             let r0 = (i0 &&& mh) <<< (3 * logh)
-            if t1.IsSome then
-                for i1 in [ 0 .. l ] do
-                    let t2 = t1.Value.[i1]
-                    let c1 = (i1 >>> logh) <<< (2 * logw)
-                    let r1 = (i1 &&& mh) <<< (2 * logh)
-                    if t2.IsSome then
-                        for i2 in [ 0 .. l ] do
-                            let t3 = t2.Value.[i2]
-                            let c2 = (i2 >>> logh) <<< logw
-                            let r2 = (i2 &&& mh) <<< logh
-                            if t3.IsSome then
-                                for i3 in [ 0 .. l ] do
-                                    let t = t3.Value.[i3]
-                                    if t.IsSome then
-                                        let c = c0 ||| c1 ||| c2 ||| (i3 >>> logh)
-                                        let r = r0 ||| r1 ||| r2 ||| (i3 &&& mh)
-                                        target.[c, r] <- Some(f c r t.Value)
+            match v1 with
+                | None -> ()
+                | Some(t1) ->
+                    for i1 in [ 0 .. l ] do
+                        let v2 = t1.[i1]
+                        let c1 = (i1 >>> logh) <<< (2 * logw)
+                        let r1 = (i1 &&& mh) <<< (2 * logh)
+                        match v2 with
+                            | None -> ()
+                            | Some(t2) ->
+                                for i2 in [ 0 .. l ] do
+                                    let v3 = t2.[i2]
+                                    let c2 = (i2 >>> logh) <<< logw
+                                    let r2 = (i2 &&& mh) <<< logh
+                                    match v3 with
+                                        | None -> ()
+                                        | Some(t3) ->
+                                            for i3 in [ 0 .. l ] do
+                                                let v = t3.[i3]
+                                                match v with
+                                                    | None -> ()
+                                                    | Some(t) ->
+                                                        let c = c0 ||| c1 ||| c2 ||| (i3 >>> logh)
+                                                        let r = r0 ||| r1 ||| r2 ||| (i3 &&& mh)
+                                                        target.[c, r] <- Some(f c r t)
         target
-       
-              
-    let iteri f (quadtree : quadtree<'a>) =
-        let l = w * h - 1
-        for i0 in [ 0 .. l ] do
-            let t1 = quadtree.Tile0.[i0]
-            let c0 = (i0 >>> logh) <<< (3 * logw)
-            let r0 = (i0 &&& mh) <<< (3 * logh)
-            if t1.IsSome then
-                printfn "c0: %i, r0: %i, i0: %i" c0 r0 i0
-                for i1 in [ 0 .. l ] do
-                    let t2 = t1.Value.[i1]
-                    let c1 = (i1 >>> logh) <<< (2 * logw)
-                    let r1 = (i1 &&& mh) <<< (2 * logh)
-                    if t2.IsSome then
-                        printfn "c1: %i, r1: %i, i1: %i" c1 r1 i1
-                        for i2 in [ 0 .. l ] do
-                            let t3 = t2.Value.[i2]
-                            let c2 = (i2 >>> logh) <<< logw
-                            let r2 = (i2 &&& mh) <<< logh
-                            if t3.IsSome then
-                                printfn "c2: %i, r2: %i, i2: %i" c2 r2 i2
-                                for i3 in [ 0 .. l ] do
-                                    let t = t3.Value.[i3]
-                                    if t.IsSome then
-                                        let c = c0 ||| c1 ||| c2 ||| (i3 >>> logh)
-                                        let r = r0 ||| r1 ||| r2 ||| (i3 &&& mh)
-                                        printfn "c: %i, r: %i, i3: %i" c r i3
-                                        f c r t
-
-    let filter f (source : quadtree<'a>) =
-        let target = quadtree<'a>()
-        let l = w * h - 1
-        for i0 in [ 0 .. l ] do
-            let t1 = source.Tile0.[i0]
-            let c0 = (i0 >>> logh) <<< (3 * logw)
-            let r0 = (i0 &&& mh) <<< (3 * logh)
-            if t1.IsSome then
-                for i1 in [ 0 .. l ] do
-                    let t2 = t1.Value.[i1]
-                    let c1 = (i1 >>> logh) <<< (2 * logw)
-                    let r1 = (i1 &&& mh) <<< (2 * logh)
-                    if t2.IsSome then
-                        for i2 in [ 0 .. l ] do
-                            let t3 = t2.Value.[i2]
-                            let c2 = (i2 >>> logh) <<< logw
-                            let r2 = (i2 &&& mh) <<< logh
-                            if t3.IsSome then
-                                for i3 in [ 0 .. l ] do
-                                    let t = t3.Value.[i3]
-                                    if t.IsSome then
-                                        let c = c0 ||| c1 ||| c2 ||| (i3 >>> logh)
-                                        let r = r0 ||| r1 ||| r2 ||| (i3 &&& mh)
-                                        if f t.Value then
-                                            target.[c, r] <- t
-        target     
                                         
     let toSeq (quadtree : quadtree<'a>) =
         seq {
@@ -228,3 +255,6 @@ module QuadTree =
                                                         | None -> ()
                                                         | Some(v) -> yield v
         }
+
+    let length (quadtree : quadtree<'a>) =
+        quadtree |> toSeq |> Seq.length

@@ -9,57 +9,57 @@ open Forecalc.Library
 [<Test>]
 let ``QuadTree.get (-1, 0) should fail``() =
     let quadtree = QuadTree.create<int>() 
-    (fun () -> quadtree |> QuadTree.get (-1, 0) |> ignore) |> should throw typeof<System.Exception>
+    (fun () -> quadtree.[-1, 0] |> ignore) |> should throw typeof<System.Exception>
  
 [<Test>]
 let ``QuadTree.get (0, -1) should fail``() =
     let quadtree = QuadTree.create<int>() 
-    (fun () -> quadtree |> QuadTree.get (0, -1) |> ignore) |> should throw typeof<System.Exception>
+    (fun () -> quadtree.[0, -1] |> ignore) |> should throw typeof<System.Exception>
  
 [<Test>]
 let ``QuadTree.get (65536, 0) should fail``() =
     let quadtree = QuadTree.create<int>() 
-    (fun () -> quadtree |> QuadTree.get (65536, 0) |> ignore) |> should throw typeof<System.Exception>
+    (fun () -> quadtree.[65536, 0] |> ignore) |> should throw typeof<System.Exception>
  
 [<Test>]
 let ``QuadTree.get (0, 1048576) should fail``() =
     let quadtree = QuadTree.create<int>() 
-    (fun () -> quadtree |> QuadTree.get (0, 1048576) |> ignore) |> should throw typeof<System.Exception>
+    (fun () -> quadtree.[0, 1048576] |> ignore) |> should throw typeof<System.Exception>
 
 [<Test>]
 let ``QuadTree.set (-1, 0) 42 should fail``() =
     let quadtree = QuadTree.create<int>() 
-    (fun () -> quadtree |> QuadTree.set (-1, 0) (Some 42) |> ignore) |> should throw typeof<System.Exception>
+    (fun () -> quadtree.[-1, 0] <- Some 42) |> should throw typeof<System.Exception>
  
 [<Test>]
 let ``QuadTree.set (0, -1) 42 should fail``() =
     let quadtree = QuadTree.create<int>() 
-    (fun () -> quadtree |> QuadTree.set (0, -1) (Some 42) |> ignore) |> should throw typeof<System.Exception>
+    (fun () -> quadtree.[0, -1] <- Some 42) |> should throw typeof<System.Exception>
  
 [<Test>]
 let ``QuadTree.set (65536, 0) 42 should fail``() =
     let quadtree = QuadTree.create<int>() 
-    (fun () -> quadtree |> QuadTree.set (65536, 0) (Some 42) |> ignore) |> should throw typeof<System.Exception>
+    (fun () -> quadtree.[65536, 0] <- Some 42) |> should throw typeof<System.Exception>
  
 [<Test>]
 let ``QuadTree.set (0, 1048576) 42 should fail``() =
     let quadtree = QuadTree.create<int>() 
-    (fun () -> quadtree |> QuadTree.set (0, 1048576) (Some 42) |> ignore) |> should throw typeof<System.Exception>
+    (fun () -> quadtree.[0, 1048576] <- Some 42) |> should throw typeof<System.Exception>
 
 [<Test>]
 let ``QuadTree.apply (*) 2 should multiply elements by 2``() =
     let quadtree = QuadTree.create<int>() 
-    quadtree |> QuadTree.set (0, 0) (Some(21))
+    quadtree.[18, 4323] <- Some 21
     quadtree |> QuadTree.apply ((*) 2)
-    quadtree |> QuadTree.get (0, 0) |> should equal (Some 42)
+    quadtree.[18, 4323] |> should equal (Some 42)
 
 [<Test>]
 let ``QuadTree.iter should call all elements``() =
     let quadtree = QuadTree.create<int>() 
-    quadtree |> QuadTree.set (0, 0) (Some 9)
-    quadtree |> QuadTree.set (42, 42) (Some 10)
-    quadtree |> QuadTree.set (1000, 1000) (Some 11)
-    quadtree |> QuadTree.set (10000, 1000000) (Some 12)
+    quadtree.[0, 0] <- Some 9
+    quadtree.[42, 42] <- Some 10
+    quadtree.[1000, 1000] <- Some 11
+    quadtree.[10000, 1000000] <- Some 12
     let i = ref 0
     quadtree |> QuadTree.iter (fun x -> i := !i + x)
     !i |> should equal 42
@@ -67,10 +67,10 @@ let ``QuadTree.iter should call all elements``() =
 [<Test>]
 let ``QuadTree.toSeq returns sequence``() =
     let quadtree = QuadTree.create<int>() 
-    quadtree |> QuadTree.set (0, 0) (Some 9)
-    quadtree |> QuadTree.set (42, 42) (Some 10)
-    quadtree |> QuadTree.set (1000, 1000) (Some 11)
-    quadtree |> QuadTree.set (10000, 1000000) (Some 12)
+    quadtree.[0, 0] <- Some 9
+    quadtree.[42, 42] <- Some 10
+    quadtree.[1000, 1000] <- Some 11
+    quadtree.[10000, 1000000] <- Some 12
     quadtree |> QuadTree.toSeq |> should equal (List.toSeq [ 9 ; 10 ; 11 ; 12 ])
 
 [<Test>]
@@ -105,17 +105,10 @@ let ``QuadTree.filter (fun x -> x % 2 = 0) should strip odd items``() =
 [<Test>]
 let ``QuadTree.iteri should call all elements with index``() =
     let quadtree = QuadTree.create<int>() 
-    quadtree |> QuadTree.set (1512, 6423) (Some 42)
-    let col = ref 0
-    let row = ref 0
-    let value = ref (Some 0)
-    quadtree |> QuadTree.iteri (fun c r v -> 
-        col := c
-        row := r
-        value := v)
-    !col |> should equal 1512
-    !row |> should equal 6423
-    !value |> should equal (Some 42)
+    quadtree.[1512, 18243] <- Some 42
+    let res = ref ""
+    quadtree |> QuadTree.iteri (fun c r v -> res := sprintf "c: %i, r: %i, v: %i" c r v)
+    !res |> should equal "c: 1512, r: 18243, v: 42"
 
 [<Test>]
 let ``QuadTree.mapi carries correct index``() =
@@ -123,3 +116,27 @@ let ``QuadTree.mapi carries correct index``() =
     quadtree.[1512, 18243] <- Some(42)
     let result = quadtree |> QuadTree.mapi (fun c r v -> sprintf "c: %i, r: %i, v: %i" c r v)
     result.[1512, 18243] |> should equal (Some "c: 1512, r: 18243, v: 42")
+
+    
+[<Test>]
+let ``Empty quadtree has length 0``() =
+    let quadtree = QuadTree.create<int>()
+    quadtree |> QuadTree.length |> should equal 0
+
+[<Test>]
+let ``3 element QuadTree.length has length 3``() =
+    let quadtree = QuadTree.create<int>()
+    quadtree.[0, 0] <- Some 9
+    quadtree.[42, 42] <- Some 10
+    quadtree.[1000, 1000] <- Some 11
+    quadtree |> QuadTree.length |> should equal 3
+
+[<Test>]
+let ``Quadtree.length ignores None elements``() =
+    let quadtree = QuadTree.create<int>()
+    quadtree.[0, 0] <- Some 9
+    quadtree.[42, 42] <- Some 10
+    quadtree.[1000, 1000] <- Some 11
+    quadtree.[42, 42] <- None
+    quadtree.[1000, 1000] <- None
+    quadtree |> QuadTree.length |> should equal 1
