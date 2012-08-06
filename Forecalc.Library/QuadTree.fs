@@ -57,7 +57,7 @@ module QuadTree =
                                 let i3 = ((c &&& mw) <<< logh) + (r &&& mh)
                                 t3().Value.[i3] <- v
 
-    let create<'a> = quadtree<'a>()
+    let create<'a>() = quadtree<'a>()
 
     let get (c, r) (quadtree : quadtree<'a>) =
         quadtree.[c, r]
@@ -122,17 +122,16 @@ module QuadTree =
                                 for i3 in [ 0 .. l ] do
                                     let t = t3.Value.[i3]
                                     if t.IsSome then
-                                        let c = c0 ||| c1 ||| c2 ||| i3 >>> logh
-                                        let r = r0 ||| r1 ||| r2 ||| i3 &&& mh
-                                        failwithf "c: %i, r: %i" c r
+                                        let c = c0 ||| c1 ||| c2 ||| (i3 >>> logh)
+                                        let r = r0 ||| r1 ||| r2 ||| (i3 &&& mh)
                                         target.[c, r] <- Some(f t.Value)
         target
        
-       
-    let iteri f (quadtree : quadtree<'a>) =
+    let mapi f (source : quadtree<'a>) =
         let l = w * h - 1
+        let target = quadtree<'b>()
         for i0 in [ 0 .. l ] do
-            let t1 = quadtree.Tile0.[i0]
+            let t1 = source.Tile0.[i0]
             let c0 = (i0 >>> logh) <<< (3 * logw)
             let r0 = (i0 &&& mh) <<< (3 * logh)
             if t1.IsSome then
@@ -149,8 +148,38 @@ module QuadTree =
                                 for i3 in [ 0 .. l ] do
                                     let t = t3.Value.[i3]
                                     if t.IsSome then
-                                        let c = c0 ||| c1 ||| c2 ||| i3 >>> logh
-                                        let r = r0 ||| r1 ||| r2 ||| i3 &&& mh
+                                        let c = c0 ||| c1 ||| c2 ||| (i3 >>> logh)
+                                        let r = r0 ||| r1 ||| r2 ||| (i3 &&& mh)
+                                        target.[c, r] <- Some(f c r t.Value)
+        target
+       
+              
+    let iteri f (quadtree : quadtree<'a>) =
+        let l = w * h - 1
+        for i0 in [ 0 .. l ] do
+            let t1 = quadtree.Tile0.[i0]
+            let c0 = (i0 >>> logh) <<< (3 * logw)
+            let r0 = (i0 &&& mh) <<< (3 * logh)
+            if t1.IsSome then
+                printfn "c0: %i, r0: %i, i0: %i" c0 r0 i0
+                for i1 in [ 0 .. l ] do
+                    let t2 = t1.Value.[i1]
+                    let c1 = (i1 >>> logh) <<< (2 * logw)
+                    let r1 = (i1 &&& mh) <<< (2 * logh)
+                    if t2.IsSome then
+                        printfn "c1: %i, r1: %i, i1: %i" c1 r1 i1
+                        for i2 in [ 0 .. l ] do
+                            let t3 = t2.Value.[i2]
+                            let c2 = (i2 >>> logh) <<< logw
+                            let r2 = (i2 &&& mh) <<< logh
+                            if t3.IsSome then
+                                printfn "c2: %i, r2: %i, i2: %i" c2 r2 i2
+                                for i3 in [ 0 .. l ] do
+                                    let t = t3.Value.[i3]
+                                    if t.IsSome then
+                                        let c = c0 ||| c1 ||| c2 ||| (i3 >>> logh)
+                                        let r = r0 ||| r1 ||| r2 ||| (i3 &&& mh)
+                                        printfn "c: %i, r: %i, i3: %i" c r i3
                                         f c r t
 
     let filter f (source : quadtree<'a>) =
@@ -174,13 +203,11 @@ module QuadTree =
                                 for i3 in [ 0 .. l ] do
                                     let t = t3.Value.[i3]
                                     if t.IsSome then
-                                        let c = c0 ||| c1 ||| c2 ||| i3 >>> logh
-                                        let r = r0 ||| r1 ||| r2 ||| i3 &&& mh
+                                        let c = c0 ||| c1 ||| c2 ||| (i3 >>> logh)
+                                        let r = r0 ||| r1 ||| r2 ||| (i3 &&& mh)
                                         if f t.Value then
-                                            failwithf "c: %i, r: %i" c r
                                             target.[c, r] <- t
         target     
-   //  mangler en mapi, en iteri og en filter funktion.
                                         
     let toSeq (quadtree : quadtree<'a>) =
         seq {
