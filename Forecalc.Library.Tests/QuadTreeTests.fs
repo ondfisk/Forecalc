@@ -121,7 +121,7 @@ let ``QuadTree.mapi carries correct index``() =
 [<Test>]
 let ``Empty quadtree has length 0``() =
     let quadtree = QuadTree.create<int>()
-    quadtree |> QuadTree.length |> should equal 0
+    quadtree.Length |> should equal 0
 
 [<Test>]
 let ``3 element QuadTree.length has length 3``() =
@@ -129,7 +129,7 @@ let ``3 element QuadTree.length has length 3``() =
     quadtree.[0, 0] <- Some 9
     quadtree.[42, 42] <- Some 10
     quadtree.[1000, 1000] <- Some 11
-    quadtree |> QuadTree.length |> should equal 3
+    quadtree.Length |> should equal 3
 
 [<Test>]
 let ``Quadtree.length ignores None elements``() =
@@ -139,4 +139,15 @@ let ``Quadtree.length ignores None elements``() =
     quadtree.[1000, 1000] <- Some 11
     quadtree.[42, 42] <- None
     quadtree.[1000, 1000] <- None
-    quadtree |> QuadTree.length |> should equal 1
+    quadtree.Length |> should equal 1
+
+[<Test>]
+let ``Empty quadtree IsEmpty``() =
+    let quadtree = QuadTree.create<int>()
+    quadtree.IsEmpty |> should be True
+
+[<Test>]
+let ``Non-empty quadtree not IsEmpty``() =
+    let quadtree = QuadTree.create<int>()
+    quadtree.[42, 42] <- Some 42
+    quadtree.IsEmpty |> should be False

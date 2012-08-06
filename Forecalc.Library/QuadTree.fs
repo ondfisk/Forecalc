@@ -56,6 +56,31 @@ module QuadTree =
                             if t3().IsSome then
                                 let i3 = ((c &&& mw) <<< logh) + (r &&& mh)
                                 t3().Value.[i3] <- v
+            member this.AsEnumerable() =
+                seq {
+                    for l in t0 do
+                        match l with
+                            | None -> ()
+                            | Some(v) ->
+                                for l in v do
+                                    match l with
+                                        | None -> ()
+                                        | Some(v) ->
+                                            for l in v do
+                                                match l with
+                                                    | None -> ()
+                                                    | Some(v) ->
+                                                        for l in v do
+                                                            match l with
+                                                                | None -> ()
+                                                                | Some(v) -> yield v
+                }
+            member this.Length
+                with get() =
+                    this.AsEnumerable() |> Seq.length
+            member this.IsEmpty
+                with get() =
+                    this.Length = 0
 
     let create<'a>() = quadtree<'a>()
 
@@ -64,6 +89,12 @@ module QuadTree =
         
     let set (c, r) v (quadtree : quadtree<'a>) =
         quadtree.[c, r] <- v
+
+    let isEmpty (quadtree : quadtree<'a>) =
+        quadtree.IsEmpty
+
+    let length (quadtree : quadtree<'a>) =
+        quadtree.Length
 
     let apply f (quadtree : quadtree<'a>) =
         quadtree.Tile0 |> Array.iteri (fun i0 t0 ->
@@ -167,7 +198,8 @@ module QuadTree =
                                                         let c = c0 ||| c1 ||| c2 ||| (i3 >>> logh)
                                                         let r = r0 ||| r1 ||| r2 ||| (i3 &&& mh)
                                                         f c r t
-    
+
+                                                        
     let map f (source : quadtree<'a>) =
         let l = w * h - 1
         let target = quadtree<'b>()
@@ -237,24 +269,4 @@ module QuadTree =
         target
                                         
     let toSeq (quadtree : quadtree<'a>) =
-        seq {
-            for l in quadtree.Tile0 do
-                match l with
-                    | None -> ()
-                    | Some(v) ->
-                        for l in v do
-                            match l with
-                                | None -> ()
-                                | Some(v) ->
-                                    for l in v do
-                                        match l with
-                                            | None -> ()
-                                            | Some(v) ->
-                                                for l in v do
-                                                    match l with
-                                                        | None -> ()
-                                                        | Some(v) -> yield v
-        }
-
-    let length (quadtree : quadtree<'a>) =
-        quadtree |> toSeq |> Seq.length
+        quadtree.AsEnumerable()
