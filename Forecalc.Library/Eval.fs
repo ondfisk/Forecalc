@@ -1,6 +1,6 @@
 ﻿namespace Forecalc.Library
 
-open Ast
+open Forecalc.Library.Ast
 
 type CellValue =
     | StringValue of string

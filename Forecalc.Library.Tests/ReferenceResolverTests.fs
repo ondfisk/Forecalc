@@ -3,7 +3,7 @@
 open System
 open NUnit.Framework
 open FsUnit
-open Ast
+open Forecalc.Library.Ast
 open Forecalc.Library.ReferenceResolver
 
 // Cell = C3 / ~R3C3

@@ -5,7 +5,7 @@ open Microsoft.FSharp.Text.Lexing
 open Microsoft.FSharp.Text.Parsing.ParseHelpers
 # 1 "ParserSpecification.fsy"
 
-open Ast
+open Forecalc.Library.Ast
 
 # 10 "obj\x86\Debug\ParserSpecification.fs"
 // This type is the type of tokens accepted by the parser

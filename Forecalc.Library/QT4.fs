@@ -22,6 +22,7 @@ module QT4 =
         with 
             member internal this.Tile0 
                 with get() = t0
+            
             member this.Item
                 with get(c, r) =
                     validate (c, r)
@@ -37,6 +38,7 @@ module QT4 =
                                     match v with
                                         | None -> None
                                         | Some(t3) -> t3.[((c &&& mw) <<< logh) + (r &&& mh)]
+                
                 and set(c, r) (v : 'a option) =
                     validate (c, r)
                     let i0 = (((c >>> (3 * logw)) &&& mw) <<< logh) + ((r >>> (3 * logh)) &&& mh)
@@ -56,6 +58,7 @@ module QT4 =
                             if t3().IsSome then
                                 let i3 = ((c &&& mw) <<< logh) + (r &&& mh)
                                 t3().Value.[i3] <- v
+            
             member internal this.AsEnumerable() =
                 seq {
                     for l in t0 do
@@ -75,9 +78,11 @@ module QT4 =
                                                                 | None -> ()
                                                                 | Some(v) -> yield v
                 }
+            
             member this.Length
                 with get() =
                     this.AsEnumerable() |> Seq.length
+            
             member this.IsEmpty
                 with get() =
                     this.Length = 0

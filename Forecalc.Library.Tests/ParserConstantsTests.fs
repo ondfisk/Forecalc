@@ -2,7 +2,7 @@
 
 open NUnit.Framework
 open FsUnit
-open Ast
+open Forecalc.Library.Ast
 open Forecalc.Library.Parser
 
 [<Test>]

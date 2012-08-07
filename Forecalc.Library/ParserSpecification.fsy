@@ -1,5 +1,5 @@
 ﻿%{
-open Ast
+open Forecalc.Library.Ast
 %}
 
 // The start token becomes a parser Fun in the compiled code:

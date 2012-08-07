@@ -1,9 +1,7 @@
 ﻿module QT4Tests
 
-open System
 open NUnit.Framework
 open FsUnit
-open Ast
 open Forecalc.Library
 
 [<Test>]
