@@ -59,7 +59,7 @@ module QT4 =
                                 let i3 = ((c &&& mw) <<< logh) + (r &&& mh)
                                 t3().Value.[i3] <- v
             
-            member internal this.AsEnumerable() =
+            member internal this.ToSeq() =
                 seq {
                     for l in t0 do
                         match l with
@@ -81,7 +81,7 @@ module QT4 =
             
             member this.Length
                 with get() =
-                    this.AsEnumerable() |> Seq.length
+                    this.ToSeq() |> Seq.length
             
             member this.IsEmpty
                 with get() =
@@ -277,4 +277,4 @@ module QT4 =
         qt4 |> map (fun x -> x)
                                   
     let toSeq (qt4 : qt4<'a>) =
-        qt4.AsEnumerable()
+        qt4.ToSeq()
