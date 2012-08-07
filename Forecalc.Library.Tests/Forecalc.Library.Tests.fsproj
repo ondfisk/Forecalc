@@ -45,6 +45,7 @@
     <Compile Include="ParserCellReferencesTests.fs" />
     <Compile Include="ReferenceResolverTests.fs" />
     <Compile Include="QT4Tests.fs" />
+    <Compile Include="EvalTests.fs" />
     <None Include="packages.config" />
     <None Include="App.config" />
   </ItemGroup>

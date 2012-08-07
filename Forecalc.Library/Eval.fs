@@ -8,7 +8,7 @@ type CellValue =
     | FloatValue of float
     | ErrorValue of string 
 
-and CellContents = { Expr : Expr ; Value : CellValue ; Volatile : bool }
+and CellContent = { Expr : Expr ; Value : CellValue ; Volatile : bool }
 
 module Eval =
 
@@ -40,5 +40,8 @@ module Eval =
             | Fun(name, list) -> isVolatileFun name || List.exists isVolatile list
             | Ref(_) -> true
 
-    let rec eval cell expr workbook =
-        Float 42.0
+    let rec eval (cell : AbsCell) (expr : Expr) (workbook : QT4.qt4<CellContent>) =
+        match expr with
+            | Float(value) -> FloatValue(value)
+            | Boolean(value) -> BooleanValue(value)
+            | _ -> failwith "Not implemented"
