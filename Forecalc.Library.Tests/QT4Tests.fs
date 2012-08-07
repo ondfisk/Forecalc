@@ -6,42 +6,42 @@ open Forecalc.Library
 open Forecalc.Library.QT4
 
 [<Test>]
-let ``get (-1, 0) should fail``() =
+let ``[-1, 0] should fail``() =
     let qt4 = create<int>() 
     (fun () -> qt4.[-1, 0] |> ignore) |> should throw typeof<System.Exception>
  
 [<Test>]
-let ``get (0, -1) should fail``() =
+let ``[0, -1] should fail``() =
     let qt4 = create<int>() 
     (fun () -> qt4.[0, -1] |> ignore) |> should throw typeof<System.Exception>
  
 [<Test>]
-let ``get (65536, 0) should fail``() =
+let ``[65536, 0] should fail``() =
     let qt4 = create<int>() 
     (fun () -> qt4.[65536, 0] |> ignore) |> should throw typeof<System.Exception>
  
 [<Test>]
-let ``get (0, 1048576) should fail``() =
+let ``[0, 1048576] should fail``() =
     let qt4 = create<int>() 
     (fun () -> qt4.[0, 1048576] |> ignore) |> should throw typeof<System.Exception>
 
 [<Test>]
-let ``set (-1, 0) 42 should fail``() =
+let ``[-1, 0] 42 should fail``() =
     let qt4 = create<int>() 
     (fun () -> qt4.[-1, 0] <- Some 42) |> should throw typeof<System.Exception>
  
 [<Test>]
-let ``set (0, -1) 42 should fail``() =
+let ``[0, -1] 42 should fail``() =
     let qt4 = create<int>() 
     (fun () -> qt4.[0, -1] <- Some 42) |> should throw typeof<System.Exception>
  
 [<Test>]
-let ``set (65536, 0) 42 should fail``() =
+let ``[65536, 0] 42 should fail``() =
     let qt4 = create<int>() 
     (fun () -> qt4.[65536, 0] <- Some 42) |> should throw typeof<System.Exception>
  
 [<Test>]
-let ``set (0, 1048576) 42 should fail``() =
+let ``[0, 1048576] 42 should fail``() =
     let qt4 = create<int>() 
     (fun () -> qt4.[0, 1048576] <- Some 42) |> should throw typeof<System.Exception>
 
@@ -131,7 +131,7 @@ let ``3 element length has length 3``() =
     qt4.Length |> should equal 3
 
 [<Test>]
-let ``Quadtree.length ignores None elements``() =
+let ``length ignores None elements``() =
     let qt4 = create<int>()
     qt4.[0, 0] <- Some 9
     qt4.[42, 42] <- Some 10
@@ -150,3 +150,33 @@ let ``Non-empty qt4 not IsEmpty``() =
     let qt4 = create<int>()
     qt4.[42, 42] <- Some 42
     qt4.IsEmpty |> should be False
+
+[<Test>]
+let ``rebuild returns a new qt4 of the same size``() =
+    let qt4 = create<int>()
+    qt4.[42, 42] <- Some 42
+    let result = qt4 |> rebuild
+    result.Length |> should equal qt4.Length
+
+[<Test>]
+let ``isEmpty is the same as qt4.IsEmpty``() =
+    let qt4 = create<int>()
+    qt4 |> QT4.isEmpty |> should equal qt4.IsEmpty
+
+
+[<Test>]
+let ``length is the same as qt4.Length``() =
+    let qt4 = create<int>()
+    qt4 |> QT4.length |> should equal qt4.Length
+
+[<Test>]
+let ``get(42, 42) calls indexer``() =
+    let qt4 = create<int>()
+    qt4.[42, 42] <- Some(42)
+    qt4 |> get(42, 42) |> should equal (Some 42)
+
+[<Test>]
+let ``set(42, 42) calls indexer``() =
+    let qt4 = create<int>()
+    qt4 |> set (42, 42) (Some 42)
+    qt4.[42, 42] |> should equal (Some 42)
