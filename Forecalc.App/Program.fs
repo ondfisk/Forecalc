@@ -2,9 +2,13 @@
 
 open System
 open Forecalc.Library
+open Forecalc.Library.Ast
 
 
-let qt4 = QT4.create<int>()
-qt4.[1512, 6423] <- Some(42)
+//let expr = Parser.parse "=\"Life, \"&\"the \"&\"Universe \"&\"and \"&\"Everything = \"&42.0"
 
-qt4 |> QT4.iteri (printfn "%i %i %A")
+
+let workbook = QT4.create<CellContent>()
+let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+let expr = Concat(Concat(Concat(Concat(Concat(String "Life, ",String "the "),String "Universe "), String "and "),String "Everything = "),Float 42.0)
+Eval.eval cell expr workbook |> printfn "%A"

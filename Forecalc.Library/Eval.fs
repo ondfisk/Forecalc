@@ -46,6 +46,12 @@ module Eval =
             | Fun(name, list) -> isVolatileFun name || List.exists isVolatile list
             | Ref(_) -> true
 
+    let toString = function
+        | StringValue(value) -> value
+        | BooleanValue(value) -> value.ToString().ToUpper()
+        | FloatValue(value) -> value.ToString()
+        | ErrorValue(value) -> value
+
     let rec eval (cell : AbsCell) (expr : Expr) (workbook : QT4.qt4<CellContent>) =
         match expr with
             | Float(value) -> FloatValue(value)
@@ -60,7 +66,7 @@ module Eval =
                     | BooleanValue(false) -> FloatValue(0.0)
                     | StringValue(_) -> valueError
                     | ErrorValue(value) -> ErrorValue(value)
-            | Eq(e1, e2) ->
+            | Eq(e1, e2) -> 
                 match (eval cell e1 workbook, eval cell e2 workbook) with
                     | ErrorValue(value), _ -> ErrorValue(value)
                     | _ , ErrorValue(value) -> ErrorValue(value)
@@ -73,11 +79,11 @@ module Eval =
                 match (eval cell e1 workbook, eval cell e2 workbook) with
                     | ErrorValue(value), _ -> ErrorValue(value)
                     | _ , ErrorValue(value) -> ErrorValue(value)
-                    | StringValue(_), BooleanValue(_) -> BooleanValue(true)
+                    | StringValue(_), BooleanValue(_) -> BooleanValue(true)  // string < bool
                     | BooleanValue(_), StringValue(_) -> BooleanValue(false)
-                    | FloatValue(_), StringValue(_) -> BooleanValue(true)
+                    | FloatValue(_), StringValue(_) -> BooleanValue(true)    // float < string
                     | StringValue(_), FloatValue(_) -> BooleanValue(false)
-                    | FloatValue(_), BooleanValue(_) -> BooleanValue(true)
+                    | FloatValue(_), BooleanValue(_) -> BooleanValue(true)   // float < bool
                     | BooleanValue(_), FloatValue(_) -> BooleanValue(false)
                     | BooleanValue(v1), BooleanValue(v2) -> BooleanValue(v1 < v2)
                     | FloatValue(v1), FloatValue(v2) -> BooleanValue(v1 < v2)
@@ -90,6 +96,11 @@ module Eval =
             | Gte(e1, e2) -> // lt + not
                 match eval cell (Lt(e1, e2)) workbook with
                     | BooleanValue(v) -> BooleanValue(not v)
-                    | v -> v                
+                    | v -> v       
+            | Concat(e1, e2) ->
+                match (eval cell e1 workbook, eval cell e2 workbook) with
+                    | ErrorValue(value), _ -> ErrorValue(value)
+                    | _ , ErrorValue(value) -> ErrorValue(value)
+                    | v1, v2 -> StringValue(String.Concat(toString v1, toString v2))
             | UnresolvedRef(_) -> failwith "References must be resolved before calling eval"
             | _ -> FloatValue(0.0)
