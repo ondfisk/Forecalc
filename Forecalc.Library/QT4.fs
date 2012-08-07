@@ -89,10 +89,10 @@ module QT4 =
 
     let create<'a>() = qt4<'a>()
 
-    let get (c, r) (qt4 : qt4<'a>) =
+    let get c r (qt4 : qt4<'a>) =
         qt4.[c, r]
         
-    let set (c, r) v (qt4 : qt4<'a>) =
+    let set c r v (qt4 : qt4<'a>) =
         qt4.[c, r] <- v
 
     let isEmpty (qt4 : qt4<'a>) =

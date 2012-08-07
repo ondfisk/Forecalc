@@ -173,10 +173,10 @@ let ``length is the same as qt4.Length``() =
 let ``get(42, 42) calls indexer``() =
     let qt4 = create<int>()
     qt4.[42, 42] <- Some(42)
-    qt4 |> get(42, 42) |> should equal (Some 42)
+    qt4 |> get 42 42 |> should equal (Some 42)
 
 [<Test>]
 let ``set(42, 42) calls indexer``() =
     let qt4 = create<int>()
-    qt4 |> set (42, 42) (Some 42)
+    qt4 |> set 42 42 (Some 42)
     qt4.[42, 42] |> should equal (Some 42)
