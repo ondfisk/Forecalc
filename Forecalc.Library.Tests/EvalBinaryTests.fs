@@ -299,3 +299,66 @@ let ``42 / #REF! -> #REF!``() =
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Div(Float 42.0, Error "#REF!")
     eval cell expr workbook |> should equal (ErrorValue "#REF!")
+
+[<Test>]
+let ``2^8 -> 256``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Pow(Float 2.0, Float 8.0)
+    eval cell expr workbook |> should equal (FloatValue 256.0)
+
+[<Test>]
+let ``"42"^0 -> Error("#VALUE!")``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Pow(String "42.0", Float 0.0)
+    eval cell expr workbook |> should equal (ErrorValue "#VALUE!")
+
+[<Test>]
+let ``0^"42" -> Error("#VALUE!")``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Pow(Float 0.0, String "42.0")
+    eval cell expr workbook |> should equal (ErrorValue "#VALUE!")
+
+[<Test>]
+let ``true^42.0 -> 42``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Pow(Boolean true, Float 42.0)
+    eval cell expr workbook |> should equal (FloatValue 1.0)
+
+[<Test>]
+let ``42.0^true -> 42``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Pow(Float 42.0, Boolean true)
+    eval cell expr workbook |> should equal (FloatValue 42.0)
+
+[<Test>]
+let ``false^42.0 -> 0``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Pow(Boolean false, Float 42.0)
+    eval cell expr workbook |> should equal (FloatValue 0.0)
+
+[<Test>]
+let ``42.0^false -> 1``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Pow(Float 42.0, Boolean false)
+    eval cell expr workbook |> should equal (FloatValue 1.0)
+
+[<Test>]
+let ``#REF!^ 42 -> #REF!``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Pow(Error "#REF!", Float 42.0)
+    eval cell expr workbook |> should equal (ErrorValue "#REF!")
+
+[<Test>]
+let ``42^ #REF! -> #REF!``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Pow(Float 42.0, Error "#REF!")
+    eval cell expr workbook |> should equal (ErrorValue "#REF!")
