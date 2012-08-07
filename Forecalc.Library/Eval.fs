@@ -1,5 +1,6 @@
 ﻿namespace Forecalc.Library
 
+open System
 open Forecalc.Library.Ast
 
 type CellValue =
@@ -81,6 +82,6 @@ module Eval =
                     | BooleanValue(_), FloatValue(_) -> BooleanValue(false)
                     | BooleanValue(v1), BooleanValue(v2) -> BooleanValue(v1 < v2)
                     | FloatValue(v1), FloatValue(v2) -> BooleanValue(v1 < v2)
-                    | StringValue(v1), StringValue(v2) -> failwith "i dunno"
+                    | StringValue(v1), StringValue(v2) -> BooleanValue(String.Compare(v1, v2, true) < 0)
             | UnresolvedRef(_) -> failwith "References must be resolved before calling eval"
             | _ -> FloatValue(0.0)

@@ -215,3 +215,17 @@ let ``Lt(String "42", Error("#REF!") -> ErrorValue("#REF!")``() =
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Lt(String "42", Error "#REF!")
     eval cell expr workbook |> should equal (ErrorValue "#REF!")
+
+[<Test>]
+let ``Gently<Dirk -> Lt(String "Gently", String("Dirk") -> BooleanValue(false)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Lt(String "Gently", String "Dirk")
+    eval cell expr workbook |> should equal (BooleanValue false)
+
+[<Test>]
+let ``Dirk<Gently -> Lt(String "Dirk", String("Gently") -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Lt(String "Dirk", String "Gently")
+    eval cell expr workbook |> should equal (BooleanValue true)
