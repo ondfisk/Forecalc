@@ -45,9 +45,11 @@
     <Compile Include="ParserCellReferencesTests.fs" />
     <Compile Include="ReferenceResolverTests.fs" />
     <Compile Include="QT4Tests.fs" />
-    <Compile Include="EvalTests.fs" />
     <None Include="packages.config" />
     <None Include="App.config" />
+    <Compile Include="EvalConstantsTests.fs" />
+    <Compile Include="EvalUnaryTests.fs" />
+    <Compile Include="EvalLogicTests.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.PowerPack, Version=2.0.0.0, Culture=neutral, PublicKeyToken=a19089b1c74d0809" />

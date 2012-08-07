@@ -65,11 +65,10 @@ module Eval =
                     | ErrorValue(value), _ -> ErrorValue(value)
                     | _ , ErrorValue(value) -> ErrorValue(value)
                     | v1, v2 -> BooleanValue(v1 = v2)
-            | NotEq(e1, e2) ->
-                match (eval cell e1 workbook, eval cell e2 workbook) with
-                    | ErrorValue(value), _ -> ErrorValue(value)
-                    | _ , ErrorValue(value) -> ErrorValue(value)
-                    | v1, v2 -> BooleanValue(v1 <> v2)
+            | NotEq(e1, e2) -> 
+                match eval cell (Eq(e1, e2)) workbook with
+                    | BooleanValue(v) -> BooleanValue(not v)
+                    | v -> v
             | Lt(e1, e2) ->
                 match (eval cell e1 workbook, eval cell e2 workbook) with
                     | ErrorValue(value), _ -> ErrorValue(value)
@@ -83,5 +82,14 @@ module Eval =
                     | BooleanValue(v1), BooleanValue(v2) -> BooleanValue(v1 < v2)
                     | FloatValue(v1), FloatValue(v2) -> BooleanValue(v1 < v2)
                     | StringValue(v1), StringValue(v2) -> BooleanValue(String.Compare(v1, v2, true) < 0)
+            | Lte(e1, e2) -> // swap + lt + not
+                match eval cell (Lt(e2, e1)) workbook with
+                    | BooleanValue(v) -> BooleanValue(not v)
+                    | v -> v
+            | Gt(e1, e2) -> eval cell (Lt(e2, e1)) workbook // swap + lt
+            | Gte(e1, e2) -> // lt + not
+                match eval cell (Lt(e1, e2)) workbook with
+                    | BooleanValue(v) -> BooleanValue(not v)
+                    | v -> v                
             | UnresolvedRef(_) -> failwith "References must be resolved before calling eval"
             | _ -> FloatValue(0.0)
