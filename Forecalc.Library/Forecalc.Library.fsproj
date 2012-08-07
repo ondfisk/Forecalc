@@ -65,7 +65,7 @@
     </FsLex>
     <Compile Include="Parser.fs" />
     <Compile Include="ReferenceResolver.fs" />
-    <Compile Include="QuadTree.fs" />
+    <Compile Include="QT4.fs" />
     <Compile Include="Eval.fs" />
     <None Include="App.config" />
   </ItemGroup>

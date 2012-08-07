@@ -5,7 +5,7 @@ open Ast
 open Forecalc.Library
 
 
-let quadtree = QuadTree.create<int>()
-quadtree.[1512, 6423] <- Some(42)
+let qt4 = QT4.create<int>()
+qt4.[1512, 6423] <- Some(42)
 
-quadtree |> QuadTree.iteri (printfn "%i %i %A")
+qt4 |> QT4.iteri (printfn "%i %i %A")

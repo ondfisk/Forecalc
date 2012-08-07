@@ -1,6 +1,6 @@
 ﻿namespace Forecalc.Library
 
-module QuadTree =
+module QT4 =
 
     let private logw = 4
     let private w = 1 <<< logw
@@ -17,7 +17,7 @@ module QuadTree =
         if r < 0 || r >= sizeh then
             failwithf "r must be between 0 and %i" (sizeh - 1)
 
-    type quadtree<'a> internal() =
+    type qt4<'a> internal() =
         let t0 = Array.zeroCreate<'a option [] option [] option [] option> (w * h)
         with 
             member internal this.Tile0 
@@ -56,7 +56,7 @@ module QuadTree =
                             if t3().IsSome then
                                 let i3 = ((c &&& mw) <<< logh) + (r &&& mh)
                                 t3().Value.[i3] <- v
-            member this.AsEnumerable() =
+            member internal this.AsEnumerable() =
                 seq {
                     for l in t0 do
                         match l with
@@ -82,22 +82,22 @@ module QuadTree =
                 with get() =
                     this.Length = 0
 
-    let create<'a>() = quadtree<'a>()
+    let create<'a>() = qt4<'a>()
 
-    let get (c, r) (quadtree : quadtree<'a>) =
-        quadtree.[c, r]
+    let get (c, r) (qt4 : qt4<'a>) =
+        qt4.[c, r]
         
-    let set (c, r) v (quadtree : quadtree<'a>) =
-        quadtree.[c, r] <- v
+    let set (c, r) v (qt4 : qt4<'a>) =
+        qt4.[c, r] <- v
 
-    let isEmpty (quadtree : quadtree<'a>) =
-        quadtree.IsEmpty
+    let isEmpty (qt4 : qt4<'a>) =
+        qt4.IsEmpty
 
-    let length (quadtree : quadtree<'a>) =
-        quadtree.Length
+    let length (qt4 : qt4<'a>) =
+        qt4.Length
 
-    let apply f (quadtree : quadtree<'a>) =
-        quadtree.Tile0 |> Array.iteri (fun i0 t0 ->
+    let apply f (qt4 : qt4<'a>) =
+        qt4.Tile0 |> Array.iteri (fun i0 t0 ->
             match t0 with
                 | None -> ()
                 | Some(v0) ->
@@ -111,12 +111,12 @@ module QuadTree =
                                         | Some(v2) ->
                                             v2 |> Array.iteri (fun i3 t3 ->
                                                 match t3 with
-                                                    | Some(v) -> quadtree.Tile0.[i0].Value.[i1].Value.[i2].Value.[i3] <- Some(f v)
+                                                    | Some(v) -> qt4.Tile0.[i0].Value.[i1].Value.[i2].Value.[i3] <- Some(f v)
                                                     | None -> ()))))
 
-    let filter f (source : quadtree<'a>) =
+    let filter f (source : qt4<'a>) =
         let l = w * h - 1
-        let target = quadtree<'a>()
+        let target = qt4<'a>()
         for i0 in [ 0 .. l ] do
             let v1 = source.Tile0.[i0]
             let c0 = (i0 >>> logh) <<< (3 * logw)
@@ -149,8 +149,8 @@ module QuadTree =
                                                             target.[c, r] <- Some(t)
         target
 
-    let iter f (quadtree : quadtree<'a>) =
-        for l in quadtree.Tile0 do
+    let iter f (qt4 : qt4<'a>) =
+        for l in qt4.Tile0 do
                 match l with
                     | None -> ()
                     | Some(v) ->
@@ -167,10 +167,10 @@ module QuadTree =
                                                         | None -> ()
                                                         | Some(v) -> f v
                                                                       
-    let iteri f (quadtree : quadtree<'a>) =
+    let iteri f (qt4 : qt4<'a>) =
         let l = w * h - 1
         for i0 in [ 0 .. l ] do
-            let v1 = quadtree.Tile0.[i0]
+            let v1 = qt4.Tile0.[i0]
             let c0 = (i0 >>> logh) <<< (3 * logw)
             let r0 = (i0 &&& mh) <<< (3 * logh)
             match v1 with
@@ -200,9 +200,9 @@ module QuadTree =
                                                         f c r t
 
                                                         
-    let map f (source : quadtree<'a>) =
+    let map f (source : qt4<'a>) =
         let l = w * h - 1
-        let target = quadtree<'b>()
+        let target = qt4<'b>()
         for i0 in [ 0 .. l ] do
             let v1 = source.Tile0.[i0]
             let c0 = (i0 >>> logh) <<< (3 * logw)
@@ -234,9 +234,9 @@ module QuadTree =
                                                         target.[c, r] <- Some(f t)
         target
        
-    let mapi f (source : quadtree<'a>) =
+    let mapi f (source : qt4<'a>) =
         let l = w * h - 1
-        let target = quadtree<'b>()
+        let target = qt4<'b>()
         for i0 in [ 0 .. l ] do
             let v1 = source.Tile0.[i0]
             let c0 = (i0 >>> logh) <<< (3 * logw)
@@ -267,6 +267,9 @@ module QuadTree =
                                                         let r = r0 ||| r1 ||| r2 ||| (i3 &&& mh)
                                                         target.[c, r] <- Some(f c r t)
         target
-                                        
-    let toSeq (quadtree : quadtree<'a>) =
-        quadtree.AsEnumerable()
+          
+    let rebuild (qt4 : qt4<'a>) =
+        qt4 |> map (fun x -> x)
+                                  
+    let toSeq (qt4 : qt4<'a>) =
+        qt4.AsEnumerable()
