@@ -82,3 +82,38 @@ let ``Negate(Error "#NAME?") -> ErrorValue "#NAME?"``() =
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Negate(Error "#NAME?")
     eval cell expr workbook |> should equal (ErrorValue "#NAME?")
+
+[<Test>]
+let ``Eq(String "42", String "42") -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Eq(String "42", String "42")
+    eval cell expr workbook |> should equal (BooleanValue true)
+
+[<Test>]
+let ``Eq(Boolean false, String "42") -> BooleanValue(false)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Eq(Boolean false, String "42")
+    eval cell expr workbook |> should equal (BooleanValue false)
+
+[<Test>]
+let ``Eq(Error("#REF!", String "42") -> ErrorValue("#REF!")``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Eq(Error "#REF!", String "42")
+    eval cell expr workbook |> should equal (ErrorValue "#REF!")
+
+[<Test>]
+let ``Eq(String "42", Error("#REF!") -> ErrorValue("#REF!")``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Eq(String "42", Error "#REF!")
+    eval cell expr workbook |> should equal (ErrorValue "#REF!")
+
+[<Test>]
+let ``Eq(String "42", EscapedString("42") -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Eq(String "42", EscapedString "42")
+    eval cell expr workbook |> should equal (BooleanValue true)
