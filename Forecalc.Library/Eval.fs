@@ -8,6 +8,8 @@ type CellValue =
     | FloatValue of float
     | ErrorValue of string 
 
+and CellContents = { Expr : Expr ; Value : CellValue ; Volatile : bool }
+
 module Eval =
 
     let rec isVolatile expr =
