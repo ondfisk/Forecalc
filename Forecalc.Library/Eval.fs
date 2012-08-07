@@ -136,5 +136,18 @@ module Eval =
                     | FloatValue(v1), BooleanValue(v2) -> FloatValue(v1 * toFloat v2)
                     | BooleanValue(v1), FloatValue(v2) -> FloatValue(toFloat v1 * v2)
                     | BooleanValue(v1), BooleanValue(v2) -> FloatValue(toFloat v1 * toFloat v2)
+            | Div(e1, e2) ->
+                match (eval cell e1 workbook, eval cell e2 workbook) with
+                    | ErrorValue(v), _ -> ErrorValue(v)
+                    | StringValue(v), _ -> valueError
+                    | _, ErrorValue(v) -> ErrorValue(v)
+                    | _, StringValue(v) -> valueError
+                    | FloatValue(v1), FloatValue(0.0) -> divZeroError
+                    | FloatValue(v1), FloatValue(v2) -> FloatValue(v1 / v2)
+                    | FloatValue(v1), BooleanValue(false) -> divZeroError
+                    | FloatValue(v1), BooleanValue(true) -> FloatValue(v1)
+                    | BooleanValue(v1), FloatValue(v2) -> FloatValue(toFloat v1 / v2)
+                    | BooleanValue(v1), BooleanValue(false) -> divZeroError
+                    | BooleanValue(v1), BooleanValue(true) -> FloatValue(toFloat v1)
             | UnresolvedRef(_) -> failwith "References must be resolved before calling eval"
             | _ -> FloatValue(0.0)
