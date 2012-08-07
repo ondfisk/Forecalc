@@ -69,5 +69,18 @@ module Eval =
                     | ErrorValue(value), _ -> ErrorValue(value)
                     | _ , ErrorValue(value) -> ErrorValue(value)
                     | v1, v2 -> BooleanValue(v1 <> v2)
+            | Lt(e1, e2) ->
+                match (eval cell e1 workbook, eval cell e2 workbook) with
+                    | ErrorValue(value), _ -> ErrorValue(value)
+                    | _ , ErrorValue(value) -> ErrorValue(value)
+                    | StringValue(_), BooleanValue(_) -> BooleanValue(true)
+                    | BooleanValue(_), StringValue(_) -> BooleanValue(false)
+                    | FloatValue(_), StringValue(_) -> BooleanValue(true)
+                    | StringValue(_), FloatValue(_) -> BooleanValue(false)
+                    | FloatValue(_), BooleanValue(_) -> BooleanValue(true)
+                    | BooleanValue(_), FloatValue(_) -> BooleanValue(false)
+                    | BooleanValue(v1), BooleanValue(v2) -> BooleanValue(v1 < v2)
+                    | FloatValue(v1), FloatValue(v2) -> BooleanValue(v1 < v2)
+                    | StringValue(v1), StringValue(v2) -> failwith "i dunno"
             | UnresolvedRef(_) -> failwith "References must be resolved before calling eval"
             | _ -> FloatValue(0.0)
