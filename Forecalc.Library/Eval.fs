@@ -16,7 +16,7 @@ module Eval =
     let valueError = ErrorValue("#VALUE!")
     let nameError = ErrorValue("#NAME?")
     let refError = ErrorValue("#REF!")
-    let divError = ErrorValue("#DIV/0!")
+    let divZeroError = ErrorValue("#DIV/0!")
 
     let rec isVolatile expr =
         let isVolatileFun = function
@@ -47,29 +47,33 @@ module Eval =
             | Ref(_) -> true
 
     let toString = function
-        | StringValue(value) -> value
-        | BooleanValue(value) -> value.ToString().ToUpper()
-        | FloatValue(value) -> value.ToString()
-        | ErrorValue(value) -> value
+        | StringValue(v) -> v
+        | BooleanValue(v) -> v.ToString().ToUpper()
+        | FloatValue(v) -> v.ToString()
+        | ErrorValue(v) -> v
+
+    let toFloat = function
+        | true -> 1.0
+        | false -> 0.0
 
     let rec eval (cell : AbsCell) (expr : Expr) (workbook : QT4.qt4<CellContent>) =
         match expr with
-            | Float(value) -> FloatValue(value)
-            | Boolean(value) -> BooleanValue(value)
-            | String(value) -> StringValue(value)
-            | EscapedString(value) -> StringValue(value)
-            | Error(value) -> ErrorValue(value)
+            | Float(v) -> FloatValue(v)
+            | Boolean(v) -> BooleanValue(v)
+            | String(v) -> StringValue(v)
+            | EscapedString(v) -> StringValue(v)
+            | Error(v) -> ErrorValue(v)
             | Negate(e) -> 
                 match eval cell e workbook with
-                    | FloatValue(value) -> FloatValue(value * -1.0)
+                    | FloatValue(v) -> FloatValue(v * -1.0)
                     | BooleanValue(true) -> FloatValue(-1.0)
                     | BooleanValue(false) -> FloatValue(0.0)
                     | StringValue(_) -> valueError
-                    | ErrorValue(value) -> ErrorValue(value)
+                    | ErrorValue(v) -> ErrorValue(v)
             | Eq(e1, e2) -> 
                 match (eval cell e1 workbook, eval cell e2 workbook) with
-                    | ErrorValue(value), _ -> ErrorValue(value)
-                    | _ , ErrorValue(value) -> ErrorValue(value)
+                    | ErrorValue(v), _ -> ErrorValue(v)
+                    | _ , ErrorValue(v) -> ErrorValue(v)
                     | v1, v2 -> BooleanValue(v1 = v2)
             | NotEq(e1, e2) -> 
                 match eval cell (Eq(e1, e2)) workbook with
@@ -77,8 +81,8 @@ module Eval =
                     | v -> v
             | Lt(e1, e2) ->
                 match (eval cell e1 workbook, eval cell e2 workbook) with
-                    | ErrorValue(value), _ -> ErrorValue(value)
-                    | _ , ErrorValue(value) -> ErrorValue(value)
+                    | ErrorValue(v), _ -> ErrorValue(v)
+                    | _, ErrorValue(v) -> ErrorValue(v)
                     | StringValue(_), BooleanValue(_) -> BooleanValue(true)  // string < bool
                     | BooleanValue(_), StringValue(_) -> BooleanValue(false)
                     | FloatValue(_), StringValue(_) -> BooleanValue(true)    // float < string
@@ -99,8 +103,28 @@ module Eval =
                     | v -> v       
             | Concat(e1, e2) ->
                 match (eval cell e1 workbook, eval cell e2 workbook) with
-                    | ErrorValue(value), _ -> ErrorValue(value)
-                    | _ , ErrorValue(value) -> ErrorValue(value)
+                    | ErrorValue(v), _ -> ErrorValue(v)
+                    | _, ErrorValue(v) -> ErrorValue(v)
                     | v1, v2 -> StringValue(String.Concat(toString v1, toString v2))
+            | Add(e1, e2) ->
+                match (eval cell e1 workbook, eval cell e2 workbook) with
+                    | ErrorValue(v), _ -> ErrorValue(v)
+                    | StringValue(v), _ -> valueError
+                    | _, ErrorValue(v) -> ErrorValue(v)
+                    | _, StringValue(v) -> valueError
+                    | FloatValue(v1), FloatValue(v2) -> FloatValue(v1 + v2)
+                    | FloatValue(v1), BooleanValue(v2) -> FloatValue(v1 + toFloat v2)
+                    | BooleanValue(v1), FloatValue(v2) -> FloatValue(toFloat v1 + v2)
+                    | BooleanValue(v1), BooleanValue(v2) -> FloatValue(toFloat v1 + toFloat v2)
+            | Sub(e1, e2) ->
+                match (eval cell e1 workbook, eval cell e2 workbook) with
+                    | ErrorValue(v), _ -> ErrorValue(v)
+                    | StringValue(v), _ -> valueError
+                    | _, ErrorValue(v) -> ErrorValue(v)
+                    | _, StringValue(v) -> valueError
+                    | FloatValue(v1), FloatValue(v2) -> FloatValue(v1 - v2)
+                    | FloatValue(v1), BooleanValue(v2) -> FloatValue(v1 - toFloat v2)
+                    | BooleanValue(v1), FloatValue(v2) -> FloatValue(toFloat v1 - v2)
+                    | BooleanValue(v1), BooleanValue(v2) -> FloatValue(toFloat v1 - toFloat v2)
             | UnresolvedRef(_) -> failwith "References must be resolved before calling eval"
             | _ -> FloatValue(0.0)
