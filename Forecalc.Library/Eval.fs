@@ -12,6 +12,11 @@ and CellContent = { Expr : Expr ; Value : CellValue ; Volatile : bool }
 
 module Eval =
 
+    let valueError = ErrorValue("#VALUE!")
+    let nameError = ErrorValue("#NAME?")
+    let refError = ErrorValue("#REF!")
+    let divError = ErrorValue("#DIV/0!")
+
     let rec isVolatile expr =
         let isVolatileFun = function
             | "NOW"
@@ -44,4 +49,15 @@ module Eval =
         match expr with
             | Float(value) -> FloatValue(value)
             | Boolean(value) -> BooleanValue(value)
-            | _ -> failwith "Not implemented"
+            | String(value) -> StringValue(value)
+            | EscapedString(value) -> StringValue(value)
+            | Error(value) -> ErrorValue(value)
+            | Negate(e) -> 
+                match eval cell e workbook with
+                    | FloatValue(value) -> FloatValue(value * -1.0)
+                    | BooleanValue(true) -> FloatValue(-1.0)
+                    | BooleanValue(false) -> FloatValue(0.0)
+                    | StringValue(_) -> valueError
+                    | ErrorValue(value) -> ErrorValue(value)
+            | UnresolvedRef(_) -> failwith "References must be resolved before calling eval"
+            | _ -> FloatValue(0.0)
