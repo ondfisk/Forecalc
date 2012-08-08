@@ -9,6 +9,7 @@ type CellValue =
     | FloatValue of float
     | ErrorValue of string 
     | NullValue
+    | ValueList of CellValue list
 
 and CellContent = { Expr : Expr ; Value : CellValue ; Volatile : bool }
 
@@ -46,6 +47,7 @@ module Eval =
             | Pow(e1, e2) -> isVolatile e1 || isVolatile e2
             | UnresolvedRef(ref) -> false
             | Fun(name, list) -> isVolatileFun name || List.exists isVolatile list
+            | Null -> false
             | Ref(_) -> true
 
     let toString = function
@@ -54,6 +56,7 @@ module Eval =
         | FloatValue(v) -> v.ToString()
         | NullValue -> String.Empty
         | ErrorValue(v) -> v
+        | ValueList(_) -> "#VALUE!"
 
     let toFloat = function
         | true -> 1.0
@@ -63,19 +66,18 @@ module Eval =
         if ref.Sheet.IsSome then failwith "Sheet references are currently not supported"
         let c = 
             match ref.ColAbs with
-                | true -> ref.Col - 1
-                | false -> cell.Col + ref.Col - 1
+                | true -> ref.Col
+                | false -> cell.Col + ref.Col
         let r = 
             match ref.RowAbs with
-                | true -> ref.Row - 1
-                | false -> cell.Row + ref.Row - 1
+                | true -> ref.Row
+                | false -> cell.Row + ref.Row
         try
-            match workbook.[c, r] with
+            match workbook.[c - 1, r - 1] with
                 | None -> NullValue
                 | Some(v) -> v.Value
         with
             | ex -> ErrorValue("#REF!")
-
 
     let rec eval (cell : AbsCell) (expr : Expr) (workbook : QT4.qt4<CellContent>) =
         match expr with
@@ -92,6 +94,7 @@ module Eval =
                     | NullValue -> FloatValue(0.0)
                     | StringValue(_) -> valueError
                     | ErrorValue(v) -> ErrorValue(v)
+                    //| ValueList(_) -> valueError
             | Eq(e1, e2) -> 
                 match (eval cell e1 workbook, eval cell e2 workbook) with
                     | ErrorValue(v), _ -> ErrorValue(v)

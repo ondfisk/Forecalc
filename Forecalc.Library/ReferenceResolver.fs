@@ -24,31 +24,63 @@ module ReferenceResolver =
 
     let resolveA1 cell ref =
         match groups regexA1 ref with
-            | [ "" ; col ; "" ; row ] -> { Sheet = Option.None ; Row = int row - cell.Row ; RowAbs = false ; Col = columnFromAlpha col - cell.Col ; ColAbs = false }
-            | [ "$" ; col ; "" ; row ] -> { Sheet = Option.None ; Row = int row - cell.Row ; RowAbs = false ; Col = columnFromAlpha col ; ColAbs = true }
-            | [ "" ; col ; "$" ; row ] -> { Sheet = Option.None ; Row = int row ; RowAbs = true ; Col = columnFromAlpha col - cell.Col ; ColAbs = false }
-            | [ "$" ; col ; "$" ; row ] -> { Sheet = Option.None ; Row = int row ; RowAbs = true ; Col = columnFromAlpha col ; ColAbs = true }
+            | [ "" ; col ; "" ; row ] -> { Sheet = None ; Row = int row - cell.Row ; RowAbs = false ; Col = columnFromAlpha col - cell.Col ; ColAbs = false }
+            | [ "$" ; col ; "" ; row ] -> { Sheet = None ; Row = int row - cell.Row ; RowAbs = false ; Col = columnFromAlpha col ; ColAbs = true }
+            | [ "" ; col ; "$" ; row ] -> { Sheet = None ; Row = int row ; RowAbs = true ; Col = columnFromAlpha col - cell.Col ; ColAbs = false }
+            | [ "$" ; col ; "$" ; row ] -> { Sheet = None ; Row = int row ; RowAbs = true ; Col = columnFromAlpha col ; ColAbs = true }
             | _ -> failwith "Invalid ref format"
 
     let resolveR1C1 ref =
         let parseInt = Int32.TryParse >> snd
         match groups regexR1C1 ref with
-            | [ "[" ; row ; "]" ; "[" ; col ; "]" ] -> { Sheet = Option.None ; Row = parseInt row ; RowAbs = false ; Col = parseInt col ; ColAbs = false }
-            | [ "" ; row ; "" ; "[" ; col ; "]" ] -> { Sheet = Option.None ; Row = parseInt row ; RowAbs = parseInt row <> 0 ; Col = parseInt col ; ColAbs = false }
-            | [ "[" ; row ; "]" ; "" ; col ; "" ] -> { Sheet = Option.None ; Row = parseInt row ; RowAbs = false ; Col = parseInt col ; ColAbs = parseInt col <> 0 }
-            | [ "" ; row ; "" ; "" ; col ; "" ] -> { Sheet = Option.None ; Row = parseInt row ; RowAbs = parseInt row <> 0 ; Col = parseInt col ; ColAbs = parseInt col <> 0 }
+            | [ "[" ; row ; "]" ; "[" ; col ; "]" ] -> { Sheet = None ; Row = parseInt row ; RowAbs = false ; Col = parseInt col ; ColAbs = false }
+            | [ "" ; row ; "" ; "[" ; col ; "]" ] -> { Sheet = None ; Row = parseInt row ; RowAbs = parseInt row <> 0 ; Col = parseInt col ; ColAbs = false }
+            | [ "[" ; row ; "]" ; "" ; col ; "" ] -> { Sheet = None ; Row = parseInt row ; RowAbs = false ; Col = parseInt col ; ColAbs = parseInt col <> 0 }
+            | [ "" ; row ; "" ; "" ; col ; "" ] -> { Sheet = None ; Row = parseInt row ; RowAbs = parseInt row <> 0 ; Col = parseInt col ; ColAbs = parseInt col <> 0 }
             | _ -> failwith "Invalid ref format"
         
+    let flipRangeWhenRequired (cell : AbsCell) ref =
+        match ref with
+            | Cell(_) -> ref
+            | Range(range) -> 
+                let (r1, c1) = (
+                    match range.TopLeft.RowAbs with
+                        | true -> range.TopLeft.Row
+                        | false -> cell.Row + range.TopLeft.Row
+                    ,
+                    match range.TopLeft.ColAbs with
+                        | true -> range.TopLeft.Col
+                        | false -> cell.Col + range.TopLeft.Col
+                    )
+                let (r2, c2) = (
+                    match range.BottomRight.RowAbs with
+                        | true -> range.BottomRight.Row
+                        | false -> cell.Row + range.BottomRight.Row             
+                    ,
+                    match range.BottomRight.ColAbs with
+                        | true -> range.BottomRight.Col
+                        | false -> cell.Col + range.BottomRight.Col
+                    )
+                let r1abs = if min r1 r2 = r1 then range.TopLeft.RowAbs else range.BottomRight.RowAbs
+                let c1abs = if min c1 c2 = c1 then range.TopLeft.ColAbs else range.BottomRight.ColAbs
+                let r2abs = if max r1 r2 = r1 then range.TopLeft.RowAbs else range.BottomRight.RowAbs
+                let c2abs = if max c1 c2 = c1 then range.TopLeft.ColAbs else range.BottomRight.ColAbs
+                Range({ Sheet = range.Sheet ; 
+                    TopLeft = { Sheet = range.Sheet ; Row = min r1 r2 ; RowAbs = r1abs ; Col = min c1 c2 ; ColAbs = c1abs } ;
+                    BottomRight = { Sheet = range.Sheet ; Row = max r1 r2 ; RowAbs = r2abs ; Col = max c1 c2 ; ColAbs = c2abs } })
+
+                
+
     let resolveRef cell ref =
         match ref with
             | A1Cell(value) -> Cell(resolveA1 cell value)
-            | A1Range(topLeft, bottomRight) -> Range({ Sheet = Option.None ; TopLeft = resolveA1 cell topLeft ; BottomRight = resolveA1 cell bottomRight })
+            | A1Range(topLeft, bottomRight) -> Range({ Sheet = None ; TopLeft = resolveA1 cell topLeft ; BottomRight = resolveA1 cell bottomRight }) //|> flipRangeWhenRequired cell
             | A1SheetRef(sheet, value) -> Cell({ resolveA1 cell value with Sheet = Some sheet })
-            | A1SheetRange(sheet, topLeft, bottomRight) -> Range({ Sheet = Some sheet ; TopLeft = { resolveA1 cell topLeft with Sheet = Some sheet } ; BottomRight = { resolveA1 cell bottomRight with Sheet = Some sheet } } )
+            | A1SheetRange(sheet, topLeft, bottomRight) -> Range({ Sheet = Some sheet ; TopLeft = { resolveA1 cell topLeft with Sheet = Some sheet } ; BottomRight = { resolveA1 cell bottomRight with Sheet = Some sheet } } ) //|> flipRangeWhenRequired cell
             | R1C1Cell(value) -> Cell(resolveR1C1 value)
-            | R1C1Range(topLeft, bottomRight) -> Range({ Sheet = Option.None ; TopLeft = resolveR1C1 topLeft ; BottomRight = resolveR1C1 bottomRight })
+            | R1C1Range(topLeft, bottomRight) -> Range({ Sheet = None ; TopLeft = resolveR1C1 topLeft ; BottomRight = resolveR1C1 bottomRight }) //|> flipRangeWhenRequired cell
             | R1C1SheetRef(sheet, value) -> Cell({ resolveR1C1 value with Sheet = Some sheet })
-            | R1C1SheetRange(sheet, topLeft, bottomRight) -> Range({ Sheet = Some sheet ; TopLeft = { resolveR1C1 topLeft with Sheet = Some sheet } ; BottomRight = { resolveR1C1 bottomRight with Sheet = Some sheet } })
+            | R1C1SheetRange(sheet, topLeft, bottomRight) -> Range({ Sheet = Some sheet ; TopLeft = { resolveR1C1 topLeft with Sheet = Some sheet } ; BottomRight = { resolveR1C1 bottomRight with Sheet = Some sheet } }) //|> flipRangeWhenRequired cell
             
     let rec resolveRefs cell expr =
         match expr with

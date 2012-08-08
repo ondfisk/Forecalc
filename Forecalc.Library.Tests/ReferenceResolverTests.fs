@@ -62,12 +62,28 @@ let ``A1:B2 -> { TopLeft = { Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = fal
     A1Range("A1", "B2") |> resolveRef cell |> should equal (Range({ Sheet = Option.None ; TopLeft = { Sheet = Option.None ; Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } ; BottomRight = { Sheet = Option.None ; Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false } }))
         
 [<Test>]
+let ``B2:A1 -> { TopLeft = { Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } ; BottomRight = { Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false }``() =
+    A1Range("B2", "A1") |> resolveRef cell |> should equal (Range({ Sheet = Option.None ; TopLeft = { Sheet = Option.None ; Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } ; BottomRight = { Sheet = Option.None ; Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false } }))
+      
+[<Test>]
+let ``A2:B1 -> { TopLeft = { Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } ; BottomRight = { Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false }``() =
+    A1Range("A2", "B1") |> resolveRef cell |> should equal (Range({ Sheet = Option.None ; TopLeft = { Sheet = Option.None ; Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } ; BottomRight = { Sheet = Option.None ; Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false } }))
+
+[<Test>]
+let ``B1:A2 -> { TopLeft = { Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } ; BottomRight = { Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false }``() =
+    A1Range("B1", "A2") |> resolveRef cell |> should equal (Range({ Sheet = Option.None ; TopLeft = { Sheet = Option.None ; Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } ; BottomRight = { Sheet = Option.None ; Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false } }))
+              
+[<Test>]
 let ``Sheet2!A1 -> { Sheet = "Sheet2" ;  Cell = { Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } }``() =
     A1SheetRef("Sheet2", "A1") |> resolveRef cell |> should equal (Cell({ Sheet = Some "Sheet2" ; Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false }))
 
 [<Test>]
 let ``Sheet2!A1:B2 -> { Sheet = "Sheet2" ; TopLeft = { Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } ; BottomRight = { Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false } }``() =
     A1SheetRange("Sheet2", "A1", "B2") |> resolveRef cell |> should equal (Range({ Sheet = Some "Sheet2" ; TopLeft = { Sheet = Some "Sheet2" ; Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } ; BottomRight = { Sheet = Some "Sheet2" ; Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false } }))
+    
+[<Test>]
+let ``Sheet2!B2:A1 -> { Sheet = "Sheet2" ; TopLeft = { Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } ; BottomRight = { Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false } }``() =
+    A1SheetRange("Sheet2", "B2", "A1") |> resolveRef cell |> should equal (Range({ Sheet = Some "Sheet2" ; TopLeft = { Sheet = Some "Sheet2" ; Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } ; BottomRight = { Sheet = Some "Sheet2" ; Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false } }))
     
 [<Test>]
 let ``A1Cell(R1C1) -> fail``() =
@@ -102,12 +118,20 @@ let ``R[-2]C[-2]:R[-1]C[-1] -> { TopLeft = { Row = -2 ; RowAbs = false ; Col = -
     R1C1Range("R[-2]C[-2]", "R[-1]C[-1]") |> resolveRef cell |> should equal (Range({ Sheet = Option.None ;  TopLeft = { Sheet = Option.None ; Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } ; BottomRight = { Sheet = Option.None ; Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false } }))
         
 [<Test>]
+let ``R[-1]C[-1]:R[-2]C[-2] -> { TopLeft = { Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } ; BottomRight = { Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false } }``() =
+    R1C1Range("R[-1]C[-1]", "R[-2]C[-2]") |> resolveRef cell |> should equal (Range({ Sheet = Option.None ;  TopLeft = { Sheet = Option.None ; Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } ; BottomRight = { Sheet = Option.None ; Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false } }))
+        
+[<Test>]
 let ``Sheet2!R1C1 -> { Sheet = "Sheet2" ; Cell = { Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true } }``() =
     R1C1SheetRef("Sheet2", "R1C1") |> resolveRef cell |> should equal (Cell({ Sheet = Some "Sheet2" ; Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }))
 
 [<Test>]
 let ``Sheet2!R[-2]C[-2]:R[-1]C[-1] -> { Sheet = "Sheet2" ; TopLeft = { Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } ; BottomRight = { Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false } }``() =
     R1C1SheetRange("Sheet2", "R[-2]C[-2]", "R[-1]C[-1]") |> resolveRef cell |> should equal (Range({ Sheet = Some "Sheet2" ; TopLeft = { Sheet = Some "Sheet2" ; Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } ; BottomRight = { Sheet = Some "Sheet2" ; Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false } }))
+
+[<Test>]
+let ``Sheet2!R[-1]C[-1]:R[-2]C[-2] -> { Sheet = "Sheet2" ; TopLeft = { Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } ; BottomRight = { Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false } }``() =
+    R1C1SheetRange("Sheet2", "R[-1]C[-1]", "R[-2]C[-2]") |> resolveRef cell |> should equal (Range({ Sheet = Some "Sheet2" ; TopLeft = { Sheet = Some "Sheet2" ; Row = -2 ; RowAbs = false ; Col = -2 ; ColAbs = false } ; BottomRight = { Sheet = Some "Sheet2" ; Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false } }))
 
 [<Test>]
 let ``R1C1Cell(A1) -> fail``() =
