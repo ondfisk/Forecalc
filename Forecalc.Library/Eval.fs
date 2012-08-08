@@ -20,6 +20,7 @@ module Eval =
     let nameError = ErrorValue("#NAME?")
     let nullError = ErrorValue("#NULL!")
     let numberError = ErrorValue("#NUM!")
+    let parseError = ErrorValue("#PARSE!")
     let refError = ErrorValue("#REF!")
     let valueError = ErrorValue("#VALUE!")
     
