@@ -4,7 +4,18 @@ open System
 open Forecalc.Library
 open Forecalc.Library.Ast
 
+type Types =
+    | A
+    | B
+    | C
+    | List of Types list
 
-let res = Parser.parse "=B1:A2" |> ReferenceResolver.resolveRefs { Sheet = "Sheet1" ; Col = 1 ; Row = 1 }
+let list = [ A ; B ; List([ A ; B ; C ]) ]
 
-printfn "%A" res
+let res = 
+    list 
+    |> List.collect (fun l -> match l with | List(t) -> t | _ -> [l])
+    
+printfn "List: %A" list 
+printfn "Result: %A" res 
+

@@ -307,4 +307,31 @@ module Eval =
                             | StringValue(_) -> ErrorValue("#VALUE!")
                             | ErrorValue(v) -> ErrorValue(v)
                     | _ -> ErrorValue("#PARSE!")
+            | "SUM" ->
+                match list with
+                    | [] -> ErrorValue("#PARSE!")
+                    | _ ->
+                        let refs = 
+                            list 
+                                |> List.filter (fun e -> match e with | Ref(ex) -> true | _ -> false)
+                                |> List.map (fun e -> eval cell e workbook)
+                                |> List.collect (fun e -> match e with | ValueList(l) -> l | _ -> [e])
+                                |> List.filter (fun e -> match e with | BooleanValue(_) | FloatValue(_) | ErrorValue(_) -> true | _ -> false)
+                        let vals = 
+                            list 
+                                |> List.filter (fun e -> match e with | Ref(ex) -> false | _ -> true)
+                                |> List.map (fun e -> eval cell e workbook)
+                        let all = List.append refs vals
+                        let error = all |> List.tryFind (fun v -> match v with | ErrorValue(_) -> true | _ -> false)
+                        match error with
+                            | Some(e) -> e
+                            | None ->
+                                let str = all |> List.tryFind (fun v -> match v with | StringValue(_) -> true | _ -> false)
+                                match str with
+                                    | Some(s) -> ErrorValue("#VALUE!")
+                                    | None ->
+                                        all 
+                                            |> List.map (fun v -> match v with | BooleanValue(b) -> toFloat b | FloatValue(f) -> f | _ -> 0.0)
+                                            |> List.sum
+                                            |> FloatValue
             | _ -> ErrorValue("#PARSE!")
