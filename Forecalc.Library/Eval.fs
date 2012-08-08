@@ -75,12 +75,15 @@ module Eval =
             match ref.RowAbs with
                 | true -> ref.Row
                 | false -> cell.Row + ref.Row
-        try
-            match workbook.[c - 1, r - 1] with
-                | None -> NullValue
-                | Some(v) -> v.Value
-        with
-            | ex -> ErrorValue("#REF!")
+        if cell.Col = c && cell.Row = r then
+            ErrorValue("#REF!")
+        else
+            try
+                match workbook.[c - 1, r - 1] with
+                    | None -> NullValue
+                    | Some(v) -> v.Value
+            with
+                | ex -> ErrorValue("#REF!")
 
     let cellRange (cell : AbsCell) (ref : Range) (workbook : QT4.qt4<CellContent>) =
         if ref.Sheet.IsSome then failwith "Sheet references are currently not supported"
@@ -100,15 +103,18 @@ module Eval =
             match ref.BottomRight.RowAbs with
                 | true -> ref.BottomRight.Row
                 | false -> cell.Row + ref.BottomRight.Row
-        try
-            workbook 
-                |> QT4.filteri (fun c r v -> c >= c1 - 1 && c < c2 && r >= r1 - 1 && r < r2)
-                |> QT4.toSeq
-                |> Seq.map (fun x -> x.Value)
-                |> Seq.toList
-                |> ValueList
-        with
-            | ex -> ErrorValue("#REF!")
+        if cell.Col >= c1 && cell.Col <= c2 && cell.Row >= r1 && cell.Row <= r2 then
+            ErrorValue("#REF!")
+        else
+            try
+                workbook 
+                    |> QT4.filteri (fun c r v -> c >= c1 - 1 && c < c2 && r >= r1 - 1 && r < r2)
+                    |> QT4.toSeq
+                    |> Seq.map (fun x -> x.Value)
+                    |> Seq.toList
+                    |> ValueList
+            with
+                | ex -> ErrorValue("#REF!")
 
     let rec eval (cell : AbsCell) (expr : Expr) (workbook : QT4.qt4<CellContent>) =
         match expr with
