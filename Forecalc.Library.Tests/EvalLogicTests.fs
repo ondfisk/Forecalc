@@ -42,6 +42,27 @@ let ``Eq(String "42", EscapedString("42") -> BooleanValue(true)``() =
     eval cell expr workbook |> should equal (BooleanValue true)
 
 [<Test>]
+let ``Eq(Null, String "42") -> BooleanValue(false)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Eq(Null, String "42")
+    eval cell expr workbook |> should equal (BooleanValue false)
+
+[<Test>]
+let ``Eq(String "42", Null) -> BooleanValue(false)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Eq(String "42", Null)
+    eval cell expr workbook |> should equal (BooleanValue false)
+
+[<Test>]
+let ``Eq(Null, Null) -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Eq(Null, Null)
+    eval cell expr workbook |> should equal (BooleanValue true)
+
+[<Test>]
 let ``NotEq(String "42", String "42") -> BooleanValue(false)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
@@ -74,6 +95,27 @@ let ``NotEq(String "42", EscapedString("42") -> BooleanValue(false)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = NotEq(String "42", EscapedString "42")
+    eval cell expr workbook |> should equal (BooleanValue false)
+
+[<Test>]
+let ``NotEq(Null, String "42") -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = NotEq(Null, String "42")
+    eval cell expr workbook |> should equal (BooleanValue true)
+
+[<Test>]
+let ``NotEq(String "42", Null) -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = NotEq(String "42", Null)
+    eval cell expr workbook |> should equal (BooleanValue true)
+
+[<Test>]
+let ``NotEq(Null, Null) -> BooleanValue(false)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Eq(Null, Null)
     eval cell expr workbook |> should equal (BooleanValue false)
 
 [<Test>]
