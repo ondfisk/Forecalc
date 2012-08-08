@@ -87,6 +87,13 @@ module Eval =
                 match (eval cell e1 workbook, eval cell e2 workbook) with
                     | ErrorValue(v), _ -> ErrorValue(v)
                     | _ , ErrorValue(v) -> ErrorValue(v)
+                    | StringValue(v1), StringValue(v2) -> BooleanValue(String.Compare(v1, v2, true) = 0)
+                    | StringValue(""), NullValue -> BooleanValue(true)
+                    | NullValue, StringValue("") -> BooleanValue(true)                    
+                    | FloatValue(0.0), NullValue -> BooleanValue(true)
+                    | NullValue, FloatValue(0.0) -> BooleanValue(true)                    
+                    | BooleanValue(v), NullValue -> BooleanValue(v = false)
+                    | NullValue, BooleanValue(v) -> BooleanValue(false = v)
                     | v1, v2 -> BooleanValue(v1 = v2)
             | NotEq(e1, e2) -> 
                 match eval cell (Eq(e1, e2)) workbook with
