@@ -299,11 +299,12 @@ module Eval =
                 match list with
                     | [ e1 ; e2 ; e3 ] ->
                         match eval cell e1 workbook with
-                            | BooleanValue(true) -> eval cell e2 workbook
                             | NullValue
+                            | FloatValue(0.0) 
                             | BooleanValue(false) -> eval cell e3 workbook
+                            | FloatValue(_)
+                            | BooleanValue(true) -> eval cell e2 workbook
                             | ValueList(_)
-                            | FloatValue(_) 
                             | StringValue(_) -> ErrorValue("#VALUE!")
                             | ErrorValue(v) -> ErrorValue(v)
                     | _ -> ErrorValue("#PARSE!")

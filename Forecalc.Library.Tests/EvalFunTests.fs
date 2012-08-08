@@ -49,6 +49,20 @@ let ``IF(null, null, 42.0) -> FloatValue(42.0)``() =
     eval cell expr workbook |> should equal (FloatValue 42.0)
 
 [<Test>]
+let ``IF(0.0, null, 42.0) -> FloatValue(42.0)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Fun("IF", [ Float 0.0 ; Null ; Float 42.0 ])
+    eval cell expr workbook |> should equal (FloatValue 42.0)
+
+[<Test>]
+let ``IF(1.0, 42.0, null) -> FloatValue(42.0)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Fun("IF", [ Float 1.0 ; Float 42.0 ; Null ])
+    eval cell expr workbook |> should equal (FloatValue 42.0)
+
+[<Test>]
 let ``SUM() -> #PARSE!``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
