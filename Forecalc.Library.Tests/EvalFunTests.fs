@@ -103,3 +103,47 @@ let ``SUM(B1) -> ErrorValue("#DIV/0!")``() =
     let expr = Fun("SUM", [Ref(Cell({ Sheet = None ; Col = 1 ; ColAbs = false ; Row = 0 ; RowAbs = false }))])
     eval cell expr workbook |> should equal (ErrorValue "#DIV/0!")
 
+[<Test>]
+let ``COUNT() -> #PARSE!``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Fun("COUNT", [])
+    eval cell expr workbook |> should equal (ErrorValue "#PARSE!")
+
+[<Test>]
+let ``COUNT(42.0, true) -> FloatValue(1)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Fun("COUNT", [ Float 42.0 ; Boolean true ])
+    eval cell expr workbook |> should equal (FloatValue 1.0)
+
+[<Test>]
+let ``COUNT("#NUM!) -> FloatValue(0.0)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Fun("COUNT", [ Error "#NUM!" ])
+    eval cell expr workbook |> should equal (FloatValue 0.0)
+
+[<Test>]
+let ``COUNT(B1:B5) -> FloatValue(2.0)``() =
+    let workbook = QT4.create<CellContent>()
+    workbook.[1, 0] <- Some({ Expr = Float 40.0 ; Value = FloatValue 40.0 ; Volatile = false })
+    workbook.[1, 1] <- Some({ Expr = String "Zero" ; Value = StringValue "Zero" ; Volatile = false })
+    workbook.[1, 2] <- Some({ Expr = Boolean true ; Value = BooleanValue true ; Volatile = false })
+    workbook.[1, 3] <- Some({ Expr = Float 1.0 ; Value = FloatValue 1.0 ; Volatile = false })
+    workbook.[1, 4] <- Some({ Expr = Null ; Value = NullValue ; Volatile = false })
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Fun("COUNT", [Ref(Range({ Sheet = None ; TopLeft = { Sheet = None ;  Col = 1 ; ColAbs = false ; Row = 0 ; RowAbs = false } ; BottomRight = { Sheet = None ; Col = 1 ; ColAbs = false ; Row = 4 ; RowAbs = false } } ))])
+    eval cell expr workbook |> should equal (FloatValue 2.0)
+
+[<Test>]
+let ``COUNT(B1:B5) -> FloatValue(3.0)``() =
+    let workbook = QT4.create<CellContent>()
+    workbook.[1, 0] <- Some({ Expr = Float 40.0 ; Value = FloatValue 40.0 ; Volatile = false })
+    workbook.[1, 1] <- Some({ Expr = Float 1.0 ; Value = FloatValue 1.0 ; Volatile = false })
+    workbook.[1, 2] <- Some({ Expr = Boolean true ; Value = BooleanValue true ; Volatile = false })
+    workbook.[1, 3] <- Some({ Expr = Float 1.0 ; Value = FloatValue 1.0 ; Volatile = false })
+    workbook.[1, 4] <- Some({ Expr = Error "#NUM!" ; Value = ErrorValue "#NUM!" ; Volatile = false })
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Fun("COUNT", [Ref(Range({ Sheet = None ; TopLeft = { Sheet = None ;  Col = 1 ; ColAbs = false ; Row = 0 ; RowAbs = false } ; BottomRight = { Sheet = None ; Col = 1 ; ColAbs = false ; Row = 4 ; RowAbs = false } } ))])
+    eval cell expr workbook |> should equal (FloatValue 3.0)

@@ -334,4 +334,15 @@ module Eval =
                                             |> List.map (fun v -> match v with | BooleanValue(b) -> toFloat b | FloatValue(f) -> f | _ -> 0.0)
                                             |> List.sum
                                             |> FloatValue
+            | "COUNT" ->
+                match list with
+                    | [] -> ErrorValue("#PARSE!")
+                    | _ ->
+                        list 
+                            |> List.map (fun e -> eval cell e workbook)
+                            |> List.collect (fun e -> match e with | ValueList(l) -> l | _ -> [e])
+                            |> List.filter (fun e -> match e with | FloatValue(_) -> true | _ -> false)
+                            |> List.length
+                            |> float
+                            |> FloatValue
             | _ -> ErrorValue("#PARSE!")
