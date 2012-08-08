@@ -79,6 +79,34 @@ module Eval =
         with
             | ex -> ErrorValue("#REF!")
 
+    let cellRange (cell : AbsCell) (ref : Range) (workbook : QT4.qt4<CellContent>) =
+        if ref.Sheet.IsSome then failwith "Sheet references are currently not supported"
+        let c1 = 
+            match ref.TopLeft.ColAbs with
+                | true -> ref.TopLeft.Col
+                | false -> cell.Col + ref.TopLeft.Col
+        let r1 = 
+            match ref.TopLeft.RowAbs with
+                | true -> ref.TopLeft.Row
+                | false -> cell.Row + ref.TopLeft.Row
+        let c2 = 
+            match ref.BottomRight.ColAbs with
+                | true -> ref.BottomRight.Col
+                | false -> cell.Col + ref.BottomRight.Col
+        let r2 = 
+            match ref.BottomRight.RowAbs with
+                | true -> ref.BottomRight.Row
+                | false -> cell.Row + ref.BottomRight.Row
+        try
+            workbook 
+                |> QT4.filteri (fun c r v -> c >= c1 - 1 && c < c2 && r >= r1 - 1 && r < r2)
+                |> QT4.toSeq
+                |> Seq.map (fun x -> x.Value)
+                |> Seq.toList
+                |> ValueList
+        with
+            | ex -> ErrorValue("#REF!")
+
     let rec eval (cell : AbsCell) (expr : Expr) (workbook : QT4.qt4<CellContent>) =
         match expr with
             | Float(v) -> FloatValue(v)
@@ -94,11 +122,13 @@ module Eval =
                     | NullValue -> FloatValue(0.0)
                     | StringValue(_) -> valueError
                     | ErrorValue(v) -> ErrorValue(v)
-                    //| ValueList(_) -> valueError
+                    | ValueList(_) -> valueError
             | Eq(e1, e2) -> 
                 match (eval cell e1 workbook, eval cell e2 workbook) with
                     | ErrorValue(v), _ -> ErrorValue(v)
+                    | ValueList(_), _ -> valueError
                     | _ , ErrorValue(v) -> ErrorValue(v)
+                    | _, ValueList(_) -> valueError
                     | StringValue(v1), StringValue(v2) -> BooleanValue(String.Compare(v1, v2, true) = 0)
                     | StringValue(""), NullValue -> BooleanValue(true)
                     | NullValue, StringValue("") -> BooleanValue(true)                    
@@ -114,7 +144,9 @@ module Eval =
             | Lt(e1, e2) ->
                 match (eval cell e1 workbook, eval cell e2 workbook) with
                     | ErrorValue(v), _ -> ErrorValue(v)
-                    | _, ErrorValue(v) -> ErrorValue(v)                    
+                    | ValueList(_), _ -> valueError
+                    | _, ErrorValue(v) -> ErrorValue(v)
+                    | _, ValueList(_) -> valueError                    
                     | StringValue(_), BooleanValue(_) -> BooleanValue(true)  // string < bool
                     | BooleanValue(_), StringValue(_) -> BooleanValue(false)
                     | FloatValue(_), StringValue(_) -> BooleanValue(true)    // float < string
@@ -143,14 +175,18 @@ module Eval =
             | Concat(e1, e2) ->
                 match (eval cell e1 workbook, eval cell e2 workbook) with
                     | ErrorValue(v), _ -> ErrorValue(v)
+                    | ValueList(_), _ -> valueError
                     | _, ErrorValue(v) -> ErrorValue(v)
+                    | _, ValueList(_) -> valueError
                     | v1, v2 -> StringValue(String.Concat(toString v1, toString v2))
             | Add(e1, e2) ->
                 match (eval cell e1 workbook, eval cell e2 workbook) with
                     | ErrorValue(v), _ -> ErrorValue(v)
-                    | StringValue(v), _ -> valueError
+                    | StringValue(_), _ -> valueError
+                    | ValueList(_), _ -> valueError
                     | _, ErrorValue(v) -> ErrorValue(v)
-                    | _, StringValue(v) -> valueError
+                    | _, StringValue(_) -> valueError
+                    | _, ValueList(_) -> valueError
                     | NullValue, NullValue -> FloatValue(0.0)
                     | NullValue, FloatValue(v) -> FloatValue(v)
                     | FloatValue(v), NullValue -> FloatValue(v)
@@ -163,9 +199,11 @@ module Eval =
             | Sub(e1, e2) ->
                 match (eval cell e1 workbook, eval cell e2 workbook) with
                     | ErrorValue(v), _ -> ErrorValue(v)
-                    | StringValue(v), _ -> valueError
+                    | StringValue(_), _ -> valueError
+                    | ValueList(_), _ -> valueError
                     | _, ErrorValue(v) -> ErrorValue(v)
-                    | _, StringValue(v) -> valueError
+                    | _, StringValue(_) -> valueError
+                    | _, ValueList(_) -> valueError
                     | NullValue, NullValue -> FloatValue(0.0)
                     | NullValue, FloatValue(v) -> FloatValue(-v)
                     | FloatValue(v), NullValue -> FloatValue(v)
@@ -178,9 +216,11 @@ module Eval =
             | Mul(e1, e2) ->
                 match (eval cell e1 workbook, eval cell e2 workbook) with
                     | ErrorValue(v), _ -> ErrorValue(v)
-                    | StringValue(v), _ -> valueError
+                    | StringValue(_), _ -> valueError
+                    | ValueList(_), _ -> valueError
                     | _, ErrorValue(v) -> ErrorValue(v)
-                    | _, StringValue(v) -> valueError
+                    | _, StringValue(_) -> valueError
+                    | _, ValueList(_) -> valueError
                     | NullValue, _ -> FloatValue(0.0)
                     | _, NullValue -> FloatValue(0.0)
                     | FloatValue(v1), FloatValue(v2) -> FloatValue(v1 * v2)
@@ -190,9 +230,11 @@ module Eval =
             | Div(e1, e2) ->
                 match (eval cell e1 workbook, eval cell e2 workbook) with
                     | ErrorValue(v), _ -> ErrorValue(v)
-                    | StringValue(v), _ -> valueError
+                    | StringValue(_), _ -> valueError
+                    | ValueList(_), _ -> valueError
                     | _, ErrorValue(v) -> ErrorValue(v)
-                    | _, StringValue(v) -> valueError
+                    | _, StringValue(_) -> valueError
+                    | _, ValueList(_) -> valueError
                     | _, FloatValue(0.0) -> divZeroError
                     | _, BooleanValue(false) -> divZeroError
                     | _, NullValue -> divZeroError
@@ -205,9 +247,11 @@ module Eval =
             | Pow(e1, e2) ->
                 match (eval cell e1 workbook, eval cell e2 workbook) with
                     | ErrorValue(v), _ -> ErrorValue(v)
-                    | StringValue(v), _ -> valueError
+                    | StringValue(_), _ -> valueError
+                    | ValueList(_), _ -> valueError
                     | _, ErrorValue(v) -> ErrorValue(v)
-                    | _, StringValue(v) -> valueError
+                    | _, StringValue(_) -> valueError
+                    | _, ValueList(_) -> valueError
                     | NullValue, NullValue -> numberError
                     | NullValue, FloatValue(v) when v < 0.0 -> divZeroError
                     | NullValue, FloatValue(0.0) -> numberError
@@ -235,7 +279,7 @@ module Eval =
             | Ref(e) ->
                 match e with
                     | Cell(ref) -> cellValue cell ref workbook
-                    | Range(ref) -> FloatValue(0.0)
+                    | Range(ref) -> cellRange cell ref workbook
             | UnresolvedRef(_) -> failwith "References must be resolved before calling eval"
             | Null -> NullValue
             | _ -> FloatValue(0.0)
