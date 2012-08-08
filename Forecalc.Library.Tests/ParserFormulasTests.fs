@@ -10,6 +10,10 @@ let ``"=SUM(42)" -> Fun(SUM, [42.0])``() =
     "=SUM(42)" |> parse |> should equal (Fun("SUM", [Float 42.0]))
 
 [<Test>]
+let ``"=F.DIST(42)" -> Fun(F.DIST, [42.0])``() =
+    "=F.DIST(42)" |> parse |> should equal (Fun("F.DIST", [Float 42.0]))
+
+[<Test>]
 let ``"=SUM(20,22)" -> Fun(SUM, [20.0 ; 22.0])``() =
     "=SUM(20,22)" |> parse |> should equal (Fun("SUM", [Float 20.0 ; Float 22.0]))
 
