@@ -16,6 +16,7 @@ module Eval =
 
     let valueError = ErrorValue("#VALUE!")
     let nameError = ErrorValue("#NAME?")
+    let numberError = ErrorValue("#NUM!")
     let refError = ErrorValue("#REF!")
     let divZeroError = ErrorValue("#DIV/0!")
 
@@ -139,6 +140,11 @@ module Eval =
                     | StringValue(v), _ -> valueError
                     | _, ErrorValue(v) -> ErrorValue(v)
                     | _, StringValue(v) -> valueError
+                    | NullValue, NullValue -> FloatValue(0.0)
+                    | NullValue, FloatValue(v) -> FloatValue(v)
+                    | FloatValue(v), NullValue -> FloatValue(v)
+                    | NullValue, BooleanValue(v) -> FloatValue(toFloat v)
+                    | BooleanValue(v), NullValue -> FloatValue(toFloat v)
                     | FloatValue(v1), FloatValue(v2) -> FloatValue(v1 + v2)
                     | FloatValue(v1), BooleanValue(v2) -> FloatValue(v1 + toFloat v2)
                     | BooleanValue(v1), FloatValue(v2) -> FloatValue(toFloat v1 + v2)
@@ -149,6 +155,11 @@ module Eval =
                     | StringValue(v), _ -> valueError
                     | _, ErrorValue(v) -> ErrorValue(v)
                     | _, StringValue(v) -> valueError
+                    | NullValue, NullValue -> FloatValue(0.0)
+                    | NullValue, FloatValue(v) -> FloatValue(-v)
+                    | FloatValue(v), NullValue -> FloatValue(v)
+                    | NullValue, BooleanValue(v) -> FloatValue(-toFloat v)
+                    | BooleanValue(v), NullValue -> FloatValue(toFloat v)
                     | FloatValue(v1), FloatValue(v2) -> FloatValue(v1 - v2)
                     | FloatValue(v1), BooleanValue(v2) -> FloatValue(v1 - toFloat v2)
                     | BooleanValue(v1), FloatValue(v2) -> FloatValue(toFloat v1 - v2)
@@ -159,6 +170,8 @@ module Eval =
                     | StringValue(v), _ -> valueError
                     | _, ErrorValue(v) -> ErrorValue(v)
                     | _, StringValue(v) -> valueError
+                    | NullValue, _ -> FloatValue(0.0)
+                    | _, NullValue -> FloatValue(0.0)
                     | FloatValue(v1), FloatValue(v2) -> FloatValue(v1 * v2)
                     | FloatValue(v1), BooleanValue(v2) -> FloatValue(v1 * toFloat v2)
                     | BooleanValue(v1), FloatValue(v2) -> FloatValue(toFloat v1 * v2)
@@ -169,12 +182,14 @@ module Eval =
                     | StringValue(v), _ -> valueError
                     | _, ErrorValue(v) -> ErrorValue(v)
                     | _, StringValue(v) -> valueError
-                    | FloatValue(v1), FloatValue(0.0) -> divZeroError
+                    | _, FloatValue(0.0) -> divZeroError
+                    | _, BooleanValue(false) -> divZeroError
+                    | _, NullValue -> divZeroError
+                    | NullValue, FloatValue(_) -> FloatValue(0.0)
+                    | NullValue, BooleanValue(true) -> FloatValue(0.0)
                     | FloatValue(v1), FloatValue(v2) -> FloatValue(v1 / v2)
-                    | FloatValue(v1), BooleanValue(false) -> divZeroError
                     | FloatValue(v1), BooleanValue(true) -> FloatValue(v1)
                     | BooleanValue(v1), FloatValue(v2) -> FloatValue(toFloat v1 / v2)
-                    | BooleanValue(v1), BooleanValue(false) -> divZeroError
                     | BooleanValue(v1), BooleanValue(true) -> FloatValue(toFloat v1)
             | Pow(e1, e2) ->
                 match (eval cell e1 workbook, eval cell e2 workbook) with
@@ -182,10 +197,30 @@ module Eval =
                     | StringValue(v), _ -> valueError
                     | _, ErrorValue(v) -> ErrorValue(v)
                     | _, StringValue(v) -> valueError
+                    | NullValue, NullValue -> numberError
+                    | NullValue, FloatValue(v) when v < 0.0 -> divZeroError
+                    | NullValue, FloatValue(0.0) -> numberError
+                    | NullValue, FloatValue(_) -> FloatValue(0.0)
+                    | NullValue, BooleanValue(false) -> numberError
+                    | NullValue, BooleanValue(true) -> FloatValue(0.0)
+                    | FloatValue(0.0), NullValue -> numberError
+                    | FloatValue(_), NullValue -> FloatValue(1.0)
+                    | BooleanValue(false), NullValue -> numberError
+                    | BooleanValue(true), NullValue -> FloatValue(1.0)
+                    | FloatValue(0.0), FloatValue(v) when v < 0.0 -> divZeroError
+                    | FloatValue(0.0), FloatValue(0.0) -> numberError
                     | FloatValue(v1), FloatValue(v2) -> FloatValue(v1 ** v2)
-                    | FloatValue(v1), BooleanValue(v2) -> FloatValue(v1 ** toFloat v2)
-                    | BooleanValue(v1), FloatValue(v2) -> FloatValue(toFloat v1 ** v2)
-                    | BooleanValue(v1), BooleanValue(v2) -> FloatValue(toFloat v1 ** toFloat v2)
+                    | FloatValue(0.0), BooleanValue(false) -> numberError
+                    | FloatValue(_), BooleanValue(false) -> FloatValue(1.0)
+                    | FloatValue(v), BooleanValue(true) -> FloatValue(v)
+                    | BooleanValue(false), FloatValue(v) when v < 0.0 -> divZeroError
+                    | BooleanValue(false), FloatValue(0.0) -> numberError
+                    | BooleanValue(false), FloatValue(_) -> FloatValue(0.0)
+                    | BooleanValue(true), FloatValue(_) -> FloatValue(1.0)
+                    | BooleanValue(false), BooleanValue(false) -> numberError
+                    | BooleanValue(false), BooleanValue(true) -> FloatValue(0.0)
+                    | BooleanValue(true), BooleanValue(false) -> FloatValue(1.0)
+                    | BooleanValue(true), BooleanValue(true) -> FloatValue(1.0)
 //            | Ref(e) ->
 //                match e with
 //                    | Cell(c) -> 
