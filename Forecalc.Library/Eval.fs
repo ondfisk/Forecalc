@@ -59,14 +59,22 @@ module Eval =
         | true -> 1.0
         | false -> 0.0
 
-//    let cellValue (cell : AbsCell) (ref : Cell) (workbook : QT4.qt4<CellContent>) =
-//        if c.Sheet.IsSome then failwith "Sheet references are currently not supported"
-//        let c = match ref.ColAbs with
-//            | true -> ref.Col
-//            | false -> cell.Col + ref.Col
-//        let r = match ref.RowAbs with
-//            | true -> ref.Row
-//            | false -> cell.Row + ref.Row
+    let cellValue (cell : AbsCell) (ref : Cell) (workbook : QT4.qt4<CellContent>) =
+        if ref.Sheet.IsSome then failwith "Sheet references are currently not supported"
+        let c = 
+            match ref.ColAbs with
+                | true -> ref.Col - 1
+                | false -> cell.Col + ref.Col - 1
+        let r = 
+            match ref.RowAbs with
+                | true -> ref.Row - 1
+                | false -> cell.Row + ref.Row - 1
+        try
+            match workbook.[c, r] with
+                | None -> NullValue
+                | Some(v) -> v.Value
+        with
+            | ex -> ErrorValue("#REF!")
 
 
     let rec eval (cell : AbsCell) (expr : Expr) (workbook : QT4.qt4<CellContent>) =
@@ -221,12 +229,10 @@ module Eval =
                     | BooleanValue(false), BooleanValue(true) -> FloatValue(0.0)
                     | BooleanValue(true), BooleanValue(false) -> FloatValue(1.0)
                     | BooleanValue(true), BooleanValue(true) -> FloatValue(1.0)
-//            | Ref(e) ->
-//                match e with
-//                    | Cell(c) -> 
-//                        
-//                        cellValue cell ref workbook
-//                    | Range(r) -> FloatValue(0.0)
+            | Ref(e) ->
+                match e with
+                    | Cell(ref) -> cellValue cell ref workbook
+                    | Range(ref) -> FloatValue(0.0)
             | UnresolvedRef(_) -> failwith "References must be resolved before calling eval"
             | Null -> NullValue
             | _ -> FloatValue(0.0)
