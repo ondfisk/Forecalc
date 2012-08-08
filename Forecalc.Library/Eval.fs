@@ -15,12 +15,14 @@ and CellContent = { Expr : Expr ; Value : CellValue ; Volatile : bool }
 
 module Eval =
 
-    let valueError = ErrorValue("#VALUE!")
+    let divZeroError = ErrorValue("#DIV/0!")
+    let notAvailableError = ErrorValue("#N/A!")
     let nameError = ErrorValue("#NAME?")
+    let nullError = ErrorValue("#NULL!")
     let numberError = ErrorValue("#NUM!")
     let refError = ErrorValue("#REF!")
-    let divZeroError = ErrorValue("#DIV/0!")
-
+    let valueError = ErrorValue("#VALUE!")
+    
     let rec isVolatile expr =
         let isVolatileFun = function
             | "NOW"
