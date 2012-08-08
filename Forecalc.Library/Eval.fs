@@ -314,13 +314,13 @@ module Eval =
                     | _ ->
                         let refs = 
                             list 
-                                |> List.filter (fun e -> match e with | Ref(ex) -> true | _ -> false)
+                                |> List.filter (fun e -> match e with | Ref(_) -> true | _ -> false)
                                 |> List.map (fun e -> eval cell e workbook)
                                 |> List.collect (fun e -> match e with | ValueList(l) -> l | _ -> [e])
                                 |> List.filter (fun e -> match e with | BooleanValue(_) | FloatValue(_) | ErrorValue(_) -> true | _ -> false)
                         let vals = 
                             list 
-                                |> List.filter (fun e -> match e with | Ref(ex) -> false | _ -> true)
+                                |> List.filter (fun e -> match e with | Ref(_) -> false | _ -> true)
                                 |> List.map (fun e -> eval cell e workbook)
                         let all = List.append refs vals
                         let error = all |> List.tryFind (fun v -> match v with | ErrorValue(_) -> true | _ -> false)
