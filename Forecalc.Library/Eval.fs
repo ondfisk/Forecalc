@@ -8,6 +8,7 @@ type CellValue =
     | BooleanValue of bool
     | FloatValue of float
     | ErrorValue of string 
+    | NullValue
 
 and CellContent = { Expr : Expr ; Value : CellValue ; Volatile : bool }
 
@@ -50,11 +51,22 @@ module Eval =
         | StringValue(v) -> v
         | BooleanValue(v) -> v.ToString().ToUpper()
         | FloatValue(v) -> v.ToString()
+        | NullValue -> String.Empty
         | ErrorValue(v) -> v
 
     let toFloat = function
         | true -> 1.0
         | false -> 0.0
+
+//    let cellValue (cell : AbsCell) (ref : Cell) (workbook : QT4.qt4<CellContent>) =
+//        if c.Sheet.IsSome then failwith "Sheet references are currently not supported"
+//        let c = match ref.ColAbs with
+//            | true -> ref.Col
+//            | false -> cell.Col + ref.Col
+//        let r = match ref.RowAbs with
+//            | true -> ref.Row
+//            | false -> cell.Row + ref.Row
+
 
     let rec eval (cell : AbsCell) (expr : Expr) (workbook : QT4.qt4<CellContent>) =
         match expr with
@@ -68,6 +80,7 @@ module Eval =
                     | FloatValue(v) -> FloatValue(v * -1.0)
                     | BooleanValue(true) -> FloatValue(-1.0)
                     | BooleanValue(false) -> FloatValue(0.0)
+                    | NullValue -> FloatValue(0.0)
                     | StringValue(_) -> valueError
                     | ErrorValue(v) -> ErrorValue(v)
             | Eq(e1, e2) -> 
@@ -82,7 +95,9 @@ module Eval =
             | Lt(e1, e2) ->
                 match (eval cell e1 workbook, eval cell e2 workbook) with
                     | ErrorValue(v), _ -> ErrorValue(v)
-                    | _, ErrorValue(v) -> ErrorValue(v)
+                    | _, ErrorValue(v) -> ErrorValue(v)                    
+//                    | NullValue, _ -> ErrorValue(v)
+//                    | _, ErrorValue(v) -> BooleanValue(true)
                     | StringValue(_), BooleanValue(_) -> BooleanValue(true)  // string < bool
                     | BooleanValue(_), StringValue(_) -> BooleanValue(false)
                     | FloatValue(_), StringValue(_) -> BooleanValue(true)    // float < string
@@ -159,5 +174,12 @@ module Eval =
                     | FloatValue(v1), BooleanValue(v2) -> FloatValue(v1 ** toFloat v2)
                     | BooleanValue(v1), FloatValue(v2) -> FloatValue(toFloat v1 ** v2)
                     | BooleanValue(v1), BooleanValue(v2) -> FloatValue(toFloat v1 ** toFloat v2)
+//            | Ref(e) ->
+//                match e with
+//                    | Cell(c) -> 
+//                        
+//                        cellValue cell ref workbook
+//                    | Range(r) -> FloatValue(0.0)
             | UnresolvedRef(_) -> failwith "References must be resolved before calling eval"
+            | Null -> NullValue
             | _ -> FloatValue(0.0)

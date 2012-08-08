@@ -47,3 +47,10 @@ let ``UnresolvedRef(_) -> Fail``() =
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = UnresolvedRef(A1Cell("A1"))
     (fun () -> eval cell expr workbook |> ignore) |> should throw typeof<System.Exception>
+
+[<Test>]
+let ``Null -> NullValue``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Null
+    eval cell expr workbook |> should equal NullValue

@@ -40,3 +40,10 @@ let ``Negate(Error "#NAME?") -> ErrorValue "#NAME?"``() =
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Negate(Error "#NAME?")
     eval cell expr workbook |> should equal (ErrorValue "#NAME?")
+
+[<Test>]
+let ``Negate(Null) -> FloatValue 0.0``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Negate(Null)
+    eval cell expr workbook |> should equal (FloatValue 0.0)

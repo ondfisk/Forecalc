@@ -26,6 +26,10 @@ let ``"Forty-two" -> Forty-two``() =
     "Forty-two" |> parse |> should equal (String "Forty-two")
 
 [<Test>]
+let ``="" -> String ""``() =
+    "=\"\"" |> parse |> should equal (String "")
+
+[<Test>]
 let ``"\"Forty-two\"" -> "Forty-two"``() =
     "\"Forty-two\"" |> parse |> should equal (String "\"Forty-two\"")
 

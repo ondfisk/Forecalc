@@ -24,6 +24,7 @@ module Ast =
         | Ref of Ref
         | Fun of string * Expr List
         | Error of string
+        | Null
 
     and UnresolvedRef =
         | A1Cell of string
