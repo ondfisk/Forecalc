@@ -22,9 +22,20 @@ module Parser =
                         let expression = ParserSpecification.start LexerSpecification.tokenize lexbuff
                         expression
                     with
-                        | ex -> Error ex.Message
+                        | ex -> Error "#PARSE!"
             | _ when (Double.TryParse >> fst) expr -> Float (float expr)
             | _ when (bool.TryParse >> fst) expr -> Boolean (bool.Parse expr)
+            | _ when expr.StartsWith("#") -> 
+                let error = expr.ToUpper()
+                match error with
+                    | "#DIV/0!"
+                    | "#N/A!"
+                    | "#NAME?"
+                    | "#NULL!"
+                    | "#NUM!"
+                    | "#REF!"
+                    | "#VALUE!" -> Error(error)
+                    | _ -> String(expr)
             | _ when expr.StartsWith("'") -> EscapedString(expr.[1..])
             | _ -> String expr
 

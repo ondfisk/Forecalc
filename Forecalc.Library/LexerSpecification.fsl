@@ -10,6 +10,18 @@ let lexeme lexbuf =
 let upperName (s : string) =
     NAME (s.ToUpper())
 
+let upperError (s: string) =
+    let error = s.ToUpper()
+    match error with
+        | "#DIV/0!"
+        | "#N/A!"
+        | "#NAME?"
+        | "#NULL!"
+        | "#NUM!"
+        | "#REF!"
+        | "#VALUE!" -> ERROR (error)
+        | _ -> ERROR "#NAME?"
+
 let upperR1C1 (s : string) =
     R1C1 (s.ToUpper())
 
@@ -37,6 +49,7 @@ let func                = char+digit*
 let whitespace          = [' ' '\t']   
 let newline             = "\r\n" | '\n' | '\r'
 let string              = '"'[^'"']*'"'
+let error                = '#' (char|digit|'/'|'_')+ ['!' '?']
 let sheet               = (digit|char)+'!'
 let apossheet           = '\''[^'\'' ':' '/' '\\']*'\'''!'
 let true                = ['T' 't']['R' 'r']['U' 'u']['E' 'e']
@@ -77,5 +90,6 @@ rule tokenize = parse
 | apossheet             { fixAposSheet (lexeme lexbuf) }
 | ref                   { upperName (lexeme lexbuf) }
 | func                  { upperName (lexeme lexbuf) }
+| error                 { upperError (lexeme lexbuf) }
 | eof                   { EOF }
 
