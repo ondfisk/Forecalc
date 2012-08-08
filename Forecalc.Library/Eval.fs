@@ -291,4 +291,20 @@ module Eval =
                     | Range(ref) -> cellRange cell ref workbook
             | UnresolvedRef(_) -> failwith "References must be resolved before calling eval"
             | Null -> NullValue
-            | _ -> FloatValue(0.0)
+            | Fun(name, list) -> evalFun name list cell workbook
+
+    and evalFun name list cell workbook =
+        match name with
+            | "IF" -> 
+                match list with
+                    | [ e1 ; e2 ; e3 ] ->
+                        match eval cell e1 workbook with
+                            | BooleanValue(true) -> eval cell e2 workbook
+                            | NullValue
+                            | BooleanValue(false) -> eval cell e3 workbook
+                            | ValueList(_)
+                            | FloatValue(_) 
+                            | StringValue(_) -> ErrorValue("#VALUE!")
+                            | ErrorValue(v) -> ErrorValue(v)
+                    | _ -> ErrorValue("#PARSE!")
+            | _ -> ErrorValue("#PARSE!")

@@ -50,6 +50,7 @@
     <Compile Include="EvalUnaryTests.fs" />
     <Compile Include="EvalBinaryTests.fs" />
     <Compile Include="EvalRefTests.fs" />
+    <Compile Include="EvalFunTests.fs" />
     <None Include="packages.config" />
     <None Include="App.config" />
   </ItemGroup>
