@@ -102,8 +102,8 @@ let ``=#value! -> Error("#VALUE!")``() =
     "=#value!" |> parse |> should equal (Error "#VALUE!")
 
 [<Test>]
-let ``=#Invalid_Error_Message! -> Error("#NAME?")``() =
-    "=#Invalid_Error_Message!" |> parse |> should equal (Error "#NAME?")
+let ``=#Invalid_Error_Message! -> Error("#PARSE!")``() =
+    "=#Invalid_Error_Message!" |> parse |> should equal (Error "#PARSE!")
 
 [<Test>]
 let ``=this is not a valid formula -> Error("#PARSE!")``() =

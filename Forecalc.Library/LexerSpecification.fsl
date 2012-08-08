@@ -20,7 +20,7 @@ let upperError (s: string) =
         | "#NUM!"
         | "#REF!"
         | "#VALUE!" -> ERROR (error)
-        | _ -> ERROR "#NAME?"
+        | _ -> ERROR "#PARSE!"
 
 let upperR1C1 (s : string) =
     R1C1 (s.ToUpper())
