@@ -103,8 +103,6 @@ module Eval =
                 match (eval cell e1 workbook, eval cell e2 workbook) with
                     | ErrorValue(v), _ -> ErrorValue(v)
                     | _, ErrorValue(v) -> ErrorValue(v)                    
-//                    | NullValue, _ -> ErrorValue(v)
-//                    | _, ErrorValue(v) -> BooleanValue(true)
                     | StringValue(_), BooleanValue(_) -> BooleanValue(true)  // string < bool
                     | BooleanValue(_), StringValue(_) -> BooleanValue(false)
                     | FloatValue(_), StringValue(_) -> BooleanValue(true)    // float < string
@@ -114,6 +112,13 @@ module Eval =
                     | BooleanValue(v1), BooleanValue(v2) -> BooleanValue(v1 < v2)
                     | FloatValue(v1), FloatValue(v2) -> BooleanValue(v1 < v2)
                     | StringValue(v1), StringValue(v2) -> BooleanValue(String.Compare(v1, v2, true) < 0)
+                    | NullValue, NullValue -> BooleanValue(false)
+                    | NullValue, BooleanValue(v) -> BooleanValue(false < v)
+                    | BooleanValue(v), NullValue -> BooleanValue(v < false)
+                    | NullValue, FloatValue(v) -> BooleanValue(0.0 < v)
+                    | FloatValue(v), NullValue -> BooleanValue(v < 0.0)
+                    | NullValue, StringValue(v) -> BooleanValue(String.Compare(String.Empty, v, true) < 0)
+                    | StringValue(v), NullValue -> BooleanValue(String.Compare(v, String.Empty, true) < 0)
             | Lte(e1, e2) -> // swap + lt + not
                 match eval cell (Lt(e2, e1)) workbook with
                     | BooleanValue(v) -> BooleanValue(not v)
