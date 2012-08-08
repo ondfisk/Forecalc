@@ -62,9 +62,9 @@ module ReferenceResolver =
                         | false -> cell.Col + range.BottomRight.Col
                     )
                 match min r1 r2 = r2, min c1 c2 = c2 with
-                    | true, true -> ref
-                    | true, false -> ref
-                    | false, true -> ref
+                    | true, true -> Range({ range with TopLeft = range.BottomRight ; BottomRight = range.TopLeft })
+                    | true, false -> Range({ range with TopLeft = { range.TopLeft with Row = range.BottomRight.Row ; RowAbs = range.BottomRight.RowAbs } ; BottomRight = { range.BottomRight with Row = range.TopLeft.Row ; RowAbs = range.TopLeft.RowAbs } })
+                    | false, true -> Range({ range with TopLeft = { range.TopLeft with Col = range.BottomRight.Col ; ColAbs = range.BottomRight.ColAbs } ; BottomRight = { range.BottomRight with Col = range.TopLeft.Col ; ColAbs = range.TopLeft.ColAbs } })
                     | false, false -> ref
                 
 
