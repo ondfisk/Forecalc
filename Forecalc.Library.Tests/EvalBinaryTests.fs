@@ -28,6 +28,20 @@ let ``42.0 & Error("#VALUE!") -> Error("#VALUE!")``() =
     eval cell expr workbook |> should equal (ErrorValue "#VALUE!")
 
 [<Test>]
+let ``42.0&Null -> String("42")``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Concat(Float 42.0, Null)
+    eval cell expr workbook |> should equal (StringValue "42")
+
+[<Test>]
+let ``Null&42.0 -> String("42")``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Concat(Null, Float 42.0)
+    eval cell expr workbook |> should equal (StringValue "42")
+
+[<Test>]
 let ``"Life, " & "the " & "Universe " & "and " & "Everything = " & 42.0 -> "LifeT, the Universe and Everything = 42"``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }

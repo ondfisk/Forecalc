@@ -712,3 +712,318 @@ let ``false<Null -> Lt(false, Null) -> BooleanValue(false)``() =
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Lt(Boolean false, Null)
     eval cell expr workbook |> should equal (BooleanValue false) 
+
+[<Test>]
+let ``Null>Null -> Gt(Null, Null) -> BooleanValue(false)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gt(Null, Null)
+    eval cell expr workbook |> should equal (BooleanValue false)
+
+[<Test>]
+let ``Null>"" -> Gt(Null, "") -> BooleanValue(false)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gt(Null, String "")
+    eval cell expr workbook |> should equal (BooleanValue false)
+
+[<Test>]
+let ``"">Null -> Gt("", Null) -> BooleanValue(false)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gt(String "", Null)
+    eval cell expr workbook |> should equal (BooleanValue false)
+
+[<Test>]
+let ``Null>"42" -> Gt(Null, "42") -> BooleanValue(false)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gt(Null, String "42")
+    eval cell expr workbook |> should equal (BooleanValue false)
+
+[<Test>]
+let ``"42">Null -> Gt("42", Null) -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gt(String "42", Null)
+    eval cell expr workbook |> should equal (BooleanValue true)
+
+[<Test>]
+let ``Null>0.0 -> Gt(Null, 0.0) -> BooleanValue(false)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gt(Null, Float 0.0)
+    eval cell expr workbook |> should equal (BooleanValue false)
+
+[<Test>]
+let ``0.0>Null -> Gt(0.0, Null) -> BooleanValue(false)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gt(Float 0.0, Null)
+    eval cell expr workbook |> should equal (BooleanValue false)
+
+[<Test>]
+let ``Null>42.0 -> Gt(Null, 42.0) -> BooleanValue(false)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gt(Null, Float 42.0)
+    eval cell expr workbook |> should equal (BooleanValue false)
+
+[<Test>]
+let ``42.0>Null -> Gt(42.0, Null) -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gt(Float 42.0, Null)
+    eval cell expr workbook |> should equal (BooleanValue true)
+
+[<Test>]
+let ``Null>-42.0 -> Gt(Null, -42.0) -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gt(Null, Float -42.0)
+    eval cell expr workbook |> should equal (BooleanValue true)
+
+[<Test>]
+let ``-42.0>Null -> Gt(-42.0, Null) -> BooleanValue(false)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gt(Float -42.0, Null)
+    eval cell expr workbook |> should equal (BooleanValue false) 
+
+[<Test>]
+let ``Null>true -> Gt(Null, true) -> BooleanValue(false)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gt(Null, Boolean true)
+    eval cell expr workbook |> should equal (BooleanValue false)
+
+[<Test>]
+let ``true>Null -> Gt(true, Null) -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gt(Boolean true, Null)
+    eval cell expr workbook |> should equal (BooleanValue true) 
+
+[<Test>]
+let ``Null>false -> Gt(Null, false) -> BooleanValue(false)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gt(Null, Boolean false)
+    eval cell expr workbook |> should equal (BooleanValue false)
+
+[<Test>]
+let ``false>Null -> Gt(false, Null) -> BooleanValue(false)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gt(Boolean false, Null)
+    eval cell expr workbook |> should equal (BooleanValue false) 
+
+[<Test>]
+let ``Null<=Null -> Lte(Null, Null) -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Lte(Null, Null)
+    eval cell expr workbook |> should equal (BooleanValue true)
+
+[<Test>]
+let ``Null<="" -> Lte(Null, "") -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Lte(Null, String "")
+    eval cell expr workbook |> should equal (BooleanValue true)
+
+[<Test>]
+let ``""<=Null -> Lte("", Null) -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Lte(String "", Null)
+    eval cell expr workbook |> should equal (BooleanValue true)
+
+[<Test>]
+let ``Null<="42" -> Lte(Null, "42") -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Lte(Null, String "42")
+    eval cell expr workbook |> should equal (BooleanValue true)
+
+[<Test>]
+let ``"42"<=Null -> Lte("42", Null) -> BooleanValue(false)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Lte(String "42", Null)
+    eval cell expr workbook |> should equal (BooleanValue false)
+
+[<Test>]
+let ``Null<=0.0 -> Lte(Null, 0.0) -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Lte(Null, Float 0.0)
+    eval cell expr workbook |> should equal (BooleanValue true)
+
+[<Test>]
+let ``0.0<=Null -> Lte(0.0, Null) -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Lte(Float 0.0, Null)
+    eval cell expr workbook |> should equal (BooleanValue true)
+
+[<Test>]
+let ``Null<=42.0 -> Lte(Null, 42.0) -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Lte(Null, Float 42.0)
+    eval cell expr workbook |> should equal (BooleanValue true)
+
+[<Test>]
+let ``42.0<=Null -> Lte(42.0, Null) -> BooleanValue(false)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Lte(Float 42.0, Null)
+    eval cell expr workbook |> should equal (BooleanValue false)
+
+[<Test>]
+let ``Null<=-42.0 -> Lte(Null, -42.0) -> BooleanValue(false)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Lte(Null, Float -42.0)
+    eval cell expr workbook |> should equal (BooleanValue false)
+
+[<Test>]
+let ``-42.0<=Null -> Lte(-42.0, Null) -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Lte(Float -42.0, Null)
+    eval cell expr workbook |> should equal (BooleanValue true) 
+
+[<Test>]
+let ``Null<=true -> Lte(Null, true) -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Lte(Null, Boolean true)
+    eval cell expr workbook |> should equal (BooleanValue true)
+
+[<Test>]
+let ``true<=Null -> Lte(true, Null) -> BooleanValue(false)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Lte(Boolean true, Null)
+    eval cell expr workbook |> should equal (BooleanValue false) 
+
+[<Test>]
+let ``Null<=false -> Lte(Null, false) -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Lte(Null, Boolean false)
+    eval cell expr workbook |> should equal (BooleanValue true)
+
+[<Test>]
+let ``false<=Null -> Lte(false, Null) -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Lte(Boolean false, Null)
+    eval cell expr workbook |> should equal (BooleanValue true) 
+
+[<Test>]
+let ``Null>=Null -> Gte(Null, Null) -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gte(Null, Null)
+    eval cell expr workbook |> should equal (BooleanValue true)
+
+[<Test>]
+let ``Null>="" -> Gte(Null, "") -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gte(Null, String "")
+    eval cell expr workbook |> should equal (BooleanValue true)
+
+[<Test>]
+let ``"">=Null -> Gte("", Null) -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gte(String "", Null)
+    eval cell expr workbook |> should equal (BooleanValue true)
+
+[<Test>]
+let ``Null>="42" -> Gte(Null, "42") -> BooleanValue(false)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gte(Null, String "42")
+    eval cell expr workbook |> should equal (BooleanValue false)
+
+[<Test>]
+let ``"42">=Null -> Gte("42", Null) -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gte(String "42", Null)
+    eval cell expr workbook |> should equal (BooleanValue true)
+
+[<Test>]
+let ``Null>=0.0 -> Gte(Null, 0.0) -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gte(Null, Float 0.0)
+    eval cell expr workbook |> should equal (BooleanValue true)
+
+[<Test>]
+let ``0.0>=Null -> Gte(0.0, Null) -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gte(Float 0.0, Null)
+    eval cell expr workbook |> should equal (BooleanValue true)
+
+[<Test>]
+let ``Null>=42.0 -> Gte(Null, 42.0) -> BooleanValue(false)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gte(Null, Float 42.0)
+    eval cell expr workbook |> should equal (BooleanValue false)
+
+[<Test>]
+let ``42.0>=Null -> Gte(42.0, Null) -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gte(Float 42.0, Null)
+    eval cell expr workbook |> should equal (BooleanValue true)
+
+[<Test>]
+let ``Null>=-42.0 -> Gte(Null, -42.0) -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gte(Null, Float -42.0)
+    eval cell expr workbook |> should equal (BooleanValue true)
+
+[<Test>]
+let ``-42.0>=Null -> Gte(-42.0, Null) -> BooleanValue(false)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gte(Float -42.0, Null)
+    eval cell expr workbook |> should equal (BooleanValue false) 
+
+[<Test>]
+let ``Null>=true -> Gte(Null, true) -> BooleanValue(false)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gte(Null, Boolean true)
+    eval cell expr workbook |> should equal (BooleanValue false)
+
+[<Test>]
+let ``true>=Null -> Gte(true, Null) -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gte(Boolean true, Null)
+    eval cell expr workbook |> should equal (BooleanValue true) 
+
+[<Test>]
+let ``Null>=false -> Gte(Null, false) -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gte(Null, Boolean false)
+    eval cell expr workbook |> should equal (BooleanValue true)
+
+[<Test>]
+let ``false>=Null -> Gte(false, Null) -> BooleanValue(true)``() =
+    let workbook = QT4.create<CellContent>()
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Gte(Boolean false, Null)
+    eval cell expr workbook |> should equal (BooleanValue true) 
