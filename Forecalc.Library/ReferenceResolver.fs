@@ -61,26 +61,23 @@ module ReferenceResolver =
                         | true -> range.BottomRight.Col
                         | false -> cell.Col + range.BottomRight.Col
                     )
-                let r1abs = if min r1 r2 = r1 then range.TopLeft.RowAbs else range.BottomRight.RowAbs
-                let c1abs = if min c1 c2 = c1 then range.TopLeft.ColAbs else range.BottomRight.ColAbs
-                let r2abs = if max r1 r2 = r1 then range.TopLeft.RowAbs else range.BottomRight.RowAbs
-                let c2abs = if max c1 c2 = c1 then range.TopLeft.ColAbs else range.BottomRight.ColAbs
-                Range({ Sheet = range.Sheet ; 
-                    TopLeft = { Sheet = range.Sheet ; Row = min r1 r2 ; RowAbs = r1abs ; Col = min c1 c2 ; ColAbs = c1abs } ;
-                    BottomRight = { Sheet = range.Sheet ; Row = max r1 r2 ; RowAbs = r2abs ; Col = max c1 c2 ; ColAbs = c2abs } })
-
+                match min r1 r2 = r2, min c1 c2 = c2 with
+                    | true, true -> ref
+                    | true, false -> ref
+                    | false, true -> ref
+                    | false, false -> ref
                 
 
     let resolveRef cell ref =
         match ref with
             | A1Cell(value) -> Cell(resolveA1 cell value)
-            | A1Range(topLeft, bottomRight) -> Range({ Sheet = None ; TopLeft = resolveA1 cell topLeft ; BottomRight = resolveA1 cell bottomRight }) //|> flipRangeWhenRequired cell
+            | A1Range(topLeft, bottomRight) -> Range({ Sheet = None ; TopLeft = resolveA1 cell topLeft ; BottomRight = resolveA1 cell bottomRight }) |> flipRangeWhenRequired cell
             | A1SheetRef(sheet, value) -> Cell({ resolveA1 cell value with Sheet = Some sheet })
-            | A1SheetRange(sheet, topLeft, bottomRight) -> Range({ Sheet = Some sheet ; TopLeft = { resolveA1 cell topLeft with Sheet = Some sheet } ; BottomRight = { resolveA1 cell bottomRight with Sheet = Some sheet } } ) //|> flipRangeWhenRequired cell
+            | A1SheetRange(sheet, topLeft, bottomRight) -> Range({ Sheet = Some sheet ; TopLeft = { resolveA1 cell topLeft with Sheet = Some sheet } ; BottomRight = { resolveA1 cell bottomRight with Sheet = Some sheet } } ) |> flipRangeWhenRequired cell
             | R1C1Cell(value) -> Cell(resolveR1C1 value)
-            | R1C1Range(topLeft, bottomRight) -> Range({ Sheet = None ; TopLeft = resolveR1C1 topLeft ; BottomRight = resolveR1C1 bottomRight }) //|> flipRangeWhenRequired cell
+            | R1C1Range(topLeft, bottomRight) -> Range({ Sheet = None ; TopLeft = resolveR1C1 topLeft ; BottomRight = resolveR1C1 bottomRight }) |> flipRangeWhenRequired cell
             | R1C1SheetRef(sheet, value) -> Cell({ resolveR1C1 value with Sheet = Some sheet })
-            | R1C1SheetRange(sheet, topLeft, bottomRight) -> Range({ Sheet = Some sheet ; TopLeft = { resolveR1C1 topLeft with Sheet = Some sheet } ; BottomRight = { resolveR1C1 bottomRight with Sheet = Some sheet } }) //|> flipRangeWhenRequired cell
+            | R1C1SheetRange(sheet, topLeft, bottomRight) -> Range({ Sheet = Some sheet ; TopLeft = { resolveR1C1 topLeft with Sheet = Some sheet } ; BottomRight = { resolveR1C1 bottomRight with Sheet = Some sheet } }) |> flipRangeWhenRequired cell
             
     let rec resolveRefs cell expr =
         match expr with
