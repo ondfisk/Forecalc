@@ -25,8 +25,9 @@ module Eval =
             | Boolean(_) 
             | String(_) 
             | EscapedString(_) 
-            | Error(_) -> true
-            | Negate(e) -> isVolatile expr
+            | Error(_) 
+            | Null -> false
+            | Negate(e) -> isVolatile e
             | Eq(e1, e2)
             | NotEq(e1, e2)
             | Lt(e1, e2)
@@ -39,9 +40,8 @@ module Eval =
             | Mul(e1, e2)
             | Div(e1, e2)
             | Pow(e1, e2) -> isVolatile e1 || isVolatile e2
-            | UnresolvedRef(ref) -> false
+            | UnresolvedRef(ref) -> failwith "References must be resolved before calling isVolatile"
             | Fun(name, list) -> isVolatileFun name || List.exists isVolatile list
-            | Null -> false
             | Ref(_) -> true
 
     let toString = function
