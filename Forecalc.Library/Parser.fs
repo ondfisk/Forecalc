@@ -29,7 +29,7 @@ module Parser =
                 let error = expr.ToUpper()
                 match error with
                     | "#DIV/0!" -> Error(DivZero)
-                    | "#NAME!" -> Error(Name)
+                    | "#NAME?" -> Error(Name)
                     | "#NULL!" -> Error(Error.Null)
                     | "#NUM!" -> Error(Number)
                     | "#REF!" -> Error(Reference)

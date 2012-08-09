@@ -802,7 +802,7 @@ let ``Null^Null -> Pow(Null, Null) -> ErrorValue(Number)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Pow(Null, Null)
-    eval cell expr workbook |> should equal (ErrorValue DivZero)
+    eval cell expr workbook |> should equal (ErrorValue Number)
 
 [<Test>]
 let ``Null^"" -> Pow(Null, "") -> ErrorValue(Value)``() =
