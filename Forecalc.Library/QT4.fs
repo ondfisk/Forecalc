@@ -313,3 +313,13 @@ module QT4 =
                                   
     let toSeq (qt4 : qt4<'a>) =
         qt4.ToSeq()
+
+    let range (c1, r1) (c2, r2) (qt4 : qt4<'a>) =
+        seq {
+            for c in [ c1 .. c2 ] do
+                for r in [ r1 .. r2 ] do
+                    let o = qt4.[c, r]
+                    match o with
+                        | Some(value) -> yield value
+                        | None -> ()
+        }

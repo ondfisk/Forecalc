@@ -189,3 +189,12 @@ let ``set(42, 42) calls indexer``() =
     let qt4 = create<int>()
     qt4 |> set 42 42 (Some 42)
     qt4.[42, 42] |> should equal (Some 42)
+
+[<Test>]
+let ``range (42,42) (42,42) returns elements in range``() =
+    let qt4 = create<int>()
+    qt4.[1, 1] <- Some(1)
+    qt4.[42, 42] <- Some(42)
+    let result = qt4 |> range (42,42) (42,42) |> Seq.toList
+    result.Length |> should equal 1
+    result.Head |> should equal 42

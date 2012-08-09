@@ -108,10 +108,9 @@ module Eval =
         else
             try
                 workbook 
-                    |> QT4.filteri (fun c r v -> c >= c1 - 1 && c < c2 && r >= r1 - 1 && r < r2)
-                    |> QT4.toSeq
-                    |> Seq.map (fun x -> x.Value)
+                    |> QT4.range (c1 - 1, r1 - 1) (c2 - 1, r2 - 1)
                     |> Seq.toList
+                    |> List.map (fun x -> x.Value)
                     |> ValueList
             with
                 | ex -> ErrorValue(Reference)
