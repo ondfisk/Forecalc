@@ -74,7 +74,7 @@ let ``SUM("") -> ErrorValue(Value)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Fun("SUM", [ String "" ])
-    eval cell expr workbook |> should equal (ErrorValue Value)
+    eval cell expr workbook |> should equal (FloatValue 0.0)
 
 [<Test>]
 let ``SUM(true, false) -> FloatValue 1.0``() =
