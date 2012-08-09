@@ -14,7 +14,6 @@ let upperError (s: string) =
     let error = s.ToUpper()
     match error with
         | "#DIV/0!"
-        | "#N/A!"
         | "#NAME?"
         | "#NULL!"
         | "#NUM!"

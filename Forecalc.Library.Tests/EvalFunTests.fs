@@ -7,25 +7,25 @@ open Forecalc.Library.Ast
 open Forecalc.Library.Eval
 
 [<Test>]
-let ``Unknown function -> ErrorValue("#PARSE!")``() =
+let ``Unknown function -> ErrorValue(Parse)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Fun("SUPER", [ String "" ; Null ; Null ])
-    eval cell expr workbook |> should equal (ErrorValue "#PARSE!")
+    eval cell expr workbook |> should equal (ErrorValue Parse)
 
 [<Test>]
-let ``IF(non-boolean;_;_) -> ErrorValue("#VALUE!")``() =
+let ``IF(non-boolean;_;_) -> ErrorValue("ReferenceVALUE!")``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Fun("IF", [ String "" ; Null ; Null ])
-    eval cell expr workbook |> should equal (ErrorValue "#VALUE!")
+    eval cell expr workbook |> should equal (ErrorValue Value)
 
 [<Test>]
-let ``IF() -> ErrorValue("#PARSE!")``() =
+let ``IF() -> ErrorValue(Parse)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Fun("IF", [])
-    eval cell expr workbook |> should equal (ErrorValue "#PARSE!")
+    eval cell expr workbook |> should equal (ErrorValue Parse)
 
 [<Test>]
 let ``IF(true, 42.0, null) -> FloatValue(42.0)``() =
@@ -63,18 +63,18 @@ let ``IF(1.0, 42.0, null) -> FloatValue(42.0)``() =
     eval cell expr workbook |> should equal (FloatValue 42.0)
 
 [<Test>]
-let ``SUM() -> #PARSE!``() =
+let ``SUM() -> ErrorValue(Parse)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Fun("SUM", [])
-    eval cell expr workbook |> should equal (ErrorValue "#PARSE!")
+    eval cell expr workbook |> should equal (ErrorValue Parse)
 
 [<Test>]
-let ``SUM("") -> #VALUE!``() =
+let ``SUM("") -> ErrorValue(Value)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Fun("SUM", [ String "" ])
-    eval cell expr workbook |> should equal (ErrorValue "#VALUE!")
+    eval cell expr workbook |> should equal (ErrorValue Parse)
 
 [<Test>]
 let ``SUM(true, false) -> FloatValue 1.0``() =
@@ -96,33 +96,33 @@ let ``SUM(B1:B5) -> FloatValue(42.0)``() =
     eval cell expr workbook |> should equal (FloatValue 42.0)
 
 [<Test>]
-let ``SUM(42.0,#NUM!) -> ErrorValue("#NUM!")``() =
+let ``SUM(42.0, Error(Number)) -> ErrorValue(Number)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Fun("SUM", [Float 42.0 ; Error "#NUM!"])
-    eval cell expr workbook |> should equal (ErrorValue "#NUM!")
+    let expr = Fun("SUM", [Float 42.0 ; Error Number])
+    eval cell expr workbook |> should equal (ErrorValue Number)
 
 [<Test>]
-let ``SUM(A1) -> ErrorValue("#REF!")``() =
+let ``SUM(A1) -> ErrorValue(Reference)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Fun("SUM", [Ref(Cell({ Sheet = None ; Col = 0 ; ColAbs = false ; Row = 0 ; RowAbs = false }))])
-    eval cell expr workbook |> should equal (ErrorValue "#REF!")
+    eval cell expr workbook |> should equal (ErrorValue Reference)
 
 [<Test>]
-let ``SUM(B1) -> ErrorValue("#DIV/0!")``() =
+let ``SUM(B1) -> ErrorValue("ReferenceDIV/0!")``() =
     let workbook = QT4.create<CellContent>()
-    workbook.[1, 0] <- Some({ Expr = Error "#DIV/0!" ; Value = ErrorValue "#DIV/0!" ; Volatile = false })
+    workbook.[1, 0] <- Some({ Expr = Error DivZero ; Value = ErrorValue DivZero ; Volatile = false })
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Fun("SUM", [Ref(Cell({ Sheet = None ; Col = 1 ; ColAbs = false ; Row = 0 ; RowAbs = false }))])
-    eval cell expr workbook |> should equal (ErrorValue "#DIV/0!")
+    eval cell expr workbook |> should equal (ErrorValue DivZero)
 
 [<Test>]
-let ``COUNT() -> #PARSE!``() =
+let ``COUNT() -> ErrorValue(Parse)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Fun("COUNT", [])
-    eval cell expr workbook |> should equal (ErrorValue "#PARSE!")
+    eval cell expr workbook |> should equal (ErrorValue Parse)
 
 [<Test>]
 let ``COUNT(42.0, true) -> FloatValue(1)``() =
@@ -132,10 +132,10 @@ let ``COUNT(42.0, true) -> FloatValue(1)``() =
     eval cell expr workbook |> should equal (FloatValue 1.0)
 
 [<Test>]
-let ``COUNT("#NUM!) -> FloatValue(0.0)``() =
+let ``COUNT("ReferenceNUM!) -> FloatValue(0.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Fun("COUNT", [ Error "#NUM!" ])
+    let expr = Fun("COUNT", [ Error Number ])
     eval cell expr workbook |> should equal (FloatValue 0.0)
 
 [<Test>]
@@ -157,7 +157,7 @@ let ``COUNT(B1:B5) -> FloatValue(3.0)``() =
     workbook.[1, 1] <- Some({ Expr = Float 1.0 ; Value = FloatValue 1.0 ; Volatile = false })
     workbook.[1, 2] <- Some({ Expr = Boolean true ; Value = BooleanValue true ; Volatile = false })
     workbook.[1, 3] <- Some({ Expr = Float 1.0 ; Value = FloatValue 1.0 ; Volatile = false })
-    workbook.[1, 4] <- Some({ Expr = Error "#NUM!" ; Value = ErrorValue "#NUM!" ; Volatile = false })
+    workbook.[1, 4] <- Some({ Expr = Error Number ; Value = ErrorValue Number ; Volatile = false })
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Fun("COUNT", [Ref(Range({ Sheet = None ; TopLeft = { Sheet = None ;  Col = 1 ; ColAbs = false ; Row = 0 ; RowAbs = false } ; BottomRight = { Sheet = None ; Col = 1 ; ColAbs = false ; Row = 4 ; RowAbs = false } } ))])
     eval cell expr workbook |> should equal (FloatValue 3.0)

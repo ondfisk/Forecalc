@@ -1,5 +1,15 @@
 ﻿namespace Forecalc.Library
 
+type Error =
+    | DivZero
+    | Name
+    | NotAvailable
+    | Null
+    | Number
+    | Parse
+    | Reference
+    | Value
+
 module Ast =
 
     type Expr =
@@ -23,7 +33,7 @@ module Ast =
         | UnresolvedRef of UnresolvedRef
         | Ref of Ref
         | Fun of string * Expr List
-        | Error of string
+        | Error of Error
         | Null
 
     and UnresolvedRef =

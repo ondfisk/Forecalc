@@ -7,7 +7,7 @@ type CellValue =
     | StringValue of string
     | BooleanValue of bool
     | FloatValue of float
-    | ErrorValue of string 
+    | ErrorValue of Error 
     | NullValue
     | ValueList of CellValue list
 
@@ -15,15 +15,6 @@ and CellContent = { Expr : Expr ; Value : CellValue ; Volatile : bool }
 
 module Eval =
 
-    let divZeroError = ErrorValue("#DIV/0!")
-    let notAvailableError = ErrorValue("#N/A!")
-    let nameError = ErrorValue("#NAME?")
-    let nullError = ErrorValue("#NULL!")
-    let numberError = ErrorValue("#NUM!")
-    let parseError = ErrorValue("#PARSE!")
-    let refError = ErrorValue("#REF!")
-    let valueError = ErrorValue("#VALUE!")
-    
     let rec isVolatile expr =
         let isVolatileFun = function
             | "NOW"
@@ -58,7 +49,16 @@ module Eval =
         | BooleanValue(v) -> v.ToString().ToUpper()
         | FloatValue(v) -> v.ToString()
         | NullValue -> String.Empty
-        | ErrorValue(v) -> v
+        | ErrorValue(v) ->  
+            match v with
+                | DivZero -> "#DIV/0!"
+                | Name -> "#NAME?"
+                | NotAvailable -> "#N/A!"
+                | Error.Null -> "#NULL!"
+                | Number -> "#NUM!"
+                | Parse -> "#PARSE!"
+                | Reference -> "#REF!"
+                | Value -> "#VALUE!"
         | ValueList(_) -> "#VALUE!"
 
     let toFloat = function
@@ -76,14 +76,14 @@ module Eval =
                 | true -> ref.Row
                 | false -> cell.Row + ref.Row
         if cell.Col = c && cell.Row = r then
-            ErrorValue("#REF!")
+            ErrorValue(Reference)
         else
             try
                 match workbook.[c - 1, r - 1] with
                     | None -> NullValue
                     | Some(v) -> v.Value
             with
-                | ex -> ErrorValue("#REF!")
+                | ex -> ErrorValue(Reference)
 
     let cellRange (cell : AbsCell) (ref : Range) (workbook : QT4.qt4<CellContent>) =
         if ref.Sheet.IsSome then failwith "Sheet references are currently not supported"
@@ -104,7 +104,7 @@ module Eval =
                 | true -> ref.BottomRight.Row
                 | false -> cell.Row + ref.BottomRight.Row
         if cell.Col >= c1 && cell.Col <= c2 && cell.Row >= r1 && cell.Row <= r2 then
-            ErrorValue("#REF!")
+            ErrorValue(Reference)
         else
             try
                 workbook 
@@ -114,7 +114,7 @@ module Eval =
                     |> Seq.toList
                     |> ValueList
             with
-                | ex -> ErrorValue("#REF!")
+                | ex -> ErrorValue(Reference)
 
     let rec eval (cell : AbsCell) (expr : Expr) (workbook : QT4.qt4<CellContent>) =
         match expr with
@@ -129,15 +129,15 @@ module Eval =
                     | BooleanValue(true) -> FloatValue(-1.0)
                     | BooleanValue(false) -> FloatValue(0.0)
                     | NullValue -> FloatValue(0.0)
-                    | StringValue(_) -> valueError
+                    | StringValue(_) -> ErrorValue(Value)
                     | ErrorValue(v) -> ErrorValue(v)
-                    | ValueList(_) -> valueError
+                    | ValueList(_) -> ErrorValue(Value)
             | Eq(e1, e2) -> 
                 match (eval cell e1 workbook, eval cell e2 workbook) with
                     | ErrorValue(v), _ -> ErrorValue(v)
-                    | ValueList(_), _ -> valueError
+                    | ValueList(_), _ -> ErrorValue(Value)
                     | _ , ErrorValue(v) -> ErrorValue(v)
-                    | _, ValueList(_) -> valueError
+                    | _, ValueList(_) -> ErrorValue(Value)
                     | StringValue(v1), StringValue(v2) -> BooleanValue(String.Compare(v1, v2, true) = 0)
                     | StringValue(""), NullValue -> BooleanValue(true)
                     | NullValue, StringValue("") -> BooleanValue(true)                    
@@ -153,9 +153,9 @@ module Eval =
             | Lt(e1, e2) ->
                 match (eval cell e1 workbook, eval cell e2 workbook) with
                     | ErrorValue(v), _ -> ErrorValue(v)
-                    | ValueList(_), _ -> valueError
+                    | ValueList(_), _ -> ErrorValue(Value)
                     | _, ErrorValue(v) -> ErrorValue(v)
-                    | _, ValueList(_) -> valueError                    
+                    | _, ValueList(_) -> ErrorValue(Value)                    
                     | StringValue(_), BooleanValue(_) -> BooleanValue(true)  // string < bool
                     | BooleanValue(_), StringValue(_) -> BooleanValue(false)
                     | FloatValue(_), StringValue(_) -> BooleanValue(true)    // float < string
@@ -184,18 +184,18 @@ module Eval =
             | Concat(e1, e2) ->
                 match (eval cell e1 workbook, eval cell e2 workbook) with
                     | ErrorValue(v), _ -> ErrorValue(v)
-                    | ValueList(_), _ -> valueError
+                    | ValueList(_), _ -> ErrorValue(Value)
                     | _, ErrorValue(v) -> ErrorValue(v)
-                    | _, ValueList(_) -> valueError
+                    | _, ValueList(_) -> ErrorValue(Value)
                     | v1, v2 -> StringValue(String.Concat(toString v1, toString v2))
             | Add(e1, e2) ->
                 match (eval cell e1 workbook, eval cell e2 workbook) with
                     | ErrorValue(v), _ -> ErrorValue(v)
-                    | StringValue(_), _ -> valueError
-                    | ValueList(_), _ -> valueError
+                    | StringValue(_), _ -> ErrorValue(Value)
+                    | ValueList(_), _ -> ErrorValue(Value)
                     | _, ErrorValue(v) -> ErrorValue(v)
-                    | _, StringValue(_) -> valueError
-                    | _, ValueList(_) -> valueError
+                    | _, StringValue(_) -> ErrorValue(Value)
+                    | _, ValueList(_) -> ErrorValue(Value)
                     | NullValue, NullValue -> FloatValue(0.0)
                     | NullValue, FloatValue(v) -> FloatValue(v)
                     | FloatValue(v), NullValue -> FloatValue(v)
@@ -208,11 +208,11 @@ module Eval =
             | Sub(e1, e2) ->
                 match (eval cell e1 workbook, eval cell e2 workbook) with
                     | ErrorValue(v), _ -> ErrorValue(v)
-                    | StringValue(_), _ -> valueError
-                    | ValueList(_), _ -> valueError
+                    | StringValue(_), _ -> ErrorValue(Value)
+                    | ValueList(_), _ -> ErrorValue(Value)
                     | _, ErrorValue(v) -> ErrorValue(v)
-                    | _, StringValue(_) -> valueError
-                    | _, ValueList(_) -> valueError
+                    | _, StringValue(_) -> ErrorValue(Value)
+                    | _, ValueList(_) -> ErrorValue(Value)
                     | NullValue, NullValue -> FloatValue(0.0)
                     | NullValue, FloatValue(v) -> FloatValue(-v)
                     | FloatValue(v), NullValue -> FloatValue(v)
@@ -225,11 +225,11 @@ module Eval =
             | Mul(e1, e2) ->
                 match (eval cell e1 workbook, eval cell e2 workbook) with
                     | ErrorValue(v), _ -> ErrorValue(v)
-                    | StringValue(_), _ -> valueError
-                    | ValueList(_), _ -> valueError
+                    | StringValue(_), _ -> ErrorValue(Value)
+                    | ValueList(_), _ -> ErrorValue(Value)
                     | _, ErrorValue(v) -> ErrorValue(v)
-                    | _, StringValue(_) -> valueError
-                    | _, ValueList(_) -> valueError
+                    | _, StringValue(_) -> ErrorValue(Value)
+                    | _, ValueList(_) -> ErrorValue(Value)
                     | NullValue, _ -> FloatValue(0.0)
                     | _, NullValue -> FloatValue(0.0)
                     | FloatValue(v1), FloatValue(v2) -> FloatValue(v1 * v2)
@@ -239,14 +239,14 @@ module Eval =
             | Div(e1, e2) ->
                 match (eval cell e1 workbook, eval cell e2 workbook) with
                     | ErrorValue(v), _ -> ErrorValue(v)
-                    | StringValue(_), _ -> valueError
-                    | ValueList(_), _ -> valueError
+                    | StringValue(_), _ -> ErrorValue(Value)
+                    | ValueList(_), _ -> ErrorValue(Value)
                     | _, ErrorValue(v) -> ErrorValue(v)
-                    | _, StringValue(_) -> valueError
-                    | _, ValueList(_) -> valueError
-                    | _, FloatValue(0.0) -> divZeroError
-                    | _, BooleanValue(false) -> divZeroError
-                    | _, NullValue -> divZeroError
+                    | _, StringValue(_) -> ErrorValue(Value)
+                    | _, ValueList(_) -> ErrorValue(Value)
+                    | _, FloatValue(0.0) -> ErrorValue(DivZero)
+                    | _, BooleanValue(false) -> ErrorValue(DivZero)
+                    | _, NullValue -> ErrorValue(DivZero)
                     | NullValue, FloatValue(_) -> FloatValue(0.0)
                     | NullValue, BooleanValue(true) -> FloatValue(0.0)
                     | FloatValue(v1), FloatValue(v2) -> FloatValue(v1 / v2)
@@ -256,32 +256,32 @@ module Eval =
             | Pow(e1, e2) ->
                 match (eval cell e1 workbook, eval cell e2 workbook) with
                     | ErrorValue(v), _ -> ErrorValue(v)
-                    | StringValue(_), _ -> valueError
-                    | ValueList(_), _ -> valueError
+                    | StringValue(_), _ -> ErrorValue(Value)
+                    | ValueList(_), _ -> ErrorValue(Value)
                     | _, ErrorValue(v) -> ErrorValue(v)
-                    | _, StringValue(_) -> valueError
-                    | _, ValueList(_) -> valueError
-                    | NullValue, NullValue -> numberError
-                    | NullValue, FloatValue(v) when v < 0.0 -> divZeroError
-                    | NullValue, FloatValue(0.0) -> numberError
+                    | _, StringValue(_) -> ErrorValue(Value)
+                    | _, ValueList(_) -> ErrorValue(Value)
+                    | NullValue, NullValue -> ErrorValue(Number)
+                    | NullValue, FloatValue(v) when v < 0.0 -> ErrorValue(DivZero)
+                    | NullValue, FloatValue(0.0) -> ErrorValue(Number)
                     | NullValue, FloatValue(_) -> FloatValue(0.0)
-                    | NullValue, BooleanValue(false) -> numberError
+                    | NullValue, BooleanValue(false) -> ErrorValue(Number)
                     | NullValue, BooleanValue(true) -> FloatValue(0.0)
-                    | FloatValue(0.0), NullValue -> numberError
+                    | FloatValue(0.0), NullValue -> ErrorValue(Number)
                     | FloatValue(_), NullValue -> FloatValue(1.0)
-                    | BooleanValue(false), NullValue -> numberError
+                    | BooleanValue(false), NullValue -> ErrorValue(Number)
                     | BooleanValue(true), NullValue -> FloatValue(1.0)
-                    | FloatValue(0.0), FloatValue(v) when v < 0.0 -> divZeroError
-                    | FloatValue(0.0), FloatValue(0.0) -> numberError
+                    | FloatValue(0.0), FloatValue(v) when v < 0.0 -> ErrorValue(DivZero)
+                    | FloatValue(0.0), FloatValue(0.0) -> ErrorValue(Number)
                     | FloatValue(v1), FloatValue(v2) -> FloatValue(v1 ** v2)
-                    | FloatValue(0.0), BooleanValue(false) -> numberError
+                    | FloatValue(0.0), BooleanValue(false) -> ErrorValue(Number)
                     | FloatValue(_), BooleanValue(false) -> FloatValue(1.0)
                     | FloatValue(v), BooleanValue(true) -> FloatValue(v)
-                    | BooleanValue(false), FloatValue(v) when v < 0.0 -> divZeroError
-                    | BooleanValue(false), FloatValue(0.0) -> numberError
+                    | BooleanValue(false), FloatValue(v) when v < 0.0 -> ErrorValue(DivZero)
+                    | BooleanValue(false), FloatValue(0.0) -> ErrorValue(Number)
                     | BooleanValue(false), FloatValue(_) -> FloatValue(0.0)
                     | BooleanValue(true), FloatValue(_) -> FloatValue(1.0)
-                    | BooleanValue(false), BooleanValue(false) -> numberError
+                    | BooleanValue(false), BooleanValue(false) -> ErrorValue(Number)
                     | BooleanValue(false), BooleanValue(true) -> FloatValue(0.0)
                     | BooleanValue(true), BooleanValue(false) -> FloatValue(1.0)
                     | BooleanValue(true), BooleanValue(true) -> FloatValue(1.0)
@@ -305,12 +305,12 @@ module Eval =
                             | FloatValue(_)
                             | BooleanValue(true) -> eval cell e2 workbook
                             | ValueList(_)
-                            | StringValue(_) -> ErrorValue("#VALUE!")
+                            | StringValue(_) -> ErrorValue(Value)
                             | ErrorValue(v) -> ErrorValue(v)
-                    | _ -> ErrorValue("#PARSE!")
+                    | _ -> ErrorValue(Parse)
             | "SUM" ->
                 match list with
-                    | [] -> ErrorValue("#PARSE!")
+                    | [] -> ErrorValue(Parse)
                     | _ ->
                         let refs = 
                             list 
@@ -329,7 +329,7 @@ module Eval =
                             | None ->
                                 let str = all |> List.tryFind (fun v -> match v with | StringValue(_) -> true | _ -> false)
                                 match str with
-                                    | Some(s) -> ErrorValue("#VALUE!")
+                                    | Some(s) -> ErrorValue(Value)
                                     | None ->
                                         all 
                                             |> List.map (fun v -> match v with | BooleanValue(b) -> toFloat b | FloatValue(f) -> f | _ -> 0.0)
@@ -337,7 +337,7 @@ module Eval =
                                             |> FloatValue
             | "COUNT" ->
                 match list with
-                    | [] -> ErrorValue("#PARSE!")
+                    | [] -> ErrorValue(Parse)
                     | _ ->
                         list 
                             |> List.map (fun e -> eval cell e workbook)
@@ -346,4 +346,4 @@ module Eval =
                             |> List.length
                             |> float
                             |> FloatValue
-            | _ -> ErrorValue("#PARSE!")
+            | _ -> ErrorValue(Parse)

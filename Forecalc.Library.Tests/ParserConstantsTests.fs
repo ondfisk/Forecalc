@@ -2,6 +2,7 @@
 
 open NUnit.Framework
 open FsUnit
+open Forecalc.Library
 open Forecalc.Library.Ast
 open Forecalc.Library.Parser
 
@@ -38,36 +39,36 @@ let ``'Escaped string... -> Escaped string...``() =
     "'Escaped string..." |> parse |> should equal (EscapedString "Escaped string...")
 
 [<Test>]
-let ``#DIV/0! -> Error("#DIV/0!")``() =
-    "#DIV/0!" |> parse |> should equal (Error "#DIV/0!")
+let ``#DIV/0! -> Error(DivZero)``() =
+    "#DIV/0!" |> parse |> should equal (Error DivZero)
 
 [<Test>]
-let ``#N/A! -> Error("#N/A!")``() =
-    "#N/A!" |> parse |> should equal (Error "#N/A!")
+let ``#N/A! -> String("#N/A!")``() =
+    "#N/A!" |> parse |> should equal (String "#N/A!")
    
 [<Test>]
-let ``#NAME? -> Error("#NAME?")``() =
-    "#NAME?" |> parse |> should equal (Error "#NAME?")
+let ``#NAME? -> Error(Name)``() =
+    "#NAME?" |> parse |> should equal (Error Name)
      
 [<Test>]
-let ``#NULL! -> Error("#NULL!")``() =
-    "#NULL!" |> parse |> should equal (Error "#NULL!")
+let ``#NULL! -> Error(Null)``() =
+    "#NULL!" |> parse |> should equal (Error Error.Null)
 
 [<Test>]
-let ``#NUM! -> Error("#NUM!")``() =
-    "#NUM!" |> parse |> should equal (Error "#NUM!")
+let ``#NUM! -> Error(Number)``() =
+    "#NUM!" |> parse |> should equal (Error Number)
 
 [<Test>]
-let ``#REF! -> Error("#REF!")``() =
-    "#REF!" |> parse |> should equal (Error "#REF!")
+let ``#REF! -> Error(Reference)``() =
+    "#REF!" |> parse |> should equal (Error Reference)
 
 [<Test>]
-let ``#VALUE! -> Error("#VALUE!")``() =
-    "#VALUE!" |> parse |> should equal (Error "#VALUE!")
+let ``#VALUE! -> Error(Value)``() =
+    "#VALUE!" |> parse |> should equal (Error Value)
 
 [<Test>]
-let ``#value! -> Error("#VALUE!")``() =
-    "#value!" |> parse |> should equal (Error "#VALUE!")
+let ``#value! -> Error(Value)``() =
+    "#value!" |> parse |> should equal (Error Value)
 
 [<Test>]
 let ``#Invalid_Error_Message! -> String("#Invalid_Error_Message!")``() =
@@ -75,43 +76,43 @@ let ``#Invalid_Error_Message! -> String("#Invalid_Error_Message!")``() =
 
 [<Test>]
 let ``=#DIV/0! -> Error("#DIV/0!")``() =
-    "=#DIV/0!" |> parse |> should equal (Error "#DIV/0!")
+    "=#DIV/0!" |> parse |> should equal (Error DivZero)
 
 [<Test>]
-let ``=#N/A! -> Error("#N/A!")``() =
-    "=#N/A!" |> parse |> should equal (Error "#N/A!")
+let ``=#N/A! -> Error(Parse)``() =
+    "=#N/A!" |> parse |> should equal (Error Parse)
    
 [<Test>]
-let ``=#NAME? -> Error("#NAME?")``() =
-    "=#NAME?" |> parse |> should equal (Error "#NAME?")
+let ``=#NAME? -> Error(Name)``() =
+    "=#NAME?" |> parse |> should equal (Error Name)
      
 [<Test>]
-let ``=#NULL! -> Error("#NULL!")``() =
-    "=#NULL!" |> parse |> should equal (Error "#NULL!")
+let ``=#NULL! -> Error(Null)``() =
+    "=#NULL!" |> parse |> should equal (Error Error.Null)
 
 [<Test>]
-let ``=#NUM! -> Error("#NUM!")``() =
-    "=#NUM!" |> parse |> should equal (Error "#NUM!")
+let ``=#NUM! -> Error(Number)``() =
+    "=#NUM!" |> parse |> should equal (Error Number)
 
 [<Test>]
-let ``=#REF! -> Error("#REF!")``() =
-    "=#REF!" |> parse |> should equal (Error "#REF!")
+let ``=#REF! -> Error(Reference)``() =
+    "=#REF!" |> parse |> should equal (Error Reference)
 
 [<Test>]
-let ``=#VALUE! -> Error("#VALUE!")``() =
-    "=#VALUE!" |> parse |> should equal (Error "#VALUE!")
+let ``=#VALUE! -> Error(Value)``() =
+    "=#VALUE!" |> parse |> should equal (Error Value)
 
 [<Test>]
-let ``=#value! -> Error("#VALUE!")``() =
-    "=#value!" |> parse |> should equal (Error "#VALUE!")
+let ``=#value! -> Error(Value)``() =
+    "=#value!" |> parse |> should equal (Error Value)
 
 [<Test>]
-let ``=#Invalid_Error_Message! -> Error("#PARSE!")``() =
-    "=#Invalid_Error_Message!" |> parse |> should equal (Error "#PARSE!")
+let ``=#Invalid_Error_Message! -> Error(Parse)``() =
+    "=#Invalid_Error_Message!" |> parse |> should equal (Error Parse)
 
 [<Test>]
-let ``=this is not a valid formula -> Error("#PARSE!")``() =
-    "=this is not a valid formula" |> parse |> should equal (Error "#PARSE!")
+let ``=this is not a valid formula -> Error(Parse)``() =
+    "=this is not a valid formula" |> parse |> should equal (Error Parse)
 
 [<Test>]
 let ``"=42" -> 42``() =

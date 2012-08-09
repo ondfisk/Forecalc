@@ -28,18 +28,18 @@ let ``Eq(Boolean false, String "42") -> BooleanValue(false)``() =
     eval cell expr workbook |> should equal (BooleanValue false)
 
 [<Test>]
-let ``Eq(Error("#REF!", String "42") -> ErrorValue("#REF!")``() =
+let ``Eq(Error("#REF!", String "42") -> ErrorValue(Reference)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Eq(Error "#REF!", String "42")
-    eval cell expr workbook |> should equal (ErrorValue "#REF!")
+    let expr = Eq(Error Reference, String "42")
+    eval cell expr workbook |> should equal (ErrorValue Reference)
 
 [<Test>]
-let ``Eq(String "42", Error("#REF!") -> ErrorValue("#REF!")``() =
+let ``Eq(String "42", Error(Reference) -> ErrorValue(Reference)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Eq(String "42", Error "#REF!")
-    eval cell expr workbook |> should equal (ErrorValue "#REF!")
+    let expr = Eq(String "42", Error Reference)
+    eval cell expr workbook |> should equal (ErrorValue Reference)
 
 [<Test>]
 let ``Eq(String "42", EscapedString("42") -> BooleanValue(true)``() =
@@ -161,18 +161,18 @@ let ``NotEq(Boolean false, String "42") -> BooleanValue(true)``() =
     eval cell expr workbook |> should equal (BooleanValue true)
 
 [<Test>]
-let ``NotEq(Error("#REF!", String "42") -> ErrorValue("#REF!")``() =
+let ``NotEq(Error("#REF!", String "42") -> ErrorValue(Reference)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = NotEq(Error "#REF!", String "42")
-    eval cell expr workbook |> should equal (ErrorValue "#REF!")
+    let expr = NotEq(Error Reference, String "42")
+    eval cell expr workbook |> should equal (ErrorValue Reference)
 
 [<Test>]
-let ``NotEq(String "42", Error("#REF!") -> ErrorValue("#REF!")``() =
+let ``NotEq(String "42", Error(Reference) -> ErrorValue(Reference)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = NotEq(String "42", Error "#REF!")
-    eval cell expr workbook |> should equal (ErrorValue "#REF!")
+    let expr = NotEq(String "42", Error Reference)
+    eval cell expr workbook |> should equal (ErrorValue Reference)
 
 [<Test>]
 let ``NotEq(String "42", EscapedString("42") -> BooleanValue(false)``() =
@@ -322,18 +322,18 @@ let ``Not true<false -> Lt(Boolean true, Boolean false) -> BooleanValue(false)``
     eval cell expr workbook |> should equal (BooleanValue false)
 
 [<Test>]
-let ``Lt(Error("#REF!", String "42") -> ErrorValue("#REF!")``() =
+let ``Lt(Error("#REF!", String "42") -> ErrorValue(Reference)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Lt(Error "#REF!", String "42")
-    eval cell expr workbook |> should equal (ErrorValue "#REF!")
+    let expr = Lt(Error Reference, String "42")
+    eval cell expr workbook |> should equal (ErrorValue Reference)
 
 [<Test>]
-let ``Lt(String "42", Error("#REF!") -> ErrorValue("#REF!")``() =
+let ``Lt(String "42", Error(Reference) -> ErrorValue(Reference)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Lt(String "42", Error "#REF!")
-    eval cell expr workbook |> should equal (ErrorValue "#REF!")
+    let expr = Lt(String "42", Error Reference)
+    eval cell expr workbook |> should equal (ErrorValue Reference)
 
 [<Test>]
 let ``Gently<Dirk -> Lt(String "Gently", String("Dirk") -> BooleanValue(false)``() =
@@ -399,18 +399,18 @@ let ``true>false -> Gt(Boolean true, Boolean false) -> BooleanValue(true)``() =
     eval cell expr workbook |> should equal (BooleanValue true)
 
 [<Test>]
-let ``Gt(Error("#REF!", String "42") -> ErrorValue("#REF!")``() =
+let ``Gt(Error("#REF!", String "42") -> ErrorValue(Reference)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Gt(Error "#REF!", String "42")
-    eval cell expr workbook |> should equal (ErrorValue "#REF!")
+    let expr = Gt(Error Reference, String "42")
+    eval cell expr workbook |> should equal (ErrorValue Reference)
 
 [<Test>]
-let ``Gt(String "42", Error("#REF!") -> ErrorValue("#REF!")``() =
+let ``Gt(String "42", Error(Reference) -> ErrorValue(Reference)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Gt(String "42", Error "#REF!")
-    eval cell expr workbook |> should equal (ErrorValue "#REF!")
+    let expr = Gt(String "42", Error Reference)
+    eval cell expr workbook |> should equal (ErrorValue Reference)
 
 [<Test>]
 let ``Gently>Dirk -> Lt(String "Gently", String("Dirk") -> BooleanValue(true)``() =
@@ -476,18 +476,18 @@ let ``Not true<=false -> Lte(Boolean true, Boolean false) -> BooleanValue(false)
     eval cell expr workbook |> should equal (BooleanValue false)
 
 [<Test>]
-let ``Lte(Error("#REF!", String "42") -> ErrorValue("#REF!")``() =
+let ``Lte(Error("#REF!", String "42") -> ErrorValue(Reference)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Lte(Error "#REF!", String "42")
-    eval cell expr workbook |> should equal (ErrorValue "#REF!")
+    let expr = Lte(Error Reference, String "42")
+    eval cell expr workbook |> should equal (ErrorValue Reference)
 
 [<Test>]
-let ``Lte(String "42", Error("#REF!") -> ErrorValue("#REF!")``() =
+let ``Lte(String "42", Error(Reference) -> ErrorValue(Reference)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Lte(String "42", Error "#REF!")
-    eval cell expr workbook |> should equal (ErrorValue "#REF!")
+    let expr = Lte(String "42", Error Reference)
+    eval cell expr workbook |> should equal (ErrorValue Reference)
 
 [<Test>]
 let ``Gently<=Dirk -> Lte(String "Gently", String("Dirk") -> BooleanValue(false)``() =
@@ -567,18 +567,18 @@ let ``true>=false -> Gte(Boolean true, Boolean false) -> BooleanValue(true)``() 
     eval cell expr workbook |> should equal (BooleanValue true)
 
 [<Test>]
-let ``Gte(Error("#REF!", String "42") -> ErrorValue("#REF!")``() =
+let ``Gte(Error("#REF!", String "42") -> ErrorValue(Reference)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Gte(Error "#REF!", String "42")
-    eval cell expr workbook |> should equal (ErrorValue "#REF!")
+    let expr = Gte(Error Reference, String "42")
+    eval cell expr workbook |> should equal (ErrorValue Reference)
 
 [<Test>]
-let ``Gte(String "42", Error("#REF!") -> ErrorValue("#REF!")``() =
+let ``Gte(String "42", Error(Reference) -> ErrorValue(Reference)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Gte(String "42", Error "#REF!")
-    eval cell expr workbook |> should equal (ErrorValue "#REF!")
+    let expr = Gte(String "42", Error Reference)
+    eval cell expr workbook |> should equal (ErrorValue Reference)
 
 [<Test>]
 let ``Gently>=Dirk -> Lt(String "Gently", String("Dirk") -> BooleanValue(true)``() =

@@ -32,14 +32,14 @@ let ``Negate(String "42") -> ErrorValue "#VALUE!"``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Negate(String "42")
-    eval cell expr workbook |> should equal (ErrorValue "#VALUE!")
+    eval cell expr workbook |> should equal (ErrorValue Value)
 
 [<Test>]
 let ``Negate(Error "#NAME?") -> ErrorValue "#NAME?"``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Negate(Error "#NAME?")
-    eval cell expr workbook |> should equal (ErrorValue "#NAME?")
+    let expr = Negate(Error Name)
+    eval cell expr workbook |> should equal (ErrorValue Name)
 
 [<Test>]
 let ``Negate(Null) -> FloatValue 0.0``() =

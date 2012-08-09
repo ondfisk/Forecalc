@@ -3,6 +3,7 @@
 open System
 open NUnit.Framework
 open FsUnit
+open Forecalc.Library
 open Forecalc.Library.Ast
 open Forecalc.Library.ReferenceResolver
 
@@ -218,5 +219,5 @@ let ``Sum(42.0, R1C1) -> Fun("Sum", [Float 42.0 ; Ref(Cell({ Row = 1 ; RowAbs = 
     Fun("Sum", [Float 42.0 ; UnresolvedRef(R1C1Cell("R1C1"))]) |> resolveRefs cell |> should equal (Fun("Sum", [Float 42.0 ; Ref(Cell({ Sheet = None ; Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true }))]))
 
 [<Test>]
-let ``Error "42" -> Error "42"``() =
-    Error "42" |> resolveRefs cell |> should equal (Error "42")
+let ``Error(Reference) -> Error(Reference)``() =
+    Error(Reference) |> resolveRefs cell |> should equal (Error Reference)
