@@ -102,15 +102,6 @@ let ``filter (fun x -> x % 2 = 0) should strip odd items``() =
     result.[42, 42] |> should equal (Some 42)
 
 [<Test>]
-let ``filteri (fun c r v -> c > 1 && r > 1) return elements with index greater than 1,1``() =
-    let qt4 = create<int>()
-    qt4.[1, 1] <- Some(1)
-    qt4.[42, 42] <- Some(42)
-    let result = qt4 |> filteri (fun c r v -> c > 1 && r > 1)
-    result.[1, 1] |> should equal None
-    result.[42, 42] |> should equal (Some 42)
-
-[<Test>]
 let ``iteri should call all elements with index``() =
     let qt4 = create<int>() 
     qt4.[1512, 18243] <- Some 42
