@@ -39,6 +39,46 @@ let ``Valid relative reference -> Value()``() =
     eval cell expr workbook |> should equal (FloatValue 42.0)
 
 [<Test>]
+let ``Valid absolute sheet reference -> Value``() =
+    let worksheet = QT4.create<CellContent>()
+    worksheet.[41, 41] <- Some({ Expr = Float 42.0 ; Value = FloatValue 42.0 ; Volatile = false })
+    let workbook = Map.ofList [ "Sheet1", QT4.create<CellContent>() ; "Sheet2", worksheet ]
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Ref(Cell({ Sheet = Some "Sheet2" ; Row = 42 ; RowAbs = true ; Col = 42 ; ColAbs = true }))
+    eval cell expr workbook |> should equal (FloatValue 42.0)
+
+[<Test>]
+let ``Valid relative sheet reference -> Value()``() =
+    let worksheet = QT4.create<CellContent>()
+    worksheet.[41, 41] <- Some({ Expr = Float 42.0 ; Value = FloatValue 42.0 ; Volatile = false })
+    let workbook = Map.ofList [ "Sheet1", QT4.create<CellContent>() ; "Sheet2", worksheet ]
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Ref(Cell({ Sheet = Some "Sheet2" ; Row = 41 ; RowAbs = false ; Col = 41 ; ColAbs = false }))
+    eval cell expr workbook |> should equal (FloatValue 42.0)
+
+[<Test>]
+let ``Valid range -> Value list``() =
+    let worksheet = QT4.create<CellContent>()
+    worksheet.[1, 0] <- Some({ Expr = Float 1.0 ; Value = FloatValue 1.0 ; Volatile = false })
+    worksheet.[1, 1] <- Some({ Expr = Float 2.0 ; Value = FloatValue 2.0 ; Volatile = false })
+    worksheet.[1, 2] <- Some({ Expr = Float 3.0 ; Value = FloatValue 3.0 ; Volatile = false })
+    let workbook = Map.ofList [ "Sheet1", worksheet ]
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Ref(Range({ Sheet = None ; TopLeft = { Sheet = None ; Row = 0 ; RowAbs = false ; Col = 1 ; ColAbs = false } ; BottomRight = { Sheet = None ; Row = 2 ; RowAbs = false ; Col = 1 ; ColAbs = false }}))
+    eval cell expr workbook |> should equal (ValueList([ FloatValue 1.0 ; FloatValue 2.0 ; FloatValue 3.0 ]))
+
+[<Test>]
+let ``Valid sheet range -> Value list``() =
+    let worksheet = QT4.create<CellContent>()
+    worksheet.[1, 0] <- Some({ Expr = Float 1.0 ; Value = FloatValue 1.0 ; Volatile = false })
+    worksheet.[1, 1] <- Some({ Expr = Float 2.0 ; Value = FloatValue 2.0 ; Volatile = false })
+    worksheet.[1, 2] <- Some({ Expr = Float 3.0 ; Value = FloatValue 3.0 ; Volatile = false })
+    let workbook = Map.ofList [ "Sheet1", QT4.create<CellContent>() ; "Sheet2", worksheet ]
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Ref(Range({ Sheet = Some "Sheet2" ; TopLeft = { Sheet = Some "Sheet2" ; Row = 0 ; RowAbs = false ; Col = 1 ; ColAbs = false } ; BottomRight = { Sheet = Some "Sheet2" ; Row = 2 ; RowAbs = false ; Col = 1 ; ColAbs = false }}))
+    eval cell expr workbook |> should equal (ValueList([ FloatValue 1.0 ; FloatValue 2.0 ; FloatValue 3.0 ]))
+
+[<Test>]
 let ``=-range -> ErrorValue(Value)``() =
     let workbook = Map.ofList [ "Sheet1", (QT4.create<CellContent>()) ]
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
