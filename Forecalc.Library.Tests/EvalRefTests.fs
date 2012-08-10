@@ -21,6 +21,13 @@ let ``Invalid relative reference -> ErrorValue(Reference)``() =
     eval cell expr workbook |> should equal (ErrorValue Reference)
 
 [<Test>]
+let ``Invalid sheet reference -> ErrorValue(Reference)``() =
+    let workbook = Map.ofList [ "Sheet1", (QT4.create<CellContent>()) ]
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Ref(Cell({ Sheet = Some "Sheet2" ; Row = 0 ; RowAbs = true ; Col = 0 ; ColAbs = true }))
+    eval cell expr workbook |> should equal (ErrorValue Reference)
+
+[<Test>]
 let ``Valid absolute reference -> Value``() =
     let worksheet = QT4.create<CellContent>()
     worksheet.[41, 41] <- Some({ Expr = Float 42.0 ; Value = FloatValue 42.0 ; Volatile = false })
