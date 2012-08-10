@@ -30,7 +30,7 @@ module Parser =
                 match error with
                     | "#DIV/0!" -> Error(DivZero)
                     | "#NAME?" -> Error(Name)
-                    | "#NULL!" -> Error(Error.Null)
+                    | "#NULL!" -> Error(Null)
                     | "#NUM!" -> Error(Number)
                     | "#REF!" -> Error(Reference)
                     | "#VALUE!" -> Error(Value)

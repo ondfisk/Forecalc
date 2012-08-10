@@ -5,13 +5,12 @@ open Forecalc.Library.Ast
 let toError = function
     | "#DIV/0!" -> Error(DivZero)
     | "#NAME?" -> Error(Name)
-    | "#NULL!" -> Error(Error.Null)
+    | "#NULL!" -> Error(Null)
     | "#NUM!" -> Error(Number)
     | "#PARSE!" -> Error(Parse)
     | "#REF!" -> Error(Reference)
     | "#VALUE!" -> Error(Value)
     | _ -> Error(Parse)
-
 %}
 
 // The start token becomes a parser Fun in the compiled code:
@@ -104,5 +103,3 @@ Ref:
 ExprList:
     | Expr                        { [$1] }
     | Expr COMMA ExprList         { $1 :: $3 }
-
-

@@ -88,7 +88,7 @@ let ``=#NAME? -> Error(Name)``() =
      
 [<Test>]
 let ``=#NULL! -> Error(Null)``() =
-    "=#NULL!" |> parse |> should equal (Error Error.Null)
+    "=#NULL!" |> parse |> should equal (Error Null)
 
 [<Test>]
 let ``=#NUM! -> Error(Number)``() =

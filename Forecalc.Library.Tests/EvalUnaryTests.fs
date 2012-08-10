@@ -42,8 +42,8 @@ let ``Negate(Error "#NAME?") -> ErrorValue "#NAME?"``() =
     eval cell expr workbook |> should equal (ErrorValue Name)
 
 [<Test>]
-let ``Negate(Null) -> FloatValue 0.0``() =
+let ``Negate(Blank) -> FloatValue 0.0``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Negate(Null)
+    let expr = Negate(Blank)
     eval cell expr workbook |> should equal (FloatValue 0.0)

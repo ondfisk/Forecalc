@@ -28,17 +28,17 @@ let ``42.0 & Error(Value) -> ErrorValue(Value)``() =
     eval cell expr workbook |> should equal (ErrorValue Value)
 
 [<Test>]
-let ``42.0&Null -> String("42")``() =
+let ``42.0&Blank -> String("42")``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Concat(Float 42.0, Null)
+    let expr = Concat(Float 42.0, Blank)
     eval cell expr workbook |> should equal (StringValue "42")
 
 [<Test>]
-let ``Null&42.0 -> String("42")``() =
+let ``Blank&42.0 -> String("42")``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Concat(Null, Float 42.0)
+    let expr = Concat(Blank, Float 42.0)
     eval cell expr workbook |> should equal (StringValue "42")
 
 [<Test>]
@@ -378,532 +378,532 @@ let ``42^#REF! -> ErrorValue(Reference)``() =
     eval cell expr workbook |> should equal (ErrorValue Reference)
 
 [<Test>]
-let ``Null+Null -> Add(Null, Null) -> FloatValue(0.0)``() =
+let ``Blank+Blank -> Add(Blank, Blank) -> FloatValue(0.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Add(Null, Null)
+    let expr = Add(Blank, Blank)
     eval cell expr workbook |> should equal (FloatValue 0.0)
 
 [<Test>]
-let ``Null+"" -> Add(Null, "") -> ErrorValue(Value)``() =
+let ``Blank+"" -> Add(Blank, "") -> ErrorValue(Value)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Add(Null, String "")
+    let expr = Add(Blank, String "")
     eval cell expr workbook |> should equal (ErrorValue Value)
 
 [<Test>]
-let ``""+Null -> Add("", Null) -> ErrorValue(Value)``() =
+let ``""+Blank -> Add("", Blank) -> ErrorValue(Value)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Add(String "", Null)
+    let expr = Add(String "", Blank)
     eval cell expr workbook |> should equal (ErrorValue Value)
 
 [<Test>]
-let ``Null+"42" -> Add(Null, "42") -> ErrorValue(Value)``() =
+let ``Blank+"42" -> Add(Blank, "42") -> ErrorValue(Value)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Add(Null, String "42")
+    let expr = Add(Blank, String "42")
     eval cell expr workbook |> should equal (ErrorValue Value)
 
 [<Test>]
-let ``"42"+Null -> Add("42", Null) -> ErrorValue(Value)``() =
+let ``"42"+Blank -> Add("42", Blank) -> ErrorValue(Value)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Add(String "42", Null)
+    let expr = Add(String "42", Blank)
     eval cell expr workbook |> should equal (ErrorValue Value)
 
 [<Test>]
-let ``Null+0.0 -> Add(Null, 0.0) -> FloatValue(0.0)``() =
+let ``Blank+0.0 -> Add(Blank, 0.0) -> FloatValue(0.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Add(Null, Float 0.0)
+    let expr = Add(Blank, Float 0.0)
     eval cell expr workbook |> should equal (FloatValue 0.0)
 
 [<Test>]
-let ``0.0+Null -> Add(0.0, Null) -> FloatValue(0.0)``() =
+let ``0.0+Blank -> Add(0.0, Blank) -> FloatValue(0.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Add(Float 0.0, Null)
+    let expr = Add(Float 0.0, Blank)
     eval cell expr workbook |> should equal (FloatValue 0.0)
 
 [<Test>]
-let ``Null+42.0 -> Add(Null, -42.0) -> FloatValue(42.0)``() =
+let ``Blank+42.0 -> Add(Blank, -42.0) -> FloatValue(42.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Add(Null, Float 42.0)
+    let expr = Add(Blank, Float 42.0)
     eval cell expr workbook |> should equal (FloatValue 42.0)
 
 [<Test>]
-let ``42.0+Null -> Add(42.0, Null) -> FloatValue(42.0)``() =
+let ``42.0+Blank -> Add(42.0, Blank) -> FloatValue(42.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Add(Float 42.0, Null)
+    let expr = Add(Float 42.0, Blank)
     eval cell expr workbook |> should equal (FloatValue 42.0)
 
 [<Test>]
-let ``Null+-42.0 -> Add(Null, -42.0) -> FloatValue(-42.0)``() =
+let ``Blank+-42.0 -> Add(Blank, -42.0) -> FloatValue(-42.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Add(Null, Float -42.0)
+    let expr = Add(Blank, Float -42.0)
     eval cell expr workbook |> should equal (FloatValue -42.0)
 
 [<Test>]
-let ``-42.0+Null -> Add(-42.0, Null) -> FloatValue(-42.0)``() =
+let ``-42.0+Blank -> Add(-42.0, Blank) -> FloatValue(-42.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Add(Float -42.0, Null)
+    let expr = Add(Float -42.0, Blank)
     eval cell expr workbook |> should equal (FloatValue -42.0) 
 
 [<Test>]
-let ``Null+true -> Add(Null, true) -> FloatValue(1.0)``() =
+let ``Blank+true -> Add(Blank, true) -> FloatValue(1.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Add(Null, Boolean true)
+    let expr = Add(Blank, Boolean true)
     eval cell expr workbook |> should equal (FloatValue 1.0)
 
 [<Test>]
-let ``true+Null -> Add(true, Null) -> FloatValue(1.0)``() =
+let ``true+Blank -> Add(true, Blank) -> FloatValue(1.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Add(Boolean true, Null)
+    let expr = Add(Boolean true, Blank)
     eval cell expr workbook |> should equal (FloatValue 1.0) 
 
 [<Test>]
-let ``Null+false -> Add(Null, false) -> FloatValue(0.0)``() =
+let ``Blank+false -> Add(Blank, false) -> FloatValue(0.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Add(Null, Boolean false)
+    let expr = Add(Blank, Boolean false)
     eval cell expr workbook |> should equal (FloatValue 0.0)
 
 [<Test>]
-let ``false+Null -> Add(false, Null) -> FloatValue(0.0)``() =
+let ``false+Blank -> Add(false, Blank) -> FloatValue(0.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Add(Boolean false, Null)
+    let expr = Add(Boolean false, Blank)
     eval cell expr workbook |> should equal (FloatValue 0.0)
 
 [<Test>]
-let ``Null-Null -> Sub(Null, Null) -> FloatValue(0.0)``() =
+let ``Blank-Blank -> Sub(Blank, Blank) -> FloatValue(0.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Sub(Null, Null)
+    let expr = Sub(Blank, Blank)
     eval cell expr workbook |> should equal (FloatValue 0.0)
 
 [<Test>]
-let ``Null-"" -> Sub(Null, "") -> ErrorValue(Value)``() =
+let ``Blank-"" -> Sub(Blank, "") -> ErrorValue(Value)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Sub(Null, String "")
+    let expr = Sub(Blank, String "")
     eval cell expr workbook |> should equal (ErrorValue Value)
 
 [<Test>]
-let ``""-Null -> Sub("", Null) -> ErrorValue(Value)``() =
+let ``""-Blank -> Sub("", Blank) -> ErrorValue(Value)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Sub(String "", Null)
+    let expr = Sub(String "", Blank)
     eval cell expr workbook |> should equal (ErrorValue Value)
 
 [<Test>]
-let ``Null-"42" -> Sub(Null, "42") -> ErrorValue(Value)``() =
+let ``Blank-"42" -> Sub(Blank, "42") -> ErrorValue(Value)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Sub(Null, String "42")
+    let expr = Sub(Blank, String "42")
     eval cell expr workbook |> should equal (ErrorValue Value)
 
 [<Test>]
-let ``"42"-Null -> Sub("42", Null) -> ErrorValue(Value)``() =
+let ``"42"-Blank -> Sub("42", Blank) -> ErrorValue(Value)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Sub(String "42", Null)
+    let expr = Sub(String "42", Blank)
     eval cell expr workbook |> should equal (ErrorValue Value)
 
 [<Test>]
-let ``Null-0.0 -> Sub(Null, 0.0) -> FloatValue(0.0)``() =
+let ``Blank-0.0 -> Sub(Blank, 0.0) -> FloatValue(0.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Sub(Null, Float 0.0)
+    let expr = Sub(Blank, Float 0.0)
     eval cell expr workbook |> should equal (FloatValue 0.0)
 
 [<Test>]
-let ``0.0-Null -> Sub(0.0, Null) -> FloatValue(0.0)``() =
+let ``0.0-Blank -> Sub(0.0, Blank) -> FloatValue(0.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Sub(Float 0.0, Null)
+    let expr = Sub(Float 0.0, Blank)
     eval cell expr workbook |> should equal (FloatValue 0.0)
 
 [<Test>]
-let ``Null-42.0 -> Sub(Null, 42.0) -> FloatValue(-42.0)``() =
+let ``Blank-42.0 -> Sub(Blank, 42.0) -> FloatValue(-42.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Sub(Null, Float 42.0)
+    let expr = Sub(Blank, Float 42.0)
     eval cell expr workbook |> should equal (FloatValue -42.0)
 
 [<Test>]
-let ``42.0-Null -> Sub(42.0, Null) -> FloatValue(42.0)``() =
+let ``42.0-Blank -> Sub(42.0, Blank) -> FloatValue(42.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Sub(Float 42.0, Null)
+    let expr = Sub(Float 42.0, Blank)
     eval cell expr workbook |> should equal (FloatValue 42.0)
 
 [<Test>]
-let ``Null--42.0 -> Sub(Null, -42.0) -> FloatValue(42.0)``() =
+let ``Blank--42.0 -> Sub(Blank, -42.0) -> FloatValue(42.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Sub(Null, Float -42.0)
+    let expr = Sub(Blank, Float -42.0)
     eval cell expr workbook |> should equal (FloatValue 42.0)
 
 [<Test>]
-let ``-42.0-Null -> Sub(-42.0, Null) -> FloatValue(-42.0)``() =
+let ``-42.0-Blank -> Sub(-42.0, Blank) -> FloatValue(-42.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Sub(Float -42.0, Null)
+    let expr = Sub(Float -42.0, Blank)
     eval cell expr workbook |> should equal (FloatValue -42.0) 
 
 [<Test>]
-let ``Null-true -> Sub(Null, true) -> FloatValue(-1.0)``() =
+let ``Blank-true -> Sub(Blank, true) -> FloatValue(-1.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Sub(Null, Boolean true)
+    let expr = Sub(Blank, Boolean true)
     eval cell expr workbook |> should equal (FloatValue -1.0)
 
 [<Test>]
-let ``true-Null -> Sub(true, Null) -> FloatValue(1.0)``() =
+let ``true-Blank -> Sub(true, Blank) -> FloatValue(1.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Sub(Boolean true, Null)
+    let expr = Sub(Boolean true, Blank)
     eval cell expr workbook |> should equal (FloatValue 1.0) 
 
 [<Test>]
-let ``Null-false -> Sub(Null, false) -> FloatValue(0.0)``() =
+let ``Blank-false -> Sub(Blank, false) -> FloatValue(0.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Sub(Null, Boolean false)
+    let expr = Sub(Blank, Boolean false)
     eval cell expr workbook |> should equal (FloatValue 0.0)
 
 [<Test>]
-let ``false-Null -> Sub(false, Null) -> FloatValue(0.0)``() =
+let ``false-Blank -> Sub(false, Blank) -> FloatValue(0.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Sub(Boolean false, Null)
+    let expr = Sub(Boolean false, Blank)
     eval cell expr workbook |> should equal (FloatValue 0.0) 
 
 [<Test>]
-let ``Null*Null -> Mul(Null, Null) -> FloatValue(0.0)``() =
+let ``Blank*Blank -> Mul(Blank, Blank) -> FloatValue(0.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Mul(Null, Null)
+    let expr = Mul(Blank, Blank)
     eval cell expr workbook |> should equal (FloatValue 0.0)
 
 [<Test>]
-let ``Null*"" -> Mul(Null, "") -> ErrorValue(Value)``() =
+let ``Blank*"" -> Mul(Blank, "") -> ErrorValue(Value)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Mul(Null, String "")
+    let expr = Mul(Blank, String "")
     eval cell expr workbook |> should equal (ErrorValue Value)
 
 [<Test>]
-let ``""*Null -> Mul("", Null) -> ErrorValue(Value)``() =
+let ``""*Blank -> Mul("", Blank) -> ErrorValue(Value)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Mul(String "", Null)
+    let expr = Mul(String "", Blank)
     eval cell expr workbook |> should equal (ErrorValue Value)
 
 [<Test>]
-let ``Null*"42" -> Mul(Null, "42") -> ErrorValue(Value)``() =
+let ``Blank*"42" -> Mul(Blank, "42") -> ErrorValue(Value)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Mul(Null, String "42")
+    let expr = Mul(Blank, String "42")
     eval cell expr workbook |> should equal (ErrorValue Value)
 
 [<Test>]
-let ``"42"*Null -> Mul("42", Null) -> ErrorValue(Value)``() =
+let ``"42"*Blank -> Mul("42", Blank) -> ErrorValue(Value)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Mul(String "42", Null)
+    let expr = Mul(String "42", Blank)
     eval cell expr workbook |> should equal (ErrorValue Value)
 
 [<Test>]
-let ``Null*0.0 -> Mul(Null, 0.0) -> FloatValue(0.0)``() =
+let ``Blank*0.0 -> Mul(Blank, 0.0) -> FloatValue(0.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Mul(Null, Float 0.0)
+    let expr = Mul(Blank, Float 0.0)
     eval cell expr workbook |> should equal (FloatValue 0.0)
 
 [<Test>]
-let ``0.0*Null -> Mul(0.0, Null) -> FloatValue(0.0)``() =
+let ``0.0*Blank -> Mul(0.0, Blank) -> FloatValue(0.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Mul(Float 0.0, Null)
+    let expr = Mul(Float 0.0, Blank)
     eval cell expr workbook |> should equal (FloatValue 0.0)
 
 [<Test>]
-let ``Null*42.0 -> Mul(Null, 42.0) -> FloatValue(0.0)``() =
+let ``Blank*42.0 -> Mul(Blank, 42.0) -> FloatValue(0.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Mul(Null, Float 42.0)
+    let expr = Mul(Blank, Float 42.0)
     eval cell expr workbook |> should equal (FloatValue 0.0)
 
 [<Test>]
-let ``42.0*Null -> Mul(42.0, Null) -> FloatValue(0.0)``() =
+let ``42.0*Blank -> Mul(42.0, Blank) -> FloatValue(0.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Mul(Float 42.0, Null)
+    let expr = Mul(Float 42.0, Blank)
     eval cell expr workbook |> should equal (FloatValue 0.0)
 
 [<Test>]
-let ``Null*-42.0 -> Mul(Null, -42.0) -> FloatValue(0.0)``() =
+let ``Blank*-42.0 -> Mul(Blank, -42.0) -> FloatValue(0.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Mul(Null, Float -42.0)
+    let expr = Mul(Blank, Float -42.0)
     eval cell expr workbook |> should equal (FloatValue 0.0)
 
 [<Test>]
-let ``-42.0*Null -> Mul(-42.0, Null) -> FloatValue(0.0)``() =
+let ``-42.0*Blank -> Mul(-42.0, Blank) -> FloatValue(0.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Mul(Float -42.0, Null)
+    let expr = Mul(Float -42.0, Blank)
     eval cell expr workbook |> should equal (FloatValue 0.0) 
 
 [<Test>]
-let ``Null*true -> Mul(Null, true) -> FloatValue(0.0)``() =
+let ``Blank*true -> Mul(Blank, true) -> FloatValue(0.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Mul(Null, Boolean true)
+    let expr = Mul(Blank, Boolean true)
     eval cell expr workbook |> should equal (FloatValue 0.0)
 
 [<Test>]
-let ``true*Null -> Mul(true, Null) -> FloatValue(0.0)``() =
+let ``true*Blank -> Mul(true, Blank) -> FloatValue(0.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Mul(Boolean true, Null)
+    let expr = Mul(Boolean true, Blank)
     eval cell expr workbook |> should equal (FloatValue 0.0) 
 
 [<Test>]
-let ``Null*false -> Mul(Null, false) -> FloatValue(0.0)``() =
+let ``Blank*false -> Mul(Blank, false) -> FloatValue(0.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Mul(Null, Boolean false)
+    let expr = Mul(Blank, Boolean false)
     eval cell expr workbook |> should equal (FloatValue 0.0)
 
 [<Test>]
-let ``false*Null -> Mul(false, Null) -> FloatValue(0.0)``() =
+let ``false*Blank -> Mul(false, Blank) -> FloatValue(0.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Mul(Boolean false, Null)
+    let expr = Mul(Boolean false, Blank)
     eval cell expr workbook |> should equal (FloatValue 0.0)
 
 [<Test>]
-let ``Null/Null -> Div(Null, Null) -> ErrorValue("#DIV/0!")``() =
+let ``Blank/Blank -> Div(Blank, Blank) -> ErrorValue(DivZero)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Div(Null, Null)
+    let expr = Div(Blank, Blank)
     eval cell expr workbook |> should equal (ErrorValue DivZero)
 
 [<Test>]
-let ``Null/"" -> Div(Null, "") -> ErrorValue(Value)``() =
+let ``Blank/"" -> Div(Blank, "") -> ErrorValue(Value)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Div(Null, String "")
+    let expr = Div(Blank, String "")
     eval cell expr workbook |> should equal (ErrorValue Value)
 
 [<Test>]
-let ``""/Null -> Div("", Null) -> ErrorValue(Value)``() =
+let ``""/Blank -> Div("", Blank) -> ErrorValue(Value)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Div(String "", Null)
+    let expr = Div(String "", Blank)
     eval cell expr workbook |> should equal (ErrorValue Value)
 
 [<Test>]
-let ``Null/"42" -> Div(Null, "42") -> ErrorValue(Value)``() =
+let ``Blank/"42" -> Div(Blank, "42") -> ErrorValue(Value)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Div(Null, String "42")
+    let expr = Div(Blank, String "42")
     eval cell expr workbook |> should equal (ErrorValue Value)
 
 [<Test>]
-let ``"42"/Null -> Div("42", Null) -> ErrorValue(Value)``() =
+let ``"42"/Blank -> Div("42", Blank) -> ErrorValue(Value)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Div(String "42", Null)
+    let expr = Div(String "42", Blank)
     eval cell expr workbook |> should equal (ErrorValue Value)
 
 [<Test>]
-let ``Null/0.0 -> Div(Null, 0.0) -> ErrorValue("#DIV/0!")``() =
+let ``Blank/0.0 -> Div(Blank, 0.0) -> ErrorValue(DivZero)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Div(Null, Float 0.0)
+    let expr = Div(Blank, Float 0.0)
     eval cell expr workbook |> should equal (ErrorValue DivZero)
 
 [<Test>]
-let ``0.0/Null -> Div(0.0, Null) -> ErrorValue("#DIV/0!")``() =
+let ``0.0/Blank -> Div(0.0, Blank) -> ErrorValue(DivZero)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Div(Float 0.0, Null)
+    let expr = Div(Float 0.0, Blank)
     eval cell expr workbook |> should equal (ErrorValue DivZero)
 
 [<Test>]
-let ``Null/1.0 -> Div(Null, 1.0) -> FloatValue(0.0)``() =
+let ``Blank/1.0 -> Div(Blank, 1.0) -> FloatValue(0.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Div(Null, Float 1.0)
+    let expr = Div(Blank, Float 1.0)
     eval cell expr workbook |> should equal (FloatValue 0.0)
 
 [<Test>]
-let ``1.0/Null -> Div(1.0, Null) -> ErrorValue("#DIV/0!")``() =
+let ``1.0/Blank -> Div(1.0, Blank) -> ErrorValue(DivZero)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Div(Float 1.0, Null)
+    let expr = Div(Float 1.0, Blank)
     eval cell expr workbook |> should equal (ErrorValue DivZero)
 
 [<Test>]
-let ``Null/-1.0 -> Div(Null, -1.0) -> FloatValue(0.0)``() =
+let ``Blank/-1.0 -> Div(Blank, -1.0) -> FloatValue(0.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Div(Null, Float -1.0)
+    let expr = Div(Blank, Float -1.0)
     eval cell expr workbook |> should equal (FloatValue 0.0)
 
 [<Test>]
-let ``-1.0/Null -> Div(-1.0, Null) -> ErrorValue("#DIV/0!")``() =
+let ``-1.0/Blank -> Div(-1.0, Blank) -> ErrorValue(DivZero)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Div(Float -1.0, Null)
+    let expr = Div(Float -1.0, Blank)
     eval cell expr workbook |> should equal (ErrorValue DivZero)
 
 [<Test>]
-let ``Null/true -> Div(Null, true) -> FloatValue(0.0)``() =
+let ``Blank/true -> Div(Blank, true) -> FloatValue(0.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Div(Null, Boolean true)
+    let expr = Div(Blank, Boolean true)
     eval cell expr workbook |> should equal (FloatValue 0.0)
 
 [<Test>]
-let ``true/Null -> Div(true, Null) -> ErrorValue("#DIV/0!")``() =
+let ``true/Blank -> Div(true, Blank) -> ErrorValue(DivZero)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Div(Boolean true, Null)
+    let expr = Div(Boolean true, Blank)
     eval cell expr workbook |> should equal (ErrorValue DivZero)
 
 [<Test>]
-let ``Null/false -> Div(Null, false) -> ErrorValue("#DIV/0!")``() =
+let ``Blank/false -> Div(Blank, false) -> ErrorValue(DivZero)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Div(Null, Boolean false)
+    let expr = Div(Blank, Boolean false)
     eval cell expr workbook |> should equal (ErrorValue DivZero)
 
 [<Test>]
-let ``false/Null -> Div(false, Null) -> ErrorValue("#DIV/0!")``() =
+let ``false/Blank -> Div(false, Blank) -> ErrorValue(DivZero)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Div(Boolean false, Null)
+    let expr = Div(Boolean false, Blank)
     eval cell expr workbook |> should equal (ErrorValue DivZero)
 
 [<Test>]
-let ``Null^Null -> Pow(Null, Null) -> ErrorValue(Number)``() =
+let ``Blank^Blank -> Pow(Blank, Blank) -> ErrorValue(Number)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Pow(Null, Null)
+    let expr = Pow(Blank, Blank)
     eval cell expr workbook |> should equal (ErrorValue Number)
 
 [<Test>]
-let ``Null^"" -> Pow(Null, "") -> ErrorValue(Value)``() =
+let ``Blank^"" -> Pow(Blank, "") -> ErrorValue(Value)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Pow(Null, String "")
+    let expr = Pow(Blank, String "")
     eval cell expr workbook |> should equal (ErrorValue Value)
 
 [<Test>]
-let ``""^Null -> Pow("", Null) -> ErrorValue(Value)``() =
+let ``""^Blank -> Pow("", Blank) -> ErrorValue(Value)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Pow(String "", Null)
+    let expr = Pow(String "", Blank)
     eval cell expr workbook |> should equal (ErrorValue Value)
 
 [<Test>]
-let ``Null^"42" -> Pow(Null, "42") -> ErrorValue(Value)``() =
+let ``Blank^"42" -> Pow(Blank, "42") -> ErrorValue(Value)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Pow(Null, String "42")
+    let expr = Pow(Blank, String "42")
     eval cell expr workbook |> should equal (ErrorValue Value)
 
 [<Test>]
-let ``"42"^Null -> Pow("42", Null) -> ErrorValue(Value)``() =
+let ``"42"^Blank -> Pow("42", Blank) -> ErrorValue(Value)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Pow(String "42", Null)
+    let expr = Pow(String "42", Blank)
     eval cell expr workbook |> should equal (ErrorValue Value)
 
 [<Test>]
-let ``Null^0.0 -> Pow(Null, 0.0) -> ErrorValue(Number)``() =
+let ``Blank^0.0 -> Pow(Blank, 0.0) -> ErrorValue(Number)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Pow(Null, Float 0.0)
+    let expr = Pow(Blank, Float 0.0)
     eval cell expr workbook |> should equal (ErrorValue Number)
 
 [<Test>]
-let ``0.0^Null -> Pow(0.0, Null) -> ErrorValue(Number)``() =
+let ``0.0^Blank -> Pow(0.0, Blank) -> ErrorValue(Number)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Pow(Float 0.0, Null)
+    let expr = Pow(Float 0.0, Blank)
     eval cell expr workbook |> should equal (ErrorValue Number)
 
 [<Test>]
-let ``Null^1.0 -> Pow(Null, 1.0) -> FloatValue(0.0)``() =
+let ``Blank^1.0 -> Pow(Blank, 1.0) -> FloatValue(0.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Pow(Null, Float 1.0)
+    let expr = Pow(Blank, Float 1.0)
     eval cell expr workbook |> should equal (FloatValue 0.0)
 
 [<Test>]
-let ``1.0^Null -> Pow(1.0, Null) -> FloatValue(1.0)``() =
+let ``1.0^Blank -> Pow(1.0, Blank) -> FloatValue(1.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Pow(Float 1.0, Null)
+    let expr = Pow(Float 1.0, Blank)
     eval cell expr workbook |> should equal (FloatValue 1.0)
 
 [<Test>]
-let ``Null^-1.0 -> Pow(Null, -1.0) -> ErrorValue("#DIV/0!")``() =
+let ``Blank^-1.0 -> Pow(Blank, -1.0) -> ErrorValue(DivZero)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Pow(Null, Float -1.0)
+    let expr = Pow(Blank, Float -1.0)
     eval cell expr workbook |> should equal (ErrorValue DivZero)
 
 [<Test>]
-let ``-1^Null -> Pow(-1, Null) -> FloatValue(1.0)``() =
+let ``-1^Blank -> Pow(-1, Blank) -> FloatValue(1.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Pow(Float -1.0, Null)
+    let expr = Pow(Float -1.0, Blank)
     eval cell expr workbook |> should equal (FloatValue 1.0) 
 
 [<Test>]
-let ``Null^true -> Pow(Null, true) -> FloatValue(0.0)``() =
+let ``Blank^true -> Pow(Blank, true) -> FloatValue(0.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Pow(Null, Boolean true)
+    let expr = Pow(Blank, Boolean true)
     eval cell expr workbook |> should equal (FloatValue 0.0)
 
 [<Test>]
-let ``true^Null -> Pow(true, Null) -> FloatValue(1.0)``() =
+let ``true^Blank -> Pow(true, Blank) -> FloatValue(1.0)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Pow(Boolean true, Null)
+    let expr = Pow(Boolean true, Blank)
     eval cell expr workbook |> should equal (FloatValue 1.0) 
 
 [<Test>]
-let ``Null^false -> Pow(Null, false) -> ErrorValue(Number)``() =
+let ``Blank^false -> Pow(Blank, false) -> ErrorValue(Number)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Pow(Null, Boolean false)
+    let expr = Pow(Blank, Boolean false)
     eval cell expr workbook |> should equal (ErrorValue Number)
 
 [<Test>]
-let ``false^Null -> Pow(false, Null) -> ErrorValue(Number)``() =
+let ``false^Blank -> Pow(false, Blank) -> ErrorValue(Number)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Pow(Boolean false, Null)
+    let expr = Pow(Boolean false, Blank)
     eval cell expr workbook |> should equal (ErrorValue Number)
 
 [<Test>]
-let ``0.0^-1.0 -> Pow(0.0, -1.0) -> ErrorValue("#DIV/0!")``() =
+let ``0.0^-1.0 -> Pow(0.0, -1.0) -> ErrorValue(DivZero)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Pow(Float 0.0, Float -1.0)
@@ -917,7 +917,7 @@ let ``0.0^0.0 -> Pow(0.0, 0.0) -> ErrorValue(Number)``() =
     eval cell expr workbook |> should equal (ErrorValue Number)
     
 [<Test>]
-let ``false^-1.0 -> Pow(false, -1.0) -> ErrorValue("#DIV/0!")``() =
+let ``false^-1.0 -> Pow(false, -1.0) -> ErrorValue(DivZero)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Pow(Boolean false, Float -1.0)

@@ -35,7 +35,7 @@ let ``EscapedString("42") -> StringValue("42")``() =
     eval cell expr workbook |> should equal (StringValue "42")
 
 [<Test>]
-let ``Error(Reference) -> ErrorValue("#REF!")``() =
+let ``Error(Reference) -> ErrorValue(Reference)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Error(Reference)
@@ -49,8 +49,8 @@ let ``UnresolvedRef(_) -> Fail``() =
     (fun () -> eval cell expr workbook |> ignore) |> should throw typeof<System.Exception>
 
 [<Test>]
-let ``Null -> NullValue``() =
+let ``Blank -> NullValue``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Null
+    let expr = Blank
     eval cell expr workbook |> should equal NullValue

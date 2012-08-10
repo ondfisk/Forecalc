@@ -7,14 +7,14 @@ open Forecalc.Library.Ast
 open Forecalc.Library.Eval
 
 [<Test>]
-let ``Invalid absolute reference -> ErrorValue("#REF!")``() =
+let ``Invalid absolute reference -> ErrorValue(Reference)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Ref(Cell({ Sheet = None ; Row = 0 ; RowAbs = true ; Col = 0 ; ColAbs = true }))
     eval cell expr workbook |> should equal (ErrorValue Reference)
 
 [<Test>]
-let ``Invalid relative reference -> ErrorValue("#REF!")``() =
+let ``Invalid relative reference -> ErrorValue(Reference)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Ref(Cell({ Sheet = None ; Row = -1 ; RowAbs = false ; Col = -1 ; ColAbs = false }))
@@ -212,14 +212,14 @@ let ``=42.0&range -> ErrorValue(Value)``() =
     eval cell expr workbook |> should equal (ErrorValue Value)
     
 [<Test>]
-let ``Circular cell reference -> ErrorValue("#REF!")``() =
+let ``Circular cell reference -> ErrorValue(Reference)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Ref(Cell({ Sheet = None ; Row = 0 ; RowAbs = false ; Col = 0 ; ColAbs = false }))
     eval cell expr workbook |> should equal (ErrorValue Reference)
 
 [<Test>]
-let ``Circular cell range -> ErrorValue("#REF!")``() =
+let ``Circular cell range -> ErrorValue(Reference)``() =
     let workbook = QT4.create<CellContent>()
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Ref(Range({ Sheet = None ; TopLeft = { Sheet = None ; Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true } ; BottomRight = { Sheet = None ; Row = 2 ; RowAbs = true ; Col = 2 ; ColAbs = true }}))

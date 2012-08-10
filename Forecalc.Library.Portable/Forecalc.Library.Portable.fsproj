@@ -42,6 +42,9 @@
     <Compile Include="Lexing.fs" />
     <Compile Include="Parsing.fsi" />
     <Compile Include="Parsing.fs" />
+    <Compile Include="..\Forecalc.Library\Errors.fs">
+      <Link>Errors.fs</Link>
+    </Compile>
     <Compile Include="..\Forecalc.Library\Ast.fs">
       <Link>Ast.fs</Link>
     </Compile>

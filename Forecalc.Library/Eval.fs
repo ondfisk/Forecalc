@@ -26,7 +26,7 @@ module Eval =
             | String(_) 
             | EscapedString(_) 
             | Error(_) 
-            | Null -> false
+            | Blank -> false
             | Negate(e) -> isVolatile e
             | Eq(e1, e2)
             | NotEq(e1, e2)
@@ -54,7 +54,7 @@ module Eval =
                 | DivZero -> "#DIV/0!"
                 | Name -> "#NAME?"
                 | NotAvailable -> "#N/A!"
-                | Error.Null -> "#NULL!"
+                | Null -> "#NULL!"
                 | Number -> "#NUM!"
                 | Parse -> "#PARSE!"
                 | Reference -> "#REF!"
@@ -289,7 +289,7 @@ module Eval =
                     | Cell(ref) -> cellValue cell ref workbook
                     | Range(ref) -> cellRange cell ref workbook
             | UnresolvedRef(_) -> failwith "References must be resolved before calling eval"
-            | Null -> NullValue
+            | Blank -> NullValue
             | Fun(name, list) -> evalFun name list cell workbook
 
     and evalFun name list cell workbook =

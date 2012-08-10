@@ -162,8 +162,8 @@ let ``Pow(R1C1, Boolean false) is volatile``() =
     expr |> isVolatile |> should be True
 
 [<Test>]
-let ``Null is not volatile``() =
-    let expr = Null
+let ``Blank is not volatile``() =
+    let expr = Blank
     expr |> isVolatile |> should be False
 
 [<Test>]
@@ -173,7 +173,7 @@ let ``Ref is volatile``() =
 
 [<Test>]
 let ``IF with no references is not volatile``() =
-    let expr = Fun("IF", [ Float 1.0 ; Float 42.0 ; Null ])
+    let expr = Fun("IF", [ Float 1.0 ; Float 42.0 ; Blank ])
     expr |> isVolatile |> should be False
 
 [<Test>]

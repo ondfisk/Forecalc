@@ -18,4 +18,3 @@ let res =
     
 printfn "List: %A" list 
 printfn "Result: %A" res 
-

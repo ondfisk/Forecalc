@@ -15,6 +15,7 @@ type token =
   | COLON
   | COMMA
   | BOOLEAN of (bool)
+  | ERROR of (string)
   | R1C1 of (string)
   | SHEETNAME of (string)
   | NAME of (string)
@@ -39,6 +40,7 @@ type tokenId =
     | TOKEN_COLON
     | TOKEN_COMMA
     | TOKEN_BOOLEAN
+    | TOKEN_ERROR
     | TOKEN_R1C1
     | TOKEN_SHEETNAME
     | TOKEN_NAME
