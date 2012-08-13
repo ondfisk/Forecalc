@@ -15,6 +15,8 @@ and CellContent = { Expr : Expr ; Value : CellValue ; Volatile : bool }
 
 module Eval =
 
+    let random = new Random()
+
     let rec isVolatile expr =
         let isVolatileFun = function
             | "NOW"
@@ -151,7 +153,7 @@ module Eval =
                     | ValueList(_), _ -> ErrorValue(Value)
                     | _ , ErrorValue(v) -> ErrorValue(v)
                     | _, ValueList(_) -> ErrorValue(Value)
-                    | StringValue(v1), StringValue(v2) -> BooleanValue(String.Compare(v1, v2, true) = 0)
+                    | StringValue(v1), StringValue(v2) -> BooleanValue(String.Compare(v1, v2, StringComparison.CurrentCultureIgnoreCase) = 0)
                     | StringValue(""), NullValue -> BooleanValue(true)
                     | NullValue, StringValue("") -> BooleanValue(true)                    
                     | FloatValue(0.0), NullValue -> BooleanValue(true)
@@ -177,14 +179,14 @@ module Eval =
                     | BooleanValue(_), FloatValue(_) -> BooleanValue(false)
                     | BooleanValue(v1), BooleanValue(v2) -> BooleanValue(v1 < v2)
                     | FloatValue(v1), FloatValue(v2) -> BooleanValue(v1 < v2)
-                    | StringValue(v1), StringValue(v2) -> BooleanValue(String.Compare(v1, v2, true) < 0)
+                    | StringValue(v1), StringValue(v2) -> BooleanValue(String.Compare(v1, v2, StringComparison.CurrentCultureIgnoreCase) < 0)
                     | NullValue, NullValue -> BooleanValue(false)
                     | NullValue, BooleanValue(v) -> BooleanValue(false < v)
                     | BooleanValue(v), NullValue -> BooleanValue(v < false)
                     | NullValue, FloatValue(v) -> BooleanValue(0.0 < v)
                     | FloatValue(v), NullValue -> BooleanValue(v < 0.0)
-                    | NullValue, StringValue(v) -> BooleanValue(String.Compare(String.Empty, v, true) < 0)
-                    | StringValue(v), NullValue -> BooleanValue(String.Compare(v, String.Empty, true) < 0)
+                    | NullValue, StringValue(v) -> BooleanValue(String.Compare(String.Empty, v, StringComparison.CurrentCultureIgnoreCase) < 0)
+                    | StringValue(v), NullValue -> BooleanValue(String.Compare(v, String.Empty, StringComparison.CurrentCultureIgnoreCase) < 0)
             | Lte(e1, e2) -> // swap + lt + not
                 match eval cell (Lt(e2, e1)) workbook with
                     | BooleanValue(v) -> BooleanValue(not v)
@@ -349,4 +351,9 @@ module Eval =
                             |> List.length
                             |> float
                             |> FloatValue
+            | "RAND" ->
+                match list with
+                    | [] -> 
+                        FloatValue(random.NextDouble())
+                    | _ -> ErrorValue(Parse)
             | _ -> ErrorValue(Parse)

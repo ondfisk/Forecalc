@@ -57,6 +57,12 @@
     <Compile Include="..\Forecalc.Library\ReferenceResolver.fs">
       <Link>ReferenceResolver.fs</Link>
     </Compile>
+    <Compile Include="..\Forecalc.Library\QT4.fs">
+      <Link>QT4.fs</Link>
+    </Compile>
+    <Compile Include="..\Forecalc.Library\Eval.fs">
+      <Link>Eval.fs</Link>
+    </Compile>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>

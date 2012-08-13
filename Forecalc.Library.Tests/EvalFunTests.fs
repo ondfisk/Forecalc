@@ -187,3 +187,22 @@ let ``COUNT(B1:B5) -> FloatValue(3.0)``() =
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Fun("COUNT", [Ref(Range({ Sheet = None ; TopLeft = { Sheet = None ;  Col = 1 ; ColAbs = false ; Row = 0 ; RowAbs = false } ; BottomRight = { Sheet = None ; Col = 1 ; ColAbs = false ; Row = 4 ; RowAbs = false } } ))])
     eval cell expr workbook |> should equal (FloatValue 3.0)
+
+[<Test>]
+let ``=RAND(42) -> ErrorValue(Parse)``() =
+    let workbook = Map.ofList [ "Sheet1", (QT4.create<CellContent>()) ]
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Fun("RAND", [ Float 42.0 ])
+    eval cell expr workbook |> should equal (ErrorValue Parse)
+
+[<Test>]
+let ``=RAND() -> FloatValue(0.0-1.0)``() =
+    let workbook = Map.ofList [ "Sheet1", (QT4.create<CellContent>()) ]
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Fun("RAND", [])
+    match eval cell expr workbook with
+        | FloatValue(v) -> 
+            v |> should be (greaterThanOrEqualTo 0.0)
+            v |> should be (lessThanOrEqualTo 1.0)
+        | _ -> Assert.Fail()
+
