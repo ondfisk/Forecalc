@@ -21,6 +21,7 @@ module Eval =
         let isVolatileFun = function
             | "NOW"
             | "RAND" -> true
+            | "RANDBETWEEN" -> true
             | _ -> false
         match expr with
             | Float(_) 
