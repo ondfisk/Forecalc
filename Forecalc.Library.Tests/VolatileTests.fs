@@ -1,10 +1,10 @@
-﻿module EvalVolatileTests
+﻿module VolatileTests
 
 open NUnit.Framework
 open FsUnit
 open Forecalc.Library
 open Forecalc.Library.Ast
-open Forecalc.Library.Eval
+open Forecalc.Library.Volatile
 
 [<Test>]
 let ``Float is not volatile()``() =

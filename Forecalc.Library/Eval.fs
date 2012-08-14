@@ -11,126 +11,11 @@ type CellValue =
     | NullValue
     | ValueList of CellValue list
 
-and CellContent = { Expr : Expr ; Value : CellValue ; Volatile : bool }
+type CellContent = { Expr : Expr ; Value : CellValue ; Volatile : bool }
 
 module Eval =
 
     let random = new Random()
-
-    let rec isVolatile expr =
-        let isVolatileFun = function
-            | "NOW"
-            | "RAND" -> true
-            | "RANDBETWEEN" -> true
-            | _ -> false
-        match expr with
-            | Float(_) 
-            | Boolean(_) 
-            | String(_) 
-            | EscapedString(_) 
-            | Error(_) 
-            | Blank -> false
-            | Negate(e) -> isVolatile e
-            | Eq(e1, e2)
-            | NotEq(e1, e2)
-            | Lt(e1, e2)
-            | Lte(e1, e2)
-            | Gt(e1, e2)
-            | Gte(e1, e2)
-            | Concat(e1, e2)
-            | Add(e1, e2)
-            | Sub(e1, e2)
-            | Mul(e1, e2)
-            | Div(e1, e2)
-            | Pow(e1, e2) -> isVolatile e1 || isVolatile e2
-            | UnresolvedRef(ref) -> failwith "References must be resolved before calling isVolatile"
-            | Fun(name, list) -> isVolatileFun name || List.exists isVolatile list
-            | Ref(_) -> true
-
-    let toString = function
-        | StringValue(v) -> v
-        | BooleanValue(v) -> v.ToString().ToUpper()
-        | FloatValue(v) -> v.ToString()
-        | NullValue -> String.Empty
-        | ErrorValue(v) ->  
-            match v with
-                | DivZero -> "#DIV/0!"
-                | Name -> "#NAME?"
-                | NotAvailable -> "#N/A!"
-                | Null -> "#NULL!"
-                | Number -> "#NUM!"
-                | Parse -> "#PARSE!"
-                | Reference -> "#REF!"
-                | Value -> "#VALUE!"
-        | ValueList(_) -> "#VALUE!"
-
-    let toFloat = function
-        | true -> 1.0
-        | false -> 0.0
-
-    let cellValue (cell : AbsCell) (ref : Cell) (workbook : Map<string, QT4.qt4<CellContent>>) =
-        let sheetName = 
-            match ref.Sheet with
-                | None -> cell.Sheet
-                | Some(sheet) -> sheet
-        match workbook |> Map.containsKey sheetName with
-            | false -> ErrorValue Reference
-            | true ->
-                let worksheet = workbook |> Map.find sheetName
-                let c = 
-                    match ref.ColAbs with
-                        | true -> ref.Col
-                        | false -> cell.Col + ref.Col
-                let r = 
-                    match ref.RowAbs with
-                        | true -> ref.Row
-                        | false -> cell.Row + ref.Row
-                if cell.Sheet = sheetName && cell.Col = c && cell.Row = r then
-                    ErrorValue(Reference)
-                else
-                    try
-                        match worksheet.[c - 1, r - 1] with
-                            | None -> NullValue
-                            | Some(v) -> v.Value
-                    with
-                        | ex -> ErrorValue(Reference)
-
-    let cellRange (cell : AbsCell) (ref : Range) (workbook : Map<string, QT4.qt4<CellContent>>) =
-        let sheetName = 
-            match ref.Sheet with
-                | None -> cell.Sheet
-                | Some(sheet) -> sheet
-        match workbook |> Map.containsKey sheetName with
-            | false -> ErrorValue Reference
-            | true ->
-                let worksheet = workbook |> Map.find sheetName
-                let c1 = 
-                    match ref.TopLeft.ColAbs with
-                        | true -> ref.TopLeft.Col
-                        | false -> cell.Col + ref.TopLeft.Col
-                let r1 = 
-                    match ref.TopLeft.RowAbs with
-                        | true -> ref.TopLeft.Row
-                        | false -> cell.Row + ref.TopLeft.Row
-                let c2 = 
-                    match ref.BottomRight.ColAbs with
-                        | true -> ref.BottomRight.Col
-                        | false -> cell.Col + ref.BottomRight.Col
-                let r2 = 
-                    match ref.BottomRight.RowAbs with
-                        | true -> ref.BottomRight.Row
-                        | false -> cell.Row + ref.BottomRight.Row
-                if cell.Sheet = sheetName && cell.Col >= c1 && cell.Col <= c2 && cell.Row >= r1 && cell.Row <= r2 then
-                    ErrorValue(Reference)
-                else
-                    try
-                        worksheet 
-                            |> QT4.range (c1 - 1, r1 - 1) (c2 - 1, r2 - 1)
-                            |> Seq.toList
-                            |> List.map (fun x -> x.Value)
-                            |> ValueList
-                    with
-                        | ex -> ErrorValue Reference
 
     let rec eval (cell : AbsCell) (expr : Expr) (workbook : Map<string, QT4.qt4<CellContent>>) =
         match expr with
@@ -308,6 +193,91 @@ module Eval =
             | UnresolvedRef(_) -> failwith "References must be resolved before calling eval"
             | Blank -> NullValue
             | Fun(name, list) -> evalFun name list cell workbook
+
+    and toString = function
+        | StringValue(v) -> v
+        | BooleanValue(v) -> v.ToString().ToUpper()
+        | FloatValue(v) -> v.ToString()
+        | NullValue -> String.Empty
+        | ErrorValue(v) ->  
+            match v with
+                | DivZero -> "#DIV/0!"
+                | Name -> "#NAME?"
+                | NotAvailable -> "#N/A!"
+                | Null -> "#NULL!"
+                | Number -> "#NUM!"
+                | Parse -> "#PARSE!"
+                | Reference -> "#REF!"
+                | Value -> "#VALUE!"
+        | ValueList(_) -> "#VALUE!"
+
+    and toFloat = function
+        | true -> 1.0
+        | false -> 0.0
+
+    and cellValue (cell : AbsCell) (ref : Cell) (workbook : Map<string, QT4.qt4<CellContent>>) =
+        let sheetName = 
+            match ref.Sheet with
+                | None -> cell.Sheet
+                | Some(sheet) -> sheet
+        match workbook |> Map.containsKey sheetName with
+            | false -> ErrorValue Reference
+            | true ->
+                let worksheet = workbook |> Map.find sheetName
+                let c = 
+                    match ref.ColAbs with
+                        | true -> ref.Col
+                        | false -> cell.Col + ref.Col
+                let r = 
+                    match ref.RowAbs with
+                        | true -> ref.Row
+                        | false -> cell.Row + ref.Row
+                if cell.Sheet = sheetName && cell.Col = c && cell.Row = r then
+                    ErrorValue(Reference)
+                else
+                    try
+                        match worksheet.[c - 1, r - 1] with
+                            | None -> NullValue
+                            | Some(v) -> v.Value
+                    with
+                        | ex -> ErrorValue(Reference)
+
+    and cellRange (cell : AbsCell) (ref : Range) (workbook : Map<string, QT4.qt4<CellContent>>) =
+        let sheetName = 
+            match ref.Sheet with
+                | None -> cell.Sheet
+                | Some(sheet) -> sheet
+        match workbook |> Map.containsKey sheetName with
+            | false -> ErrorValue Reference
+            | true ->
+                let worksheet = workbook |> Map.find sheetName
+                let c1 = 
+                    match ref.TopLeft.ColAbs with
+                        | true -> ref.TopLeft.Col
+                        | false -> cell.Col + ref.TopLeft.Col
+                let r1 = 
+                    match ref.TopLeft.RowAbs with
+                        | true -> ref.TopLeft.Row
+                        | false -> cell.Row + ref.TopLeft.Row
+                let c2 = 
+                    match ref.BottomRight.ColAbs with
+                        | true -> ref.BottomRight.Col
+                        | false -> cell.Col + ref.BottomRight.Col
+                let r2 = 
+                    match ref.BottomRight.RowAbs with
+                        | true -> ref.BottomRight.Row
+                        | false -> cell.Row + ref.BottomRight.Row
+                if cell.Sheet = sheetName && cell.Col >= c1 && cell.Col <= c2 && cell.Row >= r1 && cell.Row <= r2 then
+                    ErrorValue(Reference)
+                else
+                    try
+                        worksheet 
+                            |> QT4.range (c1 - 1, r1 - 1) (c2 - 1, r2 - 1)
+                            |> Seq.toList
+                            |> List.map (fun x -> x.Value)
+                            |> ValueList
+                    with
+                        | ex -> ErrorValue Reference
 
     and evalFun name list cell workbook =
         match name with

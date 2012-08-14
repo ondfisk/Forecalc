@@ -69,6 +69,7 @@
     <Compile Include="QT4.fs" />
     <Compile Include="Eval.fs" />
     <Compile Include="Workbook.fs" />
+    <Compile Include="Volatile.fs" />
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
