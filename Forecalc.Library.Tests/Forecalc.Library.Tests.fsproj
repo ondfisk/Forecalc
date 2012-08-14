@@ -52,6 +52,7 @@
     <Compile Include="EvalBinaryTests.fs" />
     <Compile Include="EvalRefTests.fs" />
     <Compile Include="EvalFunTests.fs" />
+    <Compile Include="WorkbookTests.fs" />
     <None Include="packages.config" />
     <None Include="App.config" />
   </ItemGroup>

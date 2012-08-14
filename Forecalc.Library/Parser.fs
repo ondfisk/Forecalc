@@ -4,7 +4,7 @@ open System
 open System.Globalization
 open System.Threading
 open Microsoft.FSharp.Text.Lexing
-open Forecalc.Library.Ast
+open Ast
 open LexerSpecification
 open ParserSpecification
 

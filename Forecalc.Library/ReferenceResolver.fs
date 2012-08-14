@@ -2,7 +2,7 @@
 
 open System
 open System.Text.RegularExpressions
-open Forecalc.Library.Ast
+open Ast
 
 module ReferenceResolver =
 

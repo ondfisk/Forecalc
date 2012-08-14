@@ -2,14 +2,14 @@
 
 module QT4 =
 
-    let private logw = 4
-    let private w = 1 <<< logw
-    let private mw = w - 1
-    let private sizew = 1 <<< (4 * logw)
-    let private logh = 5
-    let private h = 1 <<< logh
-    let private mh = h - 1
-    let private sizeh = 1 <<< (4 * logh)
+    let internal logw = 4
+    let internal w = 1 <<< logw
+    let internal mw = w - 1
+    let internal sizew = 1 <<< (4 * logw)
+    let internal logh = 5
+    let internal h = 1 <<< logh
+    let internal mh = h - 1
+    let internal sizeh = 1 <<< (4 * logh)
 
     let private validate (c, r) =
         if c < 0 || c >= sizew then
