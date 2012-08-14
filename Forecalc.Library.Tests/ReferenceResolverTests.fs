@@ -221,3 +221,31 @@ let ``Sum(42.0, R1C1) -> Fun("Sum", [Float 42.0 ; Ref(Cell({ Row = 1 ; RowAbs = 
 [<Test>]
 let ``Error(Reference) -> Error(Reference)``() =
     Error(Reference) |> resolveRefs cell |> should equal (Error Reference)
+
+[<Test>]
+let ``alphaFromColumn 1 -> "A"``() =
+    alphaFromColumn 1 |> should equal "A"
+
+[<Test>]
+let ``alphaFromColumn 2 -> "B"``() =
+    alphaFromColumn 2 |> should equal "B"
+
+[<Test>]
+let ``alphaFromColumn 26 -> "Z"``() =
+    alphaFromColumn 26 |> should equal "Z"
+
+[<Test>]
+let ``alphaFromColumn 27 -> "AA"``() =
+    alphaFromColumn 27 |> should equal "AA"
+
+[<Test>]
+let ``alphaFromColumn 42 -> "AP"``() =
+    alphaFromColumn 42 |> should equal "AP"
+
+[<Test>]
+let ``alphaFromColumn 471 -> "RC"``() =
+    alphaFromColumn 471 |> should equal "RC"
+
+[<Test>]
+let ``alphaFromColumn 16384 -> "XFD"``() =
+    alphaFromColumn 16384 |> should equal "XFD"

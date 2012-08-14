@@ -16,6 +16,16 @@ module ReferenceResolver =
             |> List.mapi (fun i c -> (int c - 64) * int (26.0 ** float i))
             |> List.sum
 
+    let alphaFromColumn (col : int) =
+        let rec inner col result =
+            let remainder col =
+                let result = col % 26
+                if result > 0 then result else 26 
+            let number = (col - remainder col) / 26
+            let converted = (string) ((char) (remainder col + 64)) + result
+            if number > 0 then inner number converted else converted
+        inner col ""
+
     let groups (regex : Regex) ref =
         let m = regex.Match(ref)
         match m.Success with

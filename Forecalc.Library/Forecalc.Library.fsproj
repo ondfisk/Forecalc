@@ -68,8 +68,8 @@
     <Compile Include="ReferenceResolver.fs" />
     <Compile Include="QT4.fs" />
     <Compile Include="Eval.fs" />
-    <Compile Include="Workbook.fs" />
     <Compile Include="Volatile.fs" />
+    <Compile Include="Workbook.fs" />
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>

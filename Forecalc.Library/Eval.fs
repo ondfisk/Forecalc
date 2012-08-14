@@ -1,6 +1,7 @@
 ﻿namespace Forecalc.Library
 
 open System
+open System.Collections.Generic
 open Ast
 
 type CellValue =
@@ -17,7 +18,7 @@ module Eval =
 
     let random = new Random()
 
-    let rec eval (cell : AbsCell) (expr : Expr) (workbook : Map<string, QT4.qt4<CellContent>>) =
+    let rec eval cell expr (workbook : Map<string, QT4.qt4<CellContent>>) (dirty : HashSet<AbsCell>) (computing : HashSet<AbsCell>) =
         match expr with
             | Float(v) -> FloatValue(v)
             | Boolean(v) -> BooleanValue(v)
@@ -25,7 +26,7 @@ module Eval =
             | EscapedString(v) -> StringValue(v)
             | Error(v) -> ErrorValue(v)
             | Negate(e) -> 
-                match eval cell e workbook with
+                match eval cell e workbook dirty computing with
                     | FloatValue(v) -> FloatValue(v * -1.0)
                     | BooleanValue(true) -> FloatValue(-1.0)
                     | BooleanValue(false) -> FloatValue(0.0)
@@ -34,7 +35,7 @@ module Eval =
                     | ErrorValue(v) -> ErrorValue(v)
                     | ValueList(_) -> ErrorValue(Value)
             | Eq(e1, e2) -> 
-                match (eval cell e1 workbook, eval cell e2 workbook) with
+                match eval cell e1 workbook dirty computing, eval cell e2 workbook dirty computing with
                     | ErrorValue(v), _ -> ErrorValue(v)
                     | ValueList(_), _ -> ErrorValue(Value)
                     | _ , ErrorValue(v) -> ErrorValue(v)
@@ -48,11 +49,11 @@ module Eval =
                     | NullValue, BooleanValue(v) -> BooleanValue(false = v)
                     | v1, v2 -> BooleanValue(v1 = v2)
             | NotEq(e1, e2) -> 
-                match eval cell (Eq(e1, e2)) workbook with
+                match eval cell (Eq(e1, e2)) workbook dirty computing with
                     | BooleanValue(v) -> BooleanValue(not v)
                     | v -> v
             | Lt(e1, e2) ->
-                match (eval cell e1 workbook, eval cell e2 workbook) with
+                match eval cell e1 workbook dirty computing, eval cell e2 workbook dirty computing with
                     | ErrorValue(v), _ -> ErrorValue(v)
                     | ValueList(_), _ -> ErrorValue(Value)
                     | _, ErrorValue(v) -> ErrorValue(v)
@@ -74,23 +75,23 @@ module Eval =
                     | NullValue, StringValue(v) -> BooleanValue(String.Compare(String.Empty, v, StringComparison.CurrentCultureIgnoreCase) < 0)
                     | StringValue(v), NullValue -> BooleanValue(String.Compare(v, String.Empty, StringComparison.CurrentCultureIgnoreCase) < 0)
             | Lte(e1, e2) -> // swap + lt + not
-                match eval cell (Lt(e2, e1)) workbook with
+                match eval cell (Lt(e2, e1)) workbook dirty computing with
                     | BooleanValue(v) -> BooleanValue(not v)
                     | v -> v
-            | Gt(e1, e2) -> eval cell (Lt(e2, e1)) workbook // swap + lt
+            | Gt(e1, e2) -> eval cell (Lt(e2, e1)) workbook dirty computing // swap + lt
             | Gte(e1, e2) -> // lt + not
-                match eval cell (Lt(e1, e2)) workbook with
+                match eval cell (Lt(e1, e2)) workbook dirty computing with
                     | BooleanValue(v) -> BooleanValue(not v)
                     | v -> v       
             | Concat(e1, e2) ->
-                match (eval cell e1 workbook, eval cell e2 workbook) with
+                match eval cell e1 workbook dirty computing, eval cell e2 workbook dirty computing with
                     | ErrorValue(v), _ -> ErrorValue(v)
                     | ValueList(_), _ -> ErrorValue(Value)
                     | _, ErrorValue(v) -> ErrorValue(v)
                     | _, ValueList(_) -> ErrorValue(Value)
                     | v1, v2 -> StringValue(String.Concat(toString v1, toString v2))
             | Add(e1, e2) ->
-                match (eval cell e1 workbook, eval cell e2 workbook) with
+                match eval cell e1 workbook dirty computing, eval cell e2 workbook dirty computing with
                     | ErrorValue(v), _ -> ErrorValue(v)
                     | StringValue(_), _ -> ErrorValue(Value)
                     | ValueList(_), _ -> ErrorValue(Value)
@@ -107,7 +108,7 @@ module Eval =
                     | BooleanValue(v1), FloatValue(v2) -> FloatValue(toFloat v1 + v2)
                     | BooleanValue(v1), BooleanValue(v2) -> FloatValue(toFloat v1 + toFloat v2)
             | Sub(e1, e2) ->
-                match (eval cell e1 workbook, eval cell e2 workbook) with
+                match eval cell e1 workbook dirty computing, eval cell e2 workbook dirty computing with
                     | ErrorValue(v), _ -> ErrorValue(v)
                     | StringValue(_), _ -> ErrorValue(Value)
                     | ValueList(_), _ -> ErrorValue(Value)
@@ -124,7 +125,7 @@ module Eval =
                     | BooleanValue(v1), FloatValue(v2) -> FloatValue(toFloat v1 - v2)
                     | BooleanValue(v1), BooleanValue(v2) -> FloatValue(toFloat v1 - toFloat v2)
             | Mul(e1, e2) ->
-                match (eval cell e1 workbook, eval cell e2 workbook) with
+                match eval cell e1 workbook dirty computing, eval cell e2 workbook dirty computing with
                     | ErrorValue(v), _ -> ErrorValue(v)
                     | StringValue(_), _ -> ErrorValue(Value)
                     | ValueList(_), _ -> ErrorValue(Value)
@@ -138,7 +139,7 @@ module Eval =
                     | BooleanValue(v1), FloatValue(v2) -> FloatValue(toFloat v1 * v2)
                     | BooleanValue(v1), BooleanValue(v2) -> FloatValue(toFloat v1 * toFloat v2)
             | Div(e1, e2) ->
-                match (eval cell e1 workbook, eval cell e2 workbook) with
+                match eval cell e1 workbook dirty computing, eval cell e2 workbook dirty computing with
                     | ErrorValue(v), _ -> ErrorValue(v)
                     | StringValue(_), _ -> ErrorValue(Value)
                     | ValueList(_), _ -> ErrorValue(Value)
@@ -155,7 +156,7 @@ module Eval =
                     | BooleanValue(v1), FloatValue(v2) -> FloatValue(toFloat v1 / v2)
                     | BooleanValue(v1), BooleanValue(true) -> FloatValue(toFloat v1)
             | Pow(e1, e2) ->
-                match (eval cell e1 workbook, eval cell e2 workbook) with
+                match eval cell e1 workbook dirty computing, eval cell e2 workbook dirty computing with
                     | ErrorValue(v), _ -> ErrorValue(v)
                     | StringValue(_), _ -> ErrorValue(Value)
                     | ValueList(_), _ -> ErrorValue(Value)
@@ -188,11 +189,11 @@ module Eval =
                     | BooleanValue(true), BooleanValue(true) -> FloatValue(1.0)
             | Ref(e) ->
                 match e with
-                    | Cell(ref) -> cellValue cell ref workbook
-                    | Range(ref) -> cellRange cell ref workbook
+                    | Cell(ref) -> cellValue cell ref workbook dirty computing
+                    | Range(ref) -> cellRange cell ref workbook dirty computing
             | UnresolvedRef(_) -> failwith "References must be resolved before calling eval"
             | Blank -> NullValue
-            | Fun(name, list) -> evalFun name list cell workbook
+            | Fun(name, list) -> evalFun name list cell workbook dirty computing
 
     and toString = function
         | StringValue(v) -> v
@@ -215,7 +216,7 @@ module Eval =
         | true -> 1.0
         | false -> 0.0
 
-    and cellValue (cell : AbsCell) (ref : Cell) (workbook : Map<string, QT4.qt4<CellContent>>) =
+    and cellValue cell ref workbook dirty computing =
         let sheetName = 
             match ref.Sheet with
                 | None -> cell.Sheet
@@ -232,17 +233,21 @@ module Eval =
                     match ref.RowAbs with
                         | true -> ref.Row
                         | false -> cell.Row + ref.Row
-                if cell.Sheet = sheetName && cell.Col = c && cell.Row = r then
-                    ErrorValue(Reference)
-                else
-                    try
-                        match worksheet.[c - 1, r - 1] with
-                            | None -> NullValue
-                            | Some(v) -> v.Value
-                    with
-                        | ex -> ErrorValue(Reference)
+                let refCell = { Sheet = sheetName ; Col = c ; Row = r }
+                if computing.Contains refCell  then
+                    failwithf "Circular reference found in %s!%s%i" sheetName (ReferenceResolver.alphaFromColumn c) r
+                try
+                    match worksheet.[c - 1, r - 1] with
+                        | None -> NullValue
+                        | Some(v) -> 
+                            if not v.Volatile && not (dirty.Contains refCell) then
+                                v.Value
+                            else
+                                eval refCell v.Expr workbook dirty computing
+                with
+                    | ex -> ErrorValue(Reference)
 
-    and cellRange (cell : AbsCell) (ref : Range) (workbook : Map<string, QT4.qt4<CellContent>>) =
+    and cellRange cell ref workbook dirty computing =
         let sheetName = 
             match ref.Sheet with
                 | None -> cell.Sheet
@@ -267,29 +272,26 @@ module Eval =
                     match ref.BottomRight.RowAbs with
                         | true -> ref.BottomRight.Row
                         | false -> cell.Row + ref.BottomRight.Row
-                if cell.Sheet = sheetName && cell.Col >= c1 && cell.Col <= c2 && cell.Row >= r1 && cell.Row <= r2 then
-                    ErrorValue(Reference)
-                else
-                    try
-                        worksheet 
-                            |> QT4.range (c1 - 1, r1 - 1) (c2 - 1, r2 - 1)
-                            |> Seq.toList
-                            |> List.map (fun x -> x.Value)
-                            |> ValueList
-                    with
-                        | ex -> ErrorValue Reference
+                try
+                    worksheet 
+                        |> QT4.range (c1 - 1, r1 - 1) (c2 - 1, r2 - 1)
+                        |> Seq.toList
+                        |> List.map (fun x -> x.Value)
+                        |> ValueList
+                with
+                    | ex -> ErrorValue Reference
 
-    and evalFun name list cell workbook =
+    and evalFun name list cell workbook dirty computing =
         match name with
             | "IF" -> 
                 match list with
                     | [ e1 ; e2 ; e3 ] ->
-                        match eval cell e1 workbook with
+                        match eval cell e1 workbook dirty computing with
                             | NullValue
                             | FloatValue(0.0) 
-                            | BooleanValue(false) -> eval cell e3 workbook
+                            | BooleanValue(false) -> eval cell e3 workbook dirty computing
                             | FloatValue(_)
-                            | BooleanValue(true) -> eval cell e2 workbook
+                            | BooleanValue(true) -> eval cell e2 workbook dirty computing
                             | ValueList(_)
                             | StringValue(_) -> ErrorValue(Value)
                             | ErrorValue(v) -> ErrorValue(v)
@@ -300,7 +302,7 @@ module Eval =
                     | _ ->
                         let values = 
                             list 
-                                |> List.map (fun e -> eval cell e workbook)
+                                |> List.map (fun e -> eval cell e workbook dirty computing)
                                 |> List.collect (fun e -> match e with | ValueList(l) -> l | _ -> [e])
                                 |> List.filter (fun e -> match e with | BooleanValue(_) | FloatValue(_) | ErrorValue(_) -> true | _ -> false)
                         let error = values |> List.tryFind (fun v -> match v with | ErrorValue(_) -> true | _ -> false)
@@ -316,7 +318,7 @@ module Eval =
                     | [] -> ErrorValue(Parse)
                     | _ ->
                         list 
-                            |> List.map (fun e -> eval cell e workbook)
+                            |> List.map (fun e -> eval cell e workbook dirty computing)
                             |> List.collect (fun e -> match e with | ValueList(l) -> l | _ -> [e])
                             |> List.filter (fun e -> match e with | FloatValue(_) -> true | _ -> false)
                             |> List.length

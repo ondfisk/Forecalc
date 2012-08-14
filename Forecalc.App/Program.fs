@@ -43,7 +43,7 @@ open Forecalc.Library.Ast
 
 
 
-    
+ 
 
 
 (*
@@ -61,3 +61,37 @@ while dirty.Count <> 0 do
     computing.Remove(cell) |> ignore
     
   *)  
+
+let columnFromAlpha (c : string) =
+    c.ToUpper().ToCharArray()
+        |> Array.toList
+        |> List.rev
+        |> List.mapi (fun i c -> (int c - 64) * int (26.0 ** float i))
+        |> List.sum
+
+// A = 1
+// B = 2
+// Z = 26
+// AA = 27
+// AP = 42
+// RC = 471
+// XFD = 16384
+
+let alphaFromColumn (col : int) =
+    let rec inner c s =
+        let remainder c =
+            let r = c % 26
+            if r > 0 then r else 26 
+        let number = (c - remainder c) / 26
+        let converted = (string) ((char) (remainder c + 64)) + s
+        if number > 0 then inner number converted else converted
+    inner col ""
+
+
+printfn "A: %s" (alphaFromColumn 1)
+printfn "B: %s" (alphaFromColumn 2)
+printfn "Z: %s" (alphaFromColumn 26)
+printfn "AA: %s" (alphaFromColumn 27)
+printfn "AP: %s" (alphaFromColumn 42)
+printfn "RC: %s" (alphaFromColumn 471)
+printfn "XFD: %s" (alphaFromColumn 16384)
