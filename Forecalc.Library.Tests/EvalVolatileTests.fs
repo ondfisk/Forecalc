@@ -4,7 +4,7 @@ open NUnit.Framework
 open FsUnit
 open Forecalc.Library
 open Forecalc.Library.Ast
-open Forecalc.Library.Volatile
+open Forecalc.Library.Eval
 
 [<Test>]
 let ``Float is not volatile()``() =
