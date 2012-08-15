@@ -19,6 +19,8 @@ module Eval =
     let random = new Random()
 
     let rec eval cell expr (workbook : Map<string, QT4.qt4<CellContent>>) (dirty : HashSet<AbsCell>) (computing : HashSet<AbsCell>) =
+        dirty.Remove cell |> ignore
+        computing.Add cell |> ignore
         let value =
             match expr with
                 | Float v -> FloatValue v
@@ -195,6 +197,8 @@ module Eval =
                 | UnresolvedRef _ -> failwith "References must be resolved before calling eval"
                 | Blank -> NullValue
                 | Fun(name, list) -> evalFun name list cell workbook dirty computing
+        computing.Remove cell |> ignore
+        workbook.[cell.Sheet].[cell.Col - 1, cell.Row - 1] <- Some { Expr = expr ; Value = value ; Volatile = Volatile.isVolatile expr }
         value
 
     and toString = function

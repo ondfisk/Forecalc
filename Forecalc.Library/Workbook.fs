@@ -45,27 +45,14 @@ module Workbook =
                                                                     yield { Sheet = name ; Col = c + 1 ; Row = r + 1 }
         } |> Set.ofSeq
 
-//    let rec eval cell expr (workbook : Map<string, QT4.qt4<CellContent>>) (dirty : HashSet<AbsCell>) (computing : HashSet<AbsCell>) =
-//        dirty.Remove cell |> ignore
-//        computing.Add cell |> ignore
-//        let value = evaluate cell expr workbook dirty computing
-//        let worksheet = workbook.[cell.Sheet]
-//        match worksheet.[cell.Col - 1, cell.Row - 1] with
-//            | None -> worksheet.[cell.Col - 1, cell.Row - 1] <- Some { Expr = expr ; Value = value ; Volatile = Volatile.isVolatile expr }
-//            | Some(content) -> worksheet.[cell.Col - 1, cell.Row - 1] <- Some { content with Value = value }
-//        computing.Remove cell |> ignore
-//        value
 
-
-//    let recalculate (cell : AbsCell) (exprString : string) (workbook : Map<string, QT4.qt4<CellContent>>) =
-//        let expr = Parser.parse exprString
-//        let content = { Expr = expr ; Value = NullValue ; Volatile = Volatile.isVolatile expr }
-//        workbook.[cell.Sheet].[cell.Col - 1, cell.Row - 1] <- Some(content)
-//        let dirty = HashSet<AbsCell>(makeDirtySet workbook)
-//        let computing = HashSet<AbsCell>()
-//        Eval.eval cell expr workbook dirty computing
-//        while dirty.Count > 0 do
-//            let d = dirty.First()
-//            let e = workbook.[d.Sheet].[d.Col - 1, d.Row - 1]
-//            if e.IsSome then
-//                Eval.eval cell workbook dirty computing
+    let recalculate cell expr workbook =
+        let expr = Parser.parse expr |> ReferenceResolver.resolveRefs cell
+        let dirty = HashSet<AbsCell>(makeDirtySet workbook)
+        let computing = HashSet<AbsCell>()
+        Eval.eval cell expr workbook dirty computing |> ignore
+        while dirty.Count > 0 do
+            let d = dirty.First()
+            match workbook.[d.Sheet].[d.Col - 1, d.Row - 1] with
+                | None -> ()
+                | Some e -> Eval.eval d e.Expr workbook dirty computing |> ignore

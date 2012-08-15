@@ -39,3 +39,17 @@ let ``makeDirtySet (volatile cells) -> Set of (volatile cells)``() =
     sheet2.[0, 3] <- Some({ Expr = Ref(Cell({ Sheet = None ; Row = 0 ; RowAbs = false ; Col = 0 ; ColAbs = false })) ; Value = NullValue ; Volatile = true })
     let workbook = Map.ofList [ "Sheet1", sheet1 ; "Sheet2", sheet2 ]
     workbook |> makeDirtySet |> should equal (Set.ofList [ { Sheet = "Sheet1" ; Col = 1 ; Row = 2 } ; { Sheet = "Sheet2" ; Col = 1 ; Row = 2 } ; { Sheet = "Sheet2" ; Col = 1 ; Row = 4 } ])
+
+[<Test>]
+let ``recalculate updates dependent cells``() =
+    let sheet1 = QT4.create<CellContent>()
+    sheet1.[0, 0] <- Some({ Expr = Float 9.0 ; Value = FloatValue 9.0 ; Volatile = false })
+    sheet1.[0, 1] <- Some({ Expr = Float 10.0 ; Value = FloatValue 10.0 ; Volatile = false })
+    sheet1.[0, 2] <- Some({ Expr = Float 11.0 ; Value = FloatValue 11.0 ; Volatile = false })
+    sheet1.[0, 3] <- Some({ Expr = Fun("SUM", [ Ref(Range({ Sheet = None ; TopLeft = { Sheet = None ; Row = -3 ; RowAbs = false ; Col = 0 ; ColAbs = false } ; BottomRight = { Sheet = None ; Row = -1 ; RowAbs = false ; Col = 0 ; ColAbs = false }})) ]) ; Value = FloatValue 30.0 ; Volatile = true })
+    let workbook = Map.ofList [ "Sheet1", sheet1 ]
+    let cell = { Sheet = "Sheet1" ; Col = 1 ; Row = 2 }
+    let expr = "=2*11"
+    recalculate cell expr workbook
+    sheet1.[0, 1].Value.Value |> should equal (FloatValue 22.0)
+    sheet1.[0, 3].Value.Value |> should equal (FloatValue 42.0)
