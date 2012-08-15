@@ -94,49 +94,49 @@ let ``Eq(Blank, Float 0.0) -> BooleanValue(true)``() =
 [<Test>]
 let ``Eq(Float 0.0, Blank) -> BooleanValue(true)``() =
     let workbook = Map.ofList [ "Sheet1", (QT4.create<CellContent>()) ]
-    let cell = { Sheet = "Sheetrue" ; Row = 1 ; Col = 1 }
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Eq(Float 0.0, Blank)
     eval cell expr workbook (HashSet<AbsCell>()) (HashSet<AbsCell>()) |> should equal (BooleanValue true)
 
 [<Test>]
 let ``Eq(Blank, Float 42.0) -> BooleanValue(false)``() =
     let workbook = Map.ofList [ "Sheet1", (QT4.create<CellContent>()) ]
-    let cell = { Sheet = "Sheetrue" ; Row = 1 ; Col = 1 }
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Eq(Blank, Float 42.0)
     eval cell expr workbook (HashSet<AbsCell>()) (HashSet<AbsCell>()) |> should equal (BooleanValue false)
     
 [<Test>]
 let ``Eq(Blank, Boolean false) -> BooleanValue(true)``() =
     let workbook = Map.ofList [ "Sheet1", (QT4.create<CellContent>()) ]
-    let cell = { Sheet = "Sheetrue" ; Row = 1 ; Col = 1 }
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Eq(Blank, Boolean false)
     eval cell expr workbook (HashSet<AbsCell>()) (HashSet<AbsCell>()) |> should equal (BooleanValue true)   
      
 [<Test>]
 let ``Eq(Blank, Boolean true) -> BooleanValue(false)``() =
     let workbook = Map.ofList [ "Sheet1", (QT4.create<CellContent>()) ]
-    let cell = { Sheet = "Sheetrue" ; Row = 1 ; Col = 1 }
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Eq(Blank, Boolean true)
     eval cell expr workbook (HashSet<AbsCell>()) (HashSet<AbsCell>()) |> should equal (BooleanValue false)
 
 [<Test>]
 let ``Eq(Float 42.0, Blank) -> BooleanValue(false)``() =
     let workbook = Map.ofList [ "Sheet1", (QT4.create<CellContent>()) ]
-    let cell = { Sheet = "Sheetrue" ; Row = 1 ; Col = 1 }
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Eq(Float 42.0, Blank)
     eval cell expr workbook (HashSet<AbsCell>()) (HashSet<AbsCell>()) |> should equal (BooleanValue false)
     
 [<Test>]
 let ``Eq(Boolean false, Blank) -> BooleanValue(true)``() =
     let workbook = Map.ofList [ "Sheet1", (QT4.create<CellContent>()) ]
-    let cell = { Sheet = "Sheetrue" ; Row = 1 ; Col = 1 }
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Eq(Boolean false, Blank)
     eval cell expr workbook (HashSet<AbsCell>()) (HashSet<AbsCell>()) |> should equal (BooleanValue true)   
      
 [<Test>]
 let ``Eq(Boolean true, Blank) -> BooleanValue(false)``() =
     let workbook = Map.ofList [ "Sheet1", (QT4.create<CellContent>()) ]
-    let cell = { Sheet = "Sheetrue" ; Row = 1 ; Col = 1 }
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Eq(Boolean true, Blank)
     eval cell expr workbook (HashSet<AbsCell>()) (HashSet<AbsCell>()) |> should equal (BooleanValue false)
 

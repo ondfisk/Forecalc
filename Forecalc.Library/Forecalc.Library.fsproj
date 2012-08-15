@@ -67,8 +67,8 @@
     <Compile Include="Parser.fs" />
     <Compile Include="ReferenceResolver.fs" />
     <Compile Include="QT4.fs" />
-    <Compile Include="Eval.fs" />
     <Compile Include="Volatile.fs" />
+    <Compile Include="Eval.fs" />
     <Compile Include="Workbook.fs" />
     <None Include="App.config" />
   </ItemGroup>

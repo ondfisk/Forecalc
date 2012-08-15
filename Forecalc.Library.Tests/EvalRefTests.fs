@@ -260,3 +260,12 @@ let ``=42.0&range -> ErrorValue(Value)``() =
     let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
     let expr = Concat(Float 42.0, Ref(Range({ Sheet = None ; TopLeft = { Sheet = None ; Row = 1 ; RowAbs = true ; Col = 2 ; ColAbs = true } ; BottomRight = { Sheet = None ; Row = 10 ; RowAbs = true ; Col = 2 ; ColAbs = true }})))
     eval cell expr workbook (HashSet<AbsCell>()) (HashSet<AbsCell>()) |> should equal (ErrorValue Value)
+
+[<Test>]
+let ``recalculate circular -> fail``() =
+    let workbook = Map.ofList [ "Sheet1", (QT4.create<CellContent>()) ]
+    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
+    let expr = Ref(Cell({ Sheet = None ; Row = 0 ; RowAbs = false ; Col = 0 ; ColAbs = false }))
+    let computing = HashSet<AbsCell> [cell]
+    (fun () -> Eval.eval cell expr workbook (HashSet<AbsCell>()) computing |> ignore) |> should throw typeof<System.Exception>
+    

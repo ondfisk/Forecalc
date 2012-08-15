@@ -39,12 +39,3 @@ let ``makeDirtySet (volatile cells) -> Set of (volatile cells)``() =
     sheet2.[0, 3] <- Some({ Expr = Ref(Cell({ Sheet = None ; Row = 0 ; RowAbs = false ; Col = 0 ; ColAbs = false })) ; Value = NullValue ; Volatile = true })
     let workbook = Map.ofList [ "Sheet1", sheet1 ; "Sheet2", sheet2 ]
     workbook |> makeDirtySet |> should equal (Set.ofList [ { Sheet = "Sheet1" ; Col = 1 ; Row = 2 } ; { Sheet = "Sheet2" ; Col = 1 ; Row = 2 } ; { Sheet = "Sheet2" ; Col = 1 ; Row = 4 } ])
-
-[<Test>]
-let ``recalculate circular -> fail``() =
-    let workbook = Map.ofList [ "Sheet1", (QT4.create<CellContent>()) ]
-    let cell = { Sheet = "Sheet1" ; Row = 1 ; Col = 1 }
-    let expr = Ref(Cell({ Sheet = None ; Row = 0 ; RowAbs = false ; Col = 0 ; ColAbs = false }))
-    let computing = HashSet<AbsCell>([ cell ])
-    (fun () -> Eval.eval cell expr workbook (HashSet<AbsCell>()) computing |> ignore) |> should throw typeof<System.Exception>
-    

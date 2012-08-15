@@ -60,8 +60,14 @@
     <Compile Include="..\Forecalc.Library\QT4.fs">
       <Link>QT4.fs</Link>
     </Compile>
+    <Compile Include="..\Forecalc.Library\Volatile.fs">
+      <Link>Volatile.fs</Link>
+    </Compile>
     <Compile Include="..\Forecalc.Library\Eval.fs">
       <Link>Eval.fs</Link>
+    </Compile>
+    <Compile Include="..\Forecalc.Library\Workbook.fs">
+      <Link>Workbook.fs</Link>
     </Compile>
     <None Include="App.config" />
   </ItemGroup>

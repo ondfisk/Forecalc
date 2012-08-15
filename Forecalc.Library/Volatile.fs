@@ -12,13 +12,13 @@ module Volatile =
             | "RANDBETWEEN" -> true
             | _ -> false
         match expr with
-            | Float(_) 
-            | Boolean(_) 
-            | String(_) 
-            | EscapedString(_) 
-            | Error(_) 
+            | Float _ 
+            | Boolean _ 
+            | String _ 
+            | EscapedString _ 
+            | Error _ 
             | Blank -> false
-            | Negate(e) -> isVolatile e
+            | Negate e -> isVolatile e
             | Eq(e1, e2)
             | NotEq(e1, e2)
             | Lt(e1, e2)
@@ -33,4 +33,4 @@ module Volatile =
             | Pow(e1, e2) -> isVolatile e1 || isVolatile e2
             | UnresolvedRef(ref) -> failwith "References must be resolved before calling isVolatile"
             | Fun(name, list) -> isVolatileFun name || List.exists isVolatile list
-            | Ref(_) -> true
+            | Ref _ -> true
