@@ -246,7 +246,7 @@ module Eval =
                     match worksheet.[c - 1, r - 1] with
                         | None -> NullValue
                         | Some v -> 
-                            if not v.Volatile && not (dirty.Contains refCell) then
+                            if not (dirty.Contains refCell) then
                                 v.Value
                             else
                                 eval refCell v.Expr workbook dirty computing

@@ -45,7 +45,6 @@ module Workbook =
                                                                     yield { Sheet = name ; Col = c + 1 ; Row = r + 1 }
         } |> Set.ofSeq
 
-
     let recalculate cell expr workbook =
         let expr = Parser.parse expr |> ReferenceResolver.resolveRefs cell
         let dirty = HashSet<AbsCell>(makeDirtySet workbook)
