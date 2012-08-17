@@ -137,3 +137,11 @@ let ``"=R[+1]C[+1]" -> UnresolvedRef(R1C1Cell(R[+1]C[+1]))``() =
 [<Test>]
 let ``"=R[-1]C[-1]" -> UnresolvedRef(R1C1Cell(R[-1]C[-1]))``() =
     "=R[-1]C[-1]" |> parse |> should equal (UnresolvedRef(R1C1Cell("R[-1]C[-1]")))
+
+[<Test>]
+let ``"=r1c1" -> UnresolvedRef(R1C1Cell(R1C1))``() =
+    "=r1c1" |> parse |> should equal (UnresolvedRef(R1C1Cell("R1C1")))
+
+[<Test>]
+let ``"=r[-1]c[-1]" -> UnresolvedRef(R1C1Cell(R[-1]C[-1]))``() =
+    "=r[-1]c[-1]" |> parse |> should equal (UnresolvedRef(R1C1Cell("R[-1]C[-1]")))

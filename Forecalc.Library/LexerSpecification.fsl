@@ -53,10 +53,10 @@ let sheet               = (digit|char)+'!'
 let apossheet           = '\''[^'\'' ':' '/' '\\']*'\'''!'
 let true                = ['T' 't']['R' 'r']['U' 'u']['E' 'e']
 let false               = ['F' 'f']['A' 'a']['L' 'l']['S' 's']['E' 'e']
-let r1c1                = 'R' digit* 'C' digit*
-let r2c1                = "R[" ['+' '-'] digit+ "]C" digit*
-let r1c2                = 'R' digit* "C[" ['+' '-'] digit+ ']'
-let r2c2                = "R[" ['+' '-'] digit+ "]C[" ['+' '-'] digit+ ']'
+let r1c1                = ['R' 'r'] digit* ['C' 'c'] digit*
+let r2c1                = ['R' 'r'] '[' ['+' '-'] digit+ ']' ['C' 'c'] digit*
+let r1c2                = ['R' 'r'] digit* ['C' 'c'] '[' ['+' '-'] digit+ ']'
+let r2c2                = ['R' 'r'] '[' ['+' '-'] digit+ ']' ['C' 'c'] '[' ['+' '-'] digit+ ']'
 
 rule tokenize = parse
 | whitespace            { tokenize lexbuf }
