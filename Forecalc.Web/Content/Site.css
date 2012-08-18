@@ -1,0 +1,66 @@
+﻿html {
+}
+
+body {
+    font-size: 0.8em;
+    background: lightgrey;
+    font-family: Helvetica, Sans-Serif;
+}
+
+table {
+    margin-top: 20px;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+th {
+    background: white;
+    font-size: 1.2em;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+    padding: 2px;
+}
+
+td {
+    font-size: 1em;
+    border: 1px solid lightgrey;
+    background: white;
+    padding: 2px;
+    min-width: 50px;
+}
+
+td:last-child {
+    border-right: 1px solid black;
+}
+
+td.bottom {
+    border-bottom: 1px solid black;
+}
+
+input[type="text"].expr {
+    display: none;
+}
+
+.r1c1 {
+    display: none;
+}
+
+.bool {
+    color: blue;
+    font-style: italic;
+    text-align: center;
+}
+
+.error {
+    color: red;
+    font-weight: bold;
+    text-align: center;
+}
+
+.float {
+    text-align: right;
+}
+
+.string {
+    
+}

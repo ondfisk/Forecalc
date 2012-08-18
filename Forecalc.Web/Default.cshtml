@@ -1,0 +1,49 @@
+﻿@{
+    Layout = "~/_SiteLayout.cshtml";
+    Page.Title = "Forecalc Web App";
+    Session["Workbook"] = null;
+}
+
+
+@section nav {
+    <input id="reset" type="button" value="Reset" />
+    @Html.CheckBox("refstyle")
+    @Html.Label("R1C1", "refstyle") 
+}
+    
+<table>
+    <thead>
+        <tr>
+            <th></th>
+            @foreach (var col in Enumerable.Range(1, 20))
+            {
+                <th>
+                    <span class="a1">@Forecalc.Library.ReferenceResolver.alphaFromColumn(col)</span>
+                    <span class="r1c1">@col</span>
+                </th>                   
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var row in Enumerable.Range(1, 100))
+        {
+            <tr>
+                <th>@row</th>
+                @foreach (var col in Enumerable.Range(1, 20))
+                {
+                    <td class="cell @(row == 100 ? "bottom" : null)" id="@string.Format("R{0}C{1}", row, col)">
+                        @Html.TextBox(string.Format("R{0}C{1}-expr", row, col), null, new Dictionary<string, object> {{"class", "expr"}, {"data-row", row}, {"data-col", col}})
+                        <div class="text" id="@string.Format("R{0}C{1}-text", row, col)"></div>
+                    </td>                   
+                }               
+            </tr>
+        }
+    </tbody>
+</table>
+
+<input type="hidden" id="put-url" value="~/Put"/>
+<input type="hidden" id="reset-url" value="~/Reset"/>
+
+@section scripts {
+    <script src="~/Scripts/forecalc.js"></script>
+}

@@ -1,0 +1,75 @@
+﻿@using System;
+@using System.Net;
+@using System.Web.Mvc;
+@using Forecalc.Library;
+@using Microsoft.FSharp.Collections;
+@using Microsoft.FSharp.Core;
+
+@functions 
+{
+    private static Tuple<string, string> ToTuple(CellValue value)
+    {
+        var type = "";
+        var str = Eval.toString(value);
+        if (value.IsBooleanValue)
+        {
+            type = "bool";
+        }
+        if (value.IsErrorValue)
+        {
+            type = "error";
+        }
+        if (value.IsFloatValue)
+        {
+            type = "float";
+        }
+        if (value.IsStringValue)
+        {
+            type = "string";
+        }
+        if (value.IsNullValue)
+        {
+            type = "";
+        }
+        if (value.IsValueList)
+        {
+            type = "error";
+        }
+        return Tuple.Create(type, str);
+    }
+}
+
+@{
+    var sheet = "Sheet1";
+    var row = int.Parse(Request["row"]);
+    var col = int.Parse(Request["col"]);
+    var expr = Request["expr"];
+
+    var workbook = Session["Workbook"] as FSharpMap<string, QT4.qt4<CellContent>> ??
+                   MapModule.Add(sheet, QT4.create<CellContent>(),
+                   MapModule.Empty<string, QT4.qt4<CellContent>>());
+
+    var absCell = new Ast.AbsCell(sheet, row, col);
+
+    try
+    {
+        Workbook.recalculate(absCell, expr, workbook);
+    }
+    catch (Exception e)
+    {
+        Response.StatusCode = (int) HttpStatusCode.BadRequest;
+        Response.ContentType = "application/json";
+        Json.Write(new {e.Message}, Response.Output);
+        return;
+    }
+
+    var cells = Workbook.toArray(sheet, 1, 1, 20, 100, workbook);
+
+    var mapper = FSharpFunc<CellValue, Tuple<string, string>>.FromConverter(ToTuple);
+    var values = Array2DModule.Map(mapper, cells);
+
+    Session["Workbook"] = workbook;
+
+    Response.ContentType = "application/json";
+    Json.Write(values, Response.Output);
+}
