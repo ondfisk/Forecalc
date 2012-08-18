@@ -23,6 +23,14 @@ let ``"-42.0" -> -42.0``() =
     "-42.0" |> parse |> should equal (Float -42.0)
 
 [<Test>]
+let ``"4,2" -> "4,2``() =
+    "4,2" |> parse |> should equal (String "4,2")
+
+[<Test>]
+let ``"-4,2" -> "-4,2"``() =
+    "-4,2" |> parse |> should equal (String "-4,2")
+
+[<Test>]
 let ``"Forty-two" -> Forty-two``() =
     "Forty-two" |> parse |> should equal (String "Forty-two")
 

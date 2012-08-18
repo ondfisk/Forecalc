@@ -23,7 +23,7 @@ module Parser =
                         expression
                     with
                         | ex -> Error(Parse)
-            | _ when (Double.TryParse >> fst) expr -> Float (float expr)
+            | _ when (fst (Double.TryParse(expr, NumberStyles.Float, CultureInfo.CreateSpecificCulture("en-US")))) -> Float (float expr)
             | _ when (bool.TryParse >> fst) expr -> Boolean (bool.Parse expr)
             | _ when expr.StartsWith("#") -> 
                 let error = expr.ToUpper()
