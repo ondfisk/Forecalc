@@ -1,4 +1,4 @@
-﻿module VolatileTests
+﻿module EvalVolatileTests
 
 open NUnit.Framework
 open FsUnit
