@@ -1,5 +1,8 @@
-﻿@{
-    Session["Workbook"] = null;
+﻿@using System.Web.Helpers
+@using Forecalc.Web.Models
+
+@{
+    Functions.ResetWorkbook();
     Response.ContentType = "application/json";
     Json.Write(true, Response.Output);    
 }
