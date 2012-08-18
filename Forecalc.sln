@@ -15,49 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{DD5F65
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Forecalc.Library.Portable", "Forecalc.Library.Portable\Forecalc.Library.Portable.fsproj", "{FB9CE458-08DB-4FA5-927F-8100F993B6CB}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Forecalc.Web", "http://localhost:11297", "{079E8626-CB7C-40B2-88B7-6F165D00150C}"
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Debug.AspNetCompiler.FixedNames = "false"
-		Debug.AspNetCompiler.ForceOverwrite = "true"
-		Debug.AspNetCompiler.PhysicalPath = "Forecalc.Web\"
-		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_11297\"
-		Debug.AspNetCompiler.Updateable = "true"
-		Debug.AspNetCompiler.VirtualPath = "/localhost_11297"
-		DefaultWebSiteLanguage = "Visual C#"
-		ProjectReferences = "{ed5d0555-0cea-4203-bd7c-1571da65751e}|ForeCalc.Library.dll;"
-		Release.AspNetCompiler.Debug = "False"
-		Release.AspNetCompiler.FixedNames = "false"
-		Release.AspNetCompiler.ForceOverwrite = "true"
-		Release.AspNetCompiler.PhysicalPath = "Forecalc.Web\"
-		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_11297\"
-		Release.AspNetCompiler.Updateable = "true"
-		Release.AspNetCompiler.VirtualPath = "/localhost_11297"
-		SlnRelativePath = "Forecalc.Web\"
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5"
-		UseIISExpress = "true"
-	EndProjectSection
-	ProjectSection(WebsiteProperties) = preProject
-		Debug.AspNetCompiler.Debug = "True"
-		Debug.AspNetCompiler.FixedNames = "false"
-		Debug.AspNetCompiler.ForceOverwrite = "true"
-		Debug.AspNetCompiler.PhysicalPath = "Forecalc.Web\"
-		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_11297\"
-		Debug.AspNetCompiler.Updateable = "true"
-		Debug.AspNetCompiler.VirtualPath = "/localhost_11297"
-		DefaultWebSiteLanguage = "Visual C#"
-		ProjectReferences = "{ed5d0555-0cea-4203-bd7c-1571da65751e}|ForeCalc.Library.dll;"
-		Release.AspNetCompiler.Debug = "False"
-		Release.AspNetCompiler.FixedNames = "false"
-		Release.AspNetCompiler.ForceOverwrite = "true"
-		Release.AspNetCompiler.PhysicalPath = "Forecalc.Web\"
-		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_11297\"
-		Release.AspNetCompiler.Updateable = "true"
-		Release.AspNetCompiler.VirtualPath = "/localhost_11297"
-		SlnRelativePath = "Forecalc.Web\"
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5"
-		UseIISExpress = "true"
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forecalc.Web", "Forecalc.Web\Forecalc.Web.csproj", "{55C24712-5B0C-4C20-ACC7-1673ECC0975E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,20 +31,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{079E8626-CB7C-40B2-88B7-6F165D00150C}.Debug|ARM.ActiveCfg = Debug|Any CPU
-		{079E8626-CB7C-40B2-88B7-6F165D00150C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{079E8626-CB7C-40B2-88B7-6F165D00150C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{079E8626-CB7C-40B2-88B7-6F165D00150C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{079E8626-CB7C-40B2-88B7-6F165D00150C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{079E8626-CB7C-40B2-88B7-6F165D00150C}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{079E8626-CB7C-40B2-88B7-6F165D00150C}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{079E8626-CB7C-40B2-88B7-6F165D00150C}.Release|ARM.ActiveCfg = Debug|Any CPU
-		{079E8626-CB7C-40B2-88B7-6F165D00150C}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{079E8626-CB7C-40B2-88B7-6F165D00150C}.Release|Any CPU.Build.0 = Debug|Any CPU
-		{079E8626-CB7C-40B2-88B7-6F165D00150C}.Release|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{079E8626-CB7C-40B2-88B7-6F165D00150C}.Release|Mixed Platforms.Build.0 = Debug|Any CPU
-		{079E8626-CB7C-40B2-88B7-6F165D00150C}.Release|x64.ActiveCfg = Debug|Any CPU
-		{079E8626-CB7C-40B2-88B7-6F165D00150C}.Release|x86.ActiveCfg = Debug|Any CPU
 		{22E60918-B46D-44F0-A73B-F4013A07941F}.Debug|ARM.ActiveCfg = Debug|Any CPU
 		{22E60918-B46D-44F0-A73B-F4013A07941F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{22E60918-B46D-44F0-A73B-F4013A07941F}.Debug|Any CPU.Build.0 = Debug|Any CPU
@@ -101,6 +45,20 @@ Global
 		{22E60918-B46D-44F0-A73B-F4013A07941F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{22E60918-B46D-44F0-A73B-F4013A07941F}.Release|x64.ActiveCfg = Release|Any CPU
 		{22E60918-B46D-44F0-A73B-F4013A07941F}.Release|x86.ActiveCfg = Release|Any CPU
+		{55C24712-5B0C-4C20-ACC7-1673ECC0975E}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{55C24712-5B0C-4C20-ACC7-1673ECC0975E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55C24712-5B0C-4C20-ACC7-1673ECC0975E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55C24712-5B0C-4C20-ACC7-1673ECC0975E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{55C24712-5B0C-4C20-ACC7-1673ECC0975E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{55C24712-5B0C-4C20-ACC7-1673ECC0975E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{55C24712-5B0C-4C20-ACC7-1673ECC0975E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{55C24712-5B0C-4C20-ACC7-1673ECC0975E}.Release|ARM.ActiveCfg = Release|Any CPU
+		{55C24712-5B0C-4C20-ACC7-1673ECC0975E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55C24712-5B0C-4C20-ACC7-1673ECC0975E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55C24712-5B0C-4C20-ACC7-1673ECC0975E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{55C24712-5B0C-4C20-ACC7-1673ECC0975E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{55C24712-5B0C-4C20-ACC7-1673ECC0975E}.Release|x64.ActiveCfg = Release|Any CPU
+		{55C24712-5B0C-4C20-ACC7-1673ECC0975E}.Release|x86.ActiveCfg = Release|Any CPU
 		{B54CB317-6311-4A14-8C33-BC9F8F52C19B}.Debug|ARM.ActiveCfg = Debug|Any CPU
 		{B54CB317-6311-4A14-8C33-BC9F8F52C19B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B54CB317-6311-4A14-8C33-BC9F8F52C19B}.Debug|Any CPU.Build.0 = Debug|Any CPU
