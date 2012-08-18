@@ -28,7 +28,7 @@
 
     $(".cell").live("click", function() {
         $(this).find(".text").hide();
-        $(this).find(".expr").show().focus().caretToEnd().css("background", "white");
+        $(this).find(".expr").show().focus().css("background", "white");
     });
     $(".expr").live("blur", function() {
         $(this).hide().parent().find(".text").show();
@@ -39,7 +39,7 @@
         var expr = $(this).val();
         put(row, col, expr);
     });
-    $("#refstyle").bind("change", function(data) {
+    $("#refstyle").bind("change", function() {
         $(".r1c1").toggle();
         $(".a1").toggle();
     });
