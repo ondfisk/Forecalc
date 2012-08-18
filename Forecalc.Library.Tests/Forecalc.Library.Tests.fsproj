@@ -53,13 +53,12 @@
     <Compile Include="EvalRefTests.fs" />
     <Compile Include="EvalFunTests.fs" />
     <Compile Include="WorkbookTests.fs" />
-    <None Include="packages.config" />
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.PowerPack, Version=2.0.0.0, Culture=neutral, PublicKeyToken=a19089b1c74d0809" />
-    <Reference Include="FsUnit.NUnit">
-      <HintPath>..\packages\FsUnit.1.1.0.0\Lib\Net40\FsUnit.NUnit.dll</HintPath>
+    <Reference Include="FsUnit.NUnit, Version=1.1.0.0, Culture=neutral, PublicKeyToken=null">
       <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />

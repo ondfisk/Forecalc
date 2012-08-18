@@ -10,8 +10,9 @@ open ParserSpecification
 
 module Parser =
 
-    Thread.CurrentThread.CurrentCulture <- CultureInfo("en-US")
-    Thread.CurrentThread.CurrentUICulture <- CultureInfo("en-US")
+    let culture = CultureInfo("en-US")
+    Thread.CurrentThread.CurrentCulture <- culture
+    Thread.CurrentThread.CurrentUICulture <- culture
     
     let parse (expr : string) =
         match expr with
@@ -23,7 +24,7 @@ module Parser =
                         expression
                     with
                         | ex -> Error(Parse)
-            | _ when (fst (Double.TryParse(expr, NumberStyles.Float, CultureInfo.CreateSpecificCulture("en-US")))) -> Float (float expr)
+            | _ when fst (Double.TryParse(expr, NumberStyles.Float, culture)) -> Float (float expr)
             | _ when (bool.TryParse >> fst) expr -> Boolean (bool.Parse expr)
             | _ when expr.StartsWith("#") -> 
                 let error = expr.ToUpper()
