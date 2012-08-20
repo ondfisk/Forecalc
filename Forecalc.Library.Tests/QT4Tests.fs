@@ -46,10 +46,10 @@ let ``[0, 1048576] 42 should fail``() =
     (fun () -> qt4.[0, 1048576] <- Some 42) |> should throw typeof<System.Exception>
 
 [<Test>]
-let ``apply (*) 2 should multiply elements by 2``() =
+let ``apply (+) 2 should add 2 to all elements``() =
     let qt4 = create<int>() 
-    qt4.[18, 4323] <- Some 21
-    qt4 |> apply ((*) 2)
+    qt4.[18, 4323] <- Some 40
+    qt4 |> apply ((+) 2)
     qt4.[18, 4323] |> should equal (Some 42)
 
 [<Test>]
