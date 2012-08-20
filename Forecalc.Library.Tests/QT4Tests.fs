@@ -86,10 +86,10 @@ let ``set None on non-existing cell should do nothing``() =
     qt4.[42, 42] |> should equal None
 
 [<Test>]
-let ``map (*) 2 should multiply elements by 2``() =
+let ``map (+) 2 should add 2 to all elements``() =
     let qt4 = create<int>() 
-    qt4.[42, 42] <- Some(21)
-    let result = qt4 |> map ((*) 2)
+    qt4.[42, 42] <- Some(40)
+    let result = qt4 |> map ((+) 2)
     result.[42, 42] |> should equal (Some 42)
 
 [<Test>]
