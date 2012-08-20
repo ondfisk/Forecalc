@@ -19,7 +19,7 @@
                     }
                 }
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 var msg = JSON.parse(xhr.responseText);
                 window.alert(msg.Message);
             }
