@@ -1,7 +1,4 @@
-﻿@using System
-@using System.Net
-@using System.Web.Helpers
-@using Forecalc.Web.Models;
+﻿@using Forecalc.Web.Models;
 
 @{
     var row = int.Parse(Request["row"]);
@@ -17,7 +14,7 @@
     }
     catch (Exception e)
     {
-        Response.StatusCode = (int) HttpStatusCode.BadRequest;
+        Response.StatusCode = (int)HttpStatusCode.BadRequest;
         Json.Write(new {e.Message}, Response.Output);
     }
 }
