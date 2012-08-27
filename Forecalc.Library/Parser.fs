@@ -15,28 +15,28 @@ module Parser =
     Thread.CurrentThread.CurrentUICulture <- culture
     
     let parse (expr : string) =
-        match expr with
-            | _ when expr.StartsWith("=") ->
-                    let e = expr.[1..]
-                    try
-                        let lexbuff = LexBuffer<char>.FromString(e)
-                        let expression = ParserSpecification.start LexerSpecification.tokenize lexbuff
-                        expression
-                    with
-                        | ex -> Error(Parse)
-            | _ when fst (Double.TryParse(expr, NumberStyles.Float, culture)) -> Float (float expr)
-            | _ when (bool.TryParse >> fst) expr -> Boolean (bool.Parse expr)
-            | _ when expr.StartsWith("#") -> 
-                let error = expr.ToUpper()
-                match error with
-                    | "#DIV/0!" -> Error(DivZero)
-                    | "#NAME?" -> Error(Name)
-                    | "#NULL!" -> Error(Null)
-                    | "#NUM!" -> Error(Number)
-                    | "#REF!" -> Error(Reference)
-                    | "#VALUE!" -> Error(Value)
-                    | _ -> String(expr)
-            | _ when expr.StartsWith("'") -> EscapedString(expr.[1..])
-            | _ -> String expr
-
-            
+        if expr.StartsWith("=") then
+            let e = expr.[1..]
+            try
+                let lexbuff = LexBuffer<char>.FromString(e)
+                let expression = ParserSpecification.start LexerSpecification.tokenize lexbuff
+                expression
+            with
+                | ex -> Error(Parse)
+        else if fst (Double.TryParse(expr, NumberStyles.Float, culture)) then
+             Float (float expr)
+        else if (bool.TryParse >> fst) expr then
+            Boolean (bool.Parse expr)
+        else if expr.StartsWith("#") then
+            match expr.ToUpper() with
+                | "#DIV/0!" -> Error(DivZero)
+                | "#NAME?" -> Error(Name)
+                | "#NULL!" -> Error(Null)
+                | "#NUM!" -> Error(Number)
+                | "#REF!" -> Error(Reference)
+                | "#VALUE!" -> Error(Value)
+                | _ -> String(expr)
+        else if expr.StartsWith("'") then
+            EscapedString(expr.[1..])
+        else
+            String expr            
