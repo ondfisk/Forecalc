@@ -15,6 +15,7 @@ module Parser =
     Thread.CurrentThread.CurrentUICulture <- culture
     
     let parse (expr : string) =
+        let expr = expr.Trim()
         if expr.StartsWith("=") then
             let e = expr.[1..]
             try
