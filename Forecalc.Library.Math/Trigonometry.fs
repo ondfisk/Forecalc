@@ -17,6 +17,23 @@ type Pi() =
                 | _ -> ErrorValue Parse
 
 [<Export(typeof<ISheetFunction>)>]
+type Degrees() = 
+    let degrees r = r * 180.0 / Math.PI
+    interface ISheetFunction with
+        member this.Name = "DEGREES"
+        member this.Apply list cell workbook dirty computing =
+            match list with
+                | [ e ] -> 
+                    match eval cell e workbook dirty computing with
+                        | FloatValue v -> FloatValue (degrees v)
+                        | BooleanValue v -> FloatValue (degrees (toFloat v))
+                        | NullValue -> FloatValue (degrees 0.0)
+                        | ValueList _
+                        | StringValue _ -> ErrorValue Value
+                        | ErrorValue v -> ErrorValue v 
+                | _ -> ErrorValue Parse
+
+[<Export(typeof<ISheetFunction>)>]
 type Radians() = 
     let radians d = d * Math.PI / 180.0
     interface ISheetFunction with
@@ -34,7 +51,7 @@ type Radians() =
                 | _ -> ErrorValue Parse
 
 [<Export(typeof<ISheetFunction>)>]
-type Cos() = 
+type Cosine() = 
     interface ISheetFunction with
         member this.Name = "COS"
         member this.Apply list cell workbook dirty computing =

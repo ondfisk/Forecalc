@@ -55,6 +55,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
     <Compile Include="TrigonometryTests.fs" />
+    <Compile Include="TrigonometryDegreesTests.fs" />
     <Compile Include="TrigonometryRadiansTests.fs" />
     <Compile Include="TrigonometryCosineTests.fs" />
   </ItemGroup>
