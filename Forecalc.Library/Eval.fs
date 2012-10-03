@@ -2,6 +2,11 @@
 
 open System
 open System.Collections.Generic
+open System.Configuration
+open System.Reflection
+open System.IO
+open System.ComponentModel.Composition
+open System.ComponentModel.Composition.Hosting
 open Ast
 
 type CellValue =
@@ -14,7 +19,29 @@ type CellValue =
 
 type CellContent = { Expr : Expr ; Value : CellValue ; Volatile : bool }
 
+type ISheetFunction = interface
+    abstract Name : string
+    abstract Apply : list : Expr list -> cell : AbsCell -> workbook : Map<string, QT4.qt4<CellContent>> -> dirty : HashSet<AbsCell> -> computing : HashSet<AbsCell> -> CellValue
+end 
+
+type SheetFunctionJar() =
+    [<ImportMany(typeof<ISheetFunction>)>]
+    let functions : seq<ISheetFunction> = Seq.empty
+ 
+    member this.Map() =
+        functions |> Seq.map (fun x -> x.Name, x.Apply) |> Map.ofSeq
+
 module Eval =
+    let catalog = new AggregateCatalog()
+    let folder = ConfigurationManager.AppSettings.["ExtensionsFolder"]
+    let directoryCatalog = new DirectoryCatalog(folder, "*.dll")
+    let container = new CompositionContainer(catalog)
+    catalog.Catalogs.Add(directoryCatalog)
+
+    let jar = SheetFunctionJar()
+    container.ComposeParts(jar)
+
+    let functions = jar.Map()
 
     let random = new Random()
 
@@ -332,7 +359,10 @@ module Eval =
                     | [] -> 
                         FloatValue(random.NextDouble())
                     | _ -> ErrorValue Parse
-            | _ -> ErrorValue Parse
+            | _ -> 
+                match functions |> Map.tryFind name with
+                    | Some(f) -> f list cell workbook dirty computing
+                    | None -> ErrorValue Parse
 
     and isVolatile expr =
         let isVolatileFun = function
