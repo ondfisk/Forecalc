@@ -60,7 +60,7 @@ type Sine() =
             Trigonometry.apply Math.Sin cell list workbook dirty computing
 
 [<Export(typeof<ISheetFunction>)>]
-type Tanget() = 
+type Tangent() = 
     interface ISheetFunction with
         member this.Name = "TAN"
         member this.Apply list cell workbook dirty computing =
