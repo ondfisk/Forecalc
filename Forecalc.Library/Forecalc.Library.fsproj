@@ -8,7 +8,7 @@
     <ProjectGuid>{ed5d0555-0cea-4203-bd7c-1571da65751e}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Language</RootNamespace>
-    <AssemblyName>ForeCalc.Library</AssemblyName>
+    <AssemblyName>Forecalc.Library</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -70,7 +70,6 @@
     <Compile Include="ReferenceResolver.fs" />
     <Compile Include="QT4.fs" />
     <Compile Include="Eval.fs" />
-    <Compile Include="SheetFunctions.fs" />
     <Compile Include="Workbook.fs" />
     <None Include="App.config" />
   </ItemGroup>
