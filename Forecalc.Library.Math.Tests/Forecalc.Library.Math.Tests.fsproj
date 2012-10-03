@@ -59,6 +59,7 @@
     <Compile Include="TrigonometryRadiansTests.fs" />
     <Compile Include="TrigonometryCosineTests.fs" />
     <Compile Include="TrigonometrySineTests.fs" />
+    <Compile Include="TrigonometryTangentTests.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Forecalc.Library.Math\Forecalc.Library.Math.fsproj">
