@@ -32,16 +32,15 @@ type SheetFunctionJar() =
         functions |> Seq.map (fun x -> x.Name, x.Apply) |> Map.ofSeq
 
 module Eval =
-    let catalog = new AggregateCatalog()
-    let folder = ConfigurationManager.AppSettings.["ExtensionsFolder"]
-    let directoryCatalog = new DirectoryCatalog(folder, "*.dll")
-    let container = new CompositionContainer(catalog)
-    catalog.Catalogs.Add(directoryCatalog)
-
-    let jar = SheetFunctionJar()
-    container.ComposeParts(jar)
-
-    let functions = jar.Map()
+    let functions() =
+        let folder = ConfigurationManager.AppSettings.["ExtensionsFolder"]
+        use catalog = new AggregateCatalog()
+        use container = new CompositionContainer(catalog)
+        use directoryCatalog = new DirectoryCatalog(folder, "*.dll")
+        catalog.Catalogs.Add(directoryCatalog)
+        let jar = SheetFunctionJar()
+        container.ComposeParts(jar)
+        jar.Map()
 
     let random = new Random()
 
@@ -360,7 +359,7 @@ module Eval =
                         FloatValue(random.NextDouble())
                     | _ -> ErrorValue Parse
             | _ -> 
-                match functions |> Map.tryFind name with
+                match functions() |> Map.tryFind name with
                     | Some(f) -> f list cell workbook dirty computing
                     | None -> ErrorValue Parse
 
