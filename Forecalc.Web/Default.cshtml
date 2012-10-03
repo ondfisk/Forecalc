@@ -8,6 +8,7 @@
     <input id="reset" type="button" value="Reset" />
     @Html.CheckBox("refstyle")
     @Html.Label("R1C1", "refstyle") 
+    <input id="load-extensions" type="button" value="Load extensions" />
 }
     
 <table>
@@ -45,4 +46,10 @@
 
 @section scripts {
     <script src="~/Scripts/forecalc.js"></script>
+    <script>
+        $(function () {
+            $("#load-extensions").click(function () {
+            });
+        });
+    </script>
 }
