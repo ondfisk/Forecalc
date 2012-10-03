@@ -65,3 +65,19 @@ type Cosine() =
                         | StringValue _ -> ErrorValue Value
                         | ErrorValue v -> ErrorValue v 
                 | _ -> ErrorValue Parse
+
+[<Export(typeof<ISheetFunction>)>]
+type Sine() = 
+    interface ISheetFunction with
+        member this.Name = "SIN"
+        member this.Apply list cell workbook dirty computing =
+            match list with
+                | [ e ] -> 
+                    match eval cell e workbook dirty computing with
+                        | FloatValue v -> FloatValue (Math.Sin v)
+                        | BooleanValue v -> FloatValue (Math.Sin (toFloat v))
+                        | NullValue -> FloatValue (Math.Sin 0.0)
+                        | ValueList _
+                        | StringValue _ -> ErrorValue Value
+                        | ErrorValue v -> ErrorValue v 
+                | _ -> ErrorValue Parse
