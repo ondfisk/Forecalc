@@ -7,8 +7,18 @@ open System.ComponentModel.Composition.Hosting
 open Ast
 open Eval
 
+
 [<Export(typeof<ISheetFunction>)>]
-type Cos() = class
+type Pi() = 
+    interface ISheetFunction with
+        member this.Name = "PI"
+        member this.Apply list cell workbook dirty computing =
+            match list with
+                | [] -> FloatValue(Math.PI)
+                | _ -> ErrorValue Parse
+
+[<Export(typeof<ISheetFunction>)>]
+type Cos() = 
     interface ISheetFunction with
         member this.Name = "COS"
         member this.Apply list cell workbook dirty computing =
@@ -22,4 +32,3 @@ type Cos() = class
                         | StringValue _ -> ErrorValue Value
                         | ErrorValue v -> ErrorValue v 
                 | _ -> ErrorValue Parse
-end
