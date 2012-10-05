@@ -1,0 +1,27 @@
+﻿@using System.Web.Configuration
+@{
+    Response.ContentType = "application/json";
+    
+    try
+    {
+        int count = 0;
+        foreach (string field in Request.Files)
+        {
+            var folder = WebConfigurationManager.AppSettings["ExtensionsFolder"];
+            var file = Request.Files[field];
+            var fileName = Path.GetFileName(file.FileName);
+            var extension = Path.GetExtension(fileName).ToLower();
+            if (extension == ".dll")
+            {
+                count++;
+                file.SaveAs(Path.Combine(folder, fileName));
+            }
+        }
+        Json.Write(new { Message = string.Format("{0} extension(s) received", count), Count = count }, Response.Output);
+    }
+    catch (Exception e)
+    {
+        Response.StatusCode = (int)HttpStatusCode.BadRequest;
+        Json.Write(new { e.Message }, Response.Output);
+    }
+}

@@ -1,0 +1,15 @@
+﻿@using Forecalc.Web.Models
+@{
+    Response.ContentType = "application/json";
+    
+    try
+    {
+        var values = Functions.Recalculate();
+        Json.Write(values, Response.Output);
+    }
+    catch (Exception e)
+    {
+        Response.StatusCode = (int)HttpStatusCode.BadRequest;
+        Json.Write(new {e.Message}, Response.Output);
+    }
+}

@@ -26,23 +26,50 @@
         });
     }
 
+    function recalculate() {
+        var url = $("#recalculate-url").val();
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {},
+            success: function (data) {
+                for (var r = 0; r < 100; r++) {
+                    for (var c = 0; c < 20; c++) {
+                        var tuple = data[c * 100 + r];
+                        var cell = $("#R" + (r + 1) + "C" + (c + 1) + "-text");
+                        cell.text(tuple.Item2);
+                        cell.attr("class", "text " + tuple.Item1);
+                    }
+                }
+            },
+            error: function (xhr) {
+                var response = JSON.parse(xhr.responseText);
+                window.alert(response.Message);
+            }
+        });
+    }
+    
     $(".cell").live("click", function() {
         $(this).find(".text").hide();
         $(this).find(".expr").show().focus().css("background", "white");
     });
+    
     $(".expr").live("blur", function() {
         $(this).hide().parent().find(".text").show();
     });
+    
     $(".expr").live("change", function() {
         var row = $(this).data("row");
         var col = $(this).data("col");
         var expr = $(this).val();
         put(row, col, expr);
     });
+    
     $("#refstyle").bind("change", function() {
         $(".r1c1").toggle();
         $(".a1").toggle();
     });
+    
     $("#reset").bind("click", function() {
         var url = $("#reset-url").val();
         $.post(url, function() {
@@ -50,7 +77,13 @@
             $(".text").text("").attr("class", "text");
         });
     });
+    
+    $("#recalculate").bind("click", function () {
+        recalculate();
+    });
+    
     var edit = false;
+    
     $(".expr").live("keydown", function(event) {
         var row = parseInt($(this).data("row"));
         var col = parseInt($(this).data("col"));
@@ -110,9 +143,48 @@
                 break;
         }
     });
+    
     function activate(row, col) {
         $("#R" + row + "C" + col)
             .find(".text").hide().end()
             .find(".expr").show().focus().caretToEnd().css("background", "white");
     }
+    
+    var bar = $('.bar');
+    var percent = $('.percent');
+    var status = $('#status');
+
+    $("#load-extension-dialog").dialog({ autoOpen: false });
+    
+    $("#load-extension").click(function () {
+        $("#file-paragraph").html('<input id="file" name="file" type="file" />');
+        var percentVal = "0%";
+        bar.width(percentVal);
+        percent.html(percentVal);
+        status.html("");
+        $("#load-extension-dialog").dialog("open");
+    });
+
+    $("#load-extension-form").ajaxForm({
+        beforeSend: function () {
+            status.empty();
+            var percentVal = "0%";
+            bar.width(percentVal);
+            percent.html(percentVal);
+        },
+        uploadProgress: function (event, position, total, percentComplete) {
+            var percentVal = percentComplete + "%";
+            bar.width(percentVal);
+            percent.html(percentVal);
+        },
+        complete: function (xhr) {
+            var response = JSON.parse(xhr.responseText);
+            status.html(response.Message);
+            $("#file-paragraph").html('<input id="file" name="file" type="file" />');
+            if (response.Count > 0) {
+                $("#load-extension-dialog").dialog("close");
+                recalculate();
+            }
+        }
+    });
 });

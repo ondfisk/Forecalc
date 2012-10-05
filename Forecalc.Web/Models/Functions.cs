@@ -37,6 +37,30 @@ namespace Forecalc.Web.Models
             return values;
         }
 
+        public static Tuple<string, string>[,] Recalculate()
+        {
+            var workbook = LoadWorkbook();
+
+            try
+            {
+                Workbook.recalculateFull(workbook);
+            }
+            catch
+            {
+                SaveWorkbook(workbook);
+                throw;
+            }
+
+            var cells = Workbook.toArray(Sheet, 1, 1, 20, 100, workbook);
+
+            var mapper = FSharpFunc<CellValue, Tuple<string, string>>.FromConverter(ToTuple);
+            var values = Array2DModule.Map(mapper, cells);
+
+            SaveWorkbook(workbook);
+
+            return values;
+        }
+
         private static FSharpMap<string, QT4.qt4<CellContent>> LoadWorkbook()
         {
             return HttpContext.Current.Session["Workbook"] as FSharpMap<string, QT4.qt4<CellContent>> ??

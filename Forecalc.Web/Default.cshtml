@@ -8,7 +8,8 @@
     <input id="reset" type="button" value="Reset" />
     @Html.CheckBox("refstyle")
     @Html.Label("R1C1", "refstyle") 
-    <input id="load-extensions" type="button" value="Load extensions" />
+    <input id="recalculate" type="button" value="Recalculate" />
+    <input id="load-extension" type="button" value="Load extension" />
 }
 
 <table>
@@ -43,13 +44,25 @@
 
 <input type="hidden" id="put-url" value="~/Put"/>
 <input type="hidden" id="reset-url" value="~/Reset"/>
+<input type="hidden" id="recalculate-url" value="~/Recalculate"/>
+<input type="hidden" id="post-extension-url" value="~/PostExtension"/>
+
+<div id="load-extension-dialog" title="Upload extension">
+    <form id="load-extension-form" method="POST" action="~/PostExtension.cshtml" enctype="multipart/form-data">
+        <p id="file-paragraph">
+            <input id="file" name="file" type="file" multiple="multiple" />
+        </p>
+        <div class="progress">
+            <div class="bar"></div >
+            <div class="percent">0%</div >
+        </div>
+        <p>
+            <input type="submit" value="Submit" />
+        </p>
+         <div id="status"></div>
+    </form>
+</div>
 
 @section scripts {
     <script src="~/Scripts/forecalc.js"></script>
-    <script>
-        $(function () {
-            $("#load-extensions").click(function () {
-            });
-        });
-    </script>
 }

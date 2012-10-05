@@ -29,13 +29,13 @@ td {
     min-width: 50px;
 }
 
-td:last-child {
-    border-right: 1px solid black;
-}
+    td:last-child {
+        border-right: 1px solid black;
+    }
 
-td.bottom {
-    border-bottom: 1px solid black;
-}
+    td.bottom {
+        border-bottom: 1px solid black;
+    }
 
 input[type="text"].expr {
     display: none;
@@ -62,5 +62,26 @@ input[type="text"].expr {
 }
 
 .string {
-    
+}
+
+.progress {
+    position: relative;
+    width: 100%;
+    border: 1px solid #ddd;
+    padding: 1px;
+    border-radius: 3px;
+}
+
+.bar {
+    background-color: #b4f5b4;
+    width: 0%;
+    height: 20px;
+    border-radius: 3px;
+}
+
+.percent {
+    position: absolute;
+    display: inline-block;
+    top: 3px;
+    left: 48%;
 }
