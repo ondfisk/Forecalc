@@ -41,6 +41,20 @@ let ``makeDirtySet (volatile cells) -> Set of (volatile cells)``() =
     workbook |> makeDirtySet |> should equal (Set.ofList [ { Sheet = "Sheet1" ; Col = 1 ; Row = 2 } ; { Sheet = "Sheet2" ; Col = 1 ; Row = 2 } ; { Sheet = "Sheet2" ; Col = 1 ; Row = 4 } ])
 
 [<Test>]
+let ``makeDirtySet (volatile cells and error cells) -> Set of (volatile and error cells)``() =
+    let sheet1 = QT4.create<CellContent>()
+    sheet1.[0, 0] <- Some({ Expr = Float 40.0 ; Value = FloatValue 40.0 ; Volatile = false })
+    sheet1.[0, 1] <- Some({ Expr = Fun("RAND", []) ; Value = NullValue ; Volatile = true })
+    sheet1.[0, 2] <- Some({ Expr = Fun("RAND", [Float 42.0]) ; Value = ErrorValue(Parse) ; Volatile = false })
+    let sheet2 = QT4.create<CellContent>()
+    sheet2.[0, 0] <- Some({ Expr = Float 42.0 ; Value = FloatValue 42.0 ; Volatile = false })
+    sheet2.[0, 1] <- Some({ Expr = Ref(Range({ Sheet = None ; TopLeft = { Sheet = None ; Row = 1 ; RowAbs = true ; Col = 1 ; ColAbs = true } ; BottomRight = { Sheet = None ; Row = 2 ; RowAbs = true ; Col = 2 ; ColAbs = true }})) ; Value = NullValue ; Volatile = true })
+    sheet2.[0, 2] <- Some({ Expr = String "Dirty" ; Value = StringValue "Dirty" ; Volatile = false })
+    sheet2.[0, 3] <- Some({ Expr = Ref(Cell({ Sheet = None ; Row = 0 ; RowAbs = false ; Col = 0 ; ColAbs = false })) ; Value = NullValue ; Volatile = true })
+    let workbook = Map.ofList [ "Sheet1", sheet1 ; "Sheet2", sheet2 ]
+    workbook |> makeDirtySet |> should equal (Set.ofList [ { Sheet = "Sheet1" ; Col = 1 ; Row = 2 } ;  { Sheet = "Sheet1" ; Col = 1 ; Row = 3 } ; { Sheet = "Sheet2" ; Col = 1 ; Row = 2 } ; { Sheet = "Sheet2" ; Col = 1 ; Row = 4 } ])
+
+[<Test>]
 let ``recalculate updates dependent cells``() =
     let sheet1 = QT4.create<CellContent>()
     sheet1.[0, 0] <- Some({ Expr = Float 9.0 ; Value = FloatValue 9.0 ; Volatile = false })
@@ -54,7 +68,6 @@ let ``recalculate updates dependent cells``() =
     sheet1.[0, 1].Value.Value |> should equal (FloatValue 22.0)
     sheet1.[0, 3].Value.Value |> should equal (FloatValue 42.0)
 
-
 [<Test>]
 let ``toArray when sheet not existing should fail``() =
     let sheet1 = QT4.create<CellContent>() 
@@ -66,3 +79,23 @@ let ``toArray returns a full array of cell``() =
     let sheet1 = QT4.create<CellContent>() 
     let workbook = Map.ofList [ "Sheet1", sheet1 ]
     workbook |> Workbook.toArray "Sheet1" (1,1) (20,100) |> should equal (Array2D.create<CellValue> 20 100 NullValue)
+
+[<Test>]
+let ``recalculate recalculates error cells``() =
+    let sheet1 = QT4.create<CellContent>()
+    sheet1.[0, 0] <- Some({ Expr = Float 42.0 ; Value = ErrorValue(Parse) ; Volatile = false })
+    let workbook = Map.ofList [ "Sheet1", sheet1 ]
+    let cell = { Sheet = "Sheet1" ; Col = 1 ; Row = 2 }
+    let expr = "42"
+    recalculate cell expr workbook
+    sheet1.[0, 0].Value.Value |> should equal (FloatValue 42.0)
+    sheet1.[0, 1].Value.Value |> should equal (FloatValue 42.0)
+
+
+[<Test>]
+let ``recalculateFull recalculates error cells``() =
+    let sheet1 = QT4.create<CellContent>()
+    sheet1.[0, 0] <- Some({ Expr = Float 42.0 ; Value = ErrorValue(Parse) ; Volatile = false })
+    let workbook = Map.ofList [ "Sheet1", sheet1 ]
+    recalculateFull workbook
+    sheet1.[0, 0].Value.Value |> should equal (FloatValue 42.0)

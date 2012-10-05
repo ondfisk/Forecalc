@@ -41,7 +41,8 @@ module Workbook =
                                                             | Some(t) ->
                                                                 let c = c0 ||| c1 ||| c2 ||| (i3 >>> logh)
                                                                 let r = r0 ||| r1 ||| r2 ||| (i3 &&& mh)
-                                                                if t.Volatile then
+                                                                let error = match t.Value with ErrorValue(_) -> true | _ -> false
+                                                                if t.Volatile || error then
                                                                     yield { Sheet = name ; Col = c + 1 ; Row = r + 1 }
         } |> Set.ofSeq
 
@@ -50,6 +51,15 @@ module Workbook =
         let dirty = HashSet<AbsCell>(makeDirtySet workbook)
         let computing = HashSet<AbsCell>()
         Eval.eval cell expr workbook dirty computing |> ignore
+        while dirty.Count > 0 do
+            let d = dirty.First()
+            match workbook.[d.Sheet].[d.Col - 1, d.Row - 1] with
+                | None -> ()
+                | Some e -> Eval.eval d e.Expr workbook dirty computing |> ignore
+
+    let recalculateFull workbook = 
+        let dirty = HashSet<AbsCell>(makeDirtySet workbook)
+        let computing = HashSet<AbsCell>()
         while dirty.Count > 0 do
             let d = dirty.First()
             match workbook.[d.Sheet].[d.Col - 1, d.Row - 1] with
