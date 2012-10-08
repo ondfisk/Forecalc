@@ -28,7 +28,7 @@ type SheetFunctionJar() =
     [<ImportMany(typeof<ISheetFunction>)>]
     let functions : seq<ISheetFunction> = Seq.empty
     
-    member this.Map() =
+    member __.Map() =
         functions |> Seq.map (fun x -> x.Name, x.Apply) |> Map.ofSeq
 
 module Eval =

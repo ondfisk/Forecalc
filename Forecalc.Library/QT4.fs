@@ -20,10 +20,10 @@ module QT4 =
     type qt4<'a> internal() =
         let t0 = Array.zeroCreate<'a option [] option [] option [] option> (w * h)
         with 
-            member internal this.Tile0 
+            member internal __.Tile0 
                 with get() = t0
             
-            member this.Item
+            member __.Item
                 with get(c, r) =
                     validate (c, r)
                     let v = t0.[(((c >>> (3 * logw)) &&& mw) <<< logh) + ((r >>> (3 * logh)) &&& mh)]
@@ -59,7 +59,7 @@ module QT4 =
                                 let i3 = ((c &&& mw) <<< logh) + (r &&& mh)
                                 t3().Value.[i3] <- v
             
-            member internal this.ToSeq() =
+            member internal __.ToSeq() =
                 seq {
                     for l in t0 do
                         match l with
@@ -79,13 +79,13 @@ module QT4 =
                                                                 | Some(v) -> yield v
                 }
             
-            member this.Length
+            member __.Length
                 with get() =
-                    this.ToSeq() |> Seq.length
+                    __.ToSeq() |> Seq.length
             
-            member this.IsEmpty
+            member __.IsEmpty
                 with get() =
-                    this.Length = 0
+                    __.Length = 0
 
     let create<'a>() = qt4<'a>()
 
