@@ -75,13 +75,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Forecalc.Library\Forecalc.Library.fsproj">
-      <Name>Forecalc.Library</Name>
-      <Project>{ed5d0555-0cea-4203-bd7c-1571da65751e}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

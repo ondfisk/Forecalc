@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Forecalc.Library", "Forecalc.Library\Forecalc.Library.fsproj", "{ED5D0555-0CEA-4203-BD7C-1571DA65751E}"
-EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Forecalc.Library.Tests", "Forecalc.Library.Tests\Forecalc.Library.Tests.fsproj", "{22E60918-B46D-44F0-A73B-F4013A07941F}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Forecalc.App", "Forecalc.App\Forecalc.App.fsproj", "{B54CB317-6311-4A14-8C33-BC9F8F52C19B}"
@@ -19,6 +17,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Forecalc.Library.Math", "Fo
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Forecalc.Library.Math.Tests", "Forecalc.Library.Math.Tests\Forecalc.Library.Math.Tests.fsproj", "{D21A00F5-55EC-494A-8340-0F37B84E5001}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Forecalc.Library", "Forecalc.Library\Forecalc.Library.fsproj", "{ED5D0555-0CEA-4203-BD7C-1571DA65751E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,21 +33,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Debug|Any CPU.Build.0 = Debug|x86
-		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Debug|ARM.ActiveCfg = Debug|x86
-		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Debug|x64.ActiveCfg = Debug|x86
-		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Debug|x86.ActiveCfg = Debug|x86
-		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Debug|x86.Build.0 = Debug|x86
-		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Release|Any CPU.ActiveCfg = Release|x86
-		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Release|ARM.ActiveCfg = Release|x86
-		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Release|Mixed Platforms.Build.0 = Release|x86
-		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Release|x64.ActiveCfg = Release|x86
-		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Release|x86.ActiveCfg = Release|x86
-		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Release|x86.Build.0 = Release|x86
 		{22E60918-B46D-44F0-A73B-F4013A07941F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{22E60918-B46D-44F0-A73B-F4013A07941F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22E60918-B46D-44F0-A73B-F4013A07941F}.Debug|ARM.ActiveCfg = Debug|Any CPU
@@ -118,6 +103,20 @@ Global
 		{D21A00F5-55EC-494A-8340-0F37B84E5001}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{D21A00F5-55EC-494A-8340-0F37B84E5001}.Release|x64.ActiveCfg = Release|Any CPU
 		{D21A00F5-55EC-494A-8340-0F37B84E5001}.Release|x86.ActiveCfg = Release|Any CPU
+		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Debug|ARM.ActiveCfg = Debug|x86
+		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Debug|x64.ActiveCfg = Debug|x86
+		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Debug|x86.ActiveCfg = Debug|x86
+		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Debug|x86.Build.0 = Debug|x86
+		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Release|Any CPU.ActiveCfg = Release|x86
+		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Release|ARM.ActiveCfg = Release|x86
+		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Release|Mixed Platforms.Build.0 = Release|x86
+		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Release|x64.ActiveCfg = Release|x86
+		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Release|x86.ActiveCfg = Release|x86
+		{ED5D0555-0CEA-4203-BD7C-1571DA65751E}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -67,11 +67,6 @@
       <Project>{35b94d9d-76c9-4348-ae6b-2e34a02e579c}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Forecalc.Library\Forecalc.Library.fsproj">
-      <Name>Forecalc.Library</Name>
-      <Project>{ed5d0555-0cea-4203-bd7c-1571da65751e}</Project>
-      <Private>True</Private>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>

@@ -190,12 +190,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Forecalc.Library\Forecalc.Library.fsproj">
-      <Project>{ed5d0555-0cea-4203-bd7c-1571da65751e}</Project>
-      <Name>Forecalc.Library</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Extensions\" />
   </ItemGroup>
   <PropertyGroup>
