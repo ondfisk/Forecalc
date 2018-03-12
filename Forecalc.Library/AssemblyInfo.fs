@@ -16,7 +16,7 @@ open System.Runtime.InteropServices
  
 [<assembly: AssemblyProduct("Forecalc.Library")>]
  
-[<assembly: AssemblyCopyright("Copyright © Rasmus Nielsen 2012")>]
+[<assembly: AssemblyCopyright("Copyright © Rasmus Lystrøm 2018")>]
  
 [<assembly: AssemblyTrademark("")>]
  

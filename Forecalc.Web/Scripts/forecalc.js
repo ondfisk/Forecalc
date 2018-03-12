@@ -26,14 +26,14 @@
         });
     }
 
-    $(".cell").live("click", function() {
+    $(document).on("click", ".cell", function() {
         $(this).find(".text").hide();
         $(this).find(".expr").show().focus().css("background", "white");
     });
-    $(".expr").live("blur", function() {
+    $(document).on("blur", ".expr", function () {
         $(this).hide().parent().find(".text").show();
     });
-    $(".expr").live("change", function() {
+    $(document).on("change", ".expr", function () {
         var row = $(this).data("row");
         var col = $(this).data("col");
         var expr = $(this).val();
@@ -51,7 +51,7 @@
         });
     });
     var edit = false;
-    $(".expr").live("keydown", function(event) {
+    $(document).on("keydown", ".expr", function (event) {
         var row = parseInt($(this).data("row"));
         var col = parseInt($(this).data("col"));
         var old = $(this).data("old");

@@ -1,18 +1,18 @@
 ﻿module WorkbookTests
 
 open System.Collections.Generic
-open NUnit.Framework
-open FsUnit
+open Xunit
+open FsUnit.Xunit
 open Forecalc.Library
 open Forecalc.Library.Ast
 open Forecalc.Library.Workbook
 
-[<Test>]
+[<Fact>]
 let ``makeDirtySet (empty workbook) -> Set.empty<CellContent>``() =
     let workbook = Map.ofList [ "Sheet1", (QT4.create<CellContent>()) ]
-    workbook |> makeDirtySet |> should equal (Set.empty<CellContent>)
+    workbook |> makeDirtySet |> Assert.Empty
 
-[<Test>]
+[<Fact>]
 let ``makeDirtySet (only non-volatile cells) -> Set.empty<CellContent>``() =
     let sheet1 = QT4.create<CellContent>()
     sheet1.[0, 0] <- Some({ Expr = Float 40.0 ; Value = FloatValue 40.0 ; Volatile = false })
@@ -25,9 +25,9 @@ let ``makeDirtySet (only non-volatile cells) -> Set.empty<CellContent>``() =
     sheet2.[0, 2] <- Some({ Expr = String "Dirty" ; Value = StringValue "Dirty" ; Volatile = false })
     sheet2.[0, 3] <- Some({ Expr = Blank ; Value = NullValue ; Volatile = false })
     let workbook = Map.ofList [ "Sheet1", sheet1 ; "Sheet2", sheet2 ]
-    workbook |> makeDirtySet |> should equal (Set.empty<CellContent>)
+    workbook |> makeDirtySet |> Assert.Empty
 
-[<Test>]
+[<Fact>]
 let ``makeDirtySet (volatile cells) -> Set of (volatile cells)``() =
     let sheet1 = QT4.create<CellContent>()
     sheet1.[0, 0] <- Some({ Expr = Float 40.0 ; Value = FloatValue 40.0 ; Volatile = false })
@@ -40,7 +40,7 @@ let ``makeDirtySet (volatile cells) -> Set of (volatile cells)``() =
     let workbook = Map.ofList [ "Sheet1", sheet1 ; "Sheet2", sheet2 ]
     workbook |> makeDirtySet |> should equal (Set.ofList [ { Sheet = "Sheet1" ; Col = 1 ; Row = 2 } ; { Sheet = "Sheet2" ; Col = 1 ; Row = 2 } ; { Sheet = "Sheet2" ; Col = 1 ; Row = 4 } ])
 
-[<Test>]
+[<Fact>]
 let ``recalculate updates dependent cells``() =
     let sheet1 = QT4.create<CellContent>()
     sheet1.[0, 0] <- Some({ Expr = Float 9.0 ; Value = FloatValue 9.0 ; Volatile = false })
@@ -55,13 +55,13 @@ let ``recalculate updates dependent cells``() =
     sheet1.[0, 3].Value.Value |> should equal (FloatValue 42.0)
 
 
-[<Test>]
+[<Fact>]
 let ``toArray when sheet not existing should fail``() =
     let sheet1 = QT4.create<CellContent>() 
     let workbook = Map.ofList [ "Sheet1", sheet1 ]
     (fun () -> workbook |> Workbook.toArray "Sheet2" (1,1) (1,1) |> ignore) |> should throw typeof<System.Exception>
 
-[<Test>]
+[<Fact>]
 let ``toArray returns a full array of cell``() =
     let sheet1 = QT4.create<CellContent>() 
     let workbook = Map.ofList [ "Sheet1", sheet1 ]
