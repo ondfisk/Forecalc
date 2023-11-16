@@ -16,5 +16,3 @@
 ### 2018-03-13 Update
 
 * Solution and projects upgraded for latest version of F#.
-
-Builds and runs in Visual Studio 2017 15.6 with F# installed.

@@ -1,11 +1,9 @@
 {
     "cSpell.enabled": true,
     "cSpell.language": "en",
-    "cSpell.checkOnlyEnabledFileTypes": true,
-    "cSpell.enableFiletypes": [
-        "csharp",
-        "fsharp",
-        "markdown"
+    "cSpell.words": [
+        "forecalc",
+        "xunit"
     ],
     "editor.trimAutoWhitespace": true,
     "files.autoSave": "afterDelay",

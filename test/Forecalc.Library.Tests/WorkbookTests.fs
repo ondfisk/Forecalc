@@ -1,6 +1,5 @@
 ﻿module WorkbookTests
 
-open System.Collections.Generic
 open Xunit
 open FsUnit.Xunit
 open Forecalc.Library
@@ -57,12 +56,12 @@ let ``recalculate updates dependent cells``() =
 
 [<Fact>]
 let ``toArray when sheet not existing should fail``() =
-    let sheet1 = QT4.create<CellContent>() 
+    let sheet1 = QT4.create<CellContent>()
     let workbook = Map.ofList [ "Sheet1", sheet1 ]
-    (fun () -> workbook |> Workbook.toArray "Sheet2" (1,1) (1,1) |> ignore) |> should throw typeof<System.Exception>
+    (fun () -> workbook |> toArray "Sheet2" (1,1) (1,1) |> ignore) |> should throw typeof<System.Exception>
 
 [<Fact>]
 let ``toArray returns a full array of cell``() =
-    let sheet1 = QT4.create<CellContent>() 
+    let sheet1 = QT4.create<CellContent>()
     let workbook = Map.ofList [ "Sheet1", sheet1 ]
-    workbook |> Workbook.toArray "Sheet1" (1,1) (20,100) |> should equal (Array2D.create<CellValue> 20 100 NullValue)
+    workbook |> toArray "Sheet1" (1,1) (20,100) |> should equal (Array2D.create<CellValue> 20 100 NullValue)
