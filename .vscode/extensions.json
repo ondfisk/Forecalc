@@ -1,0 +1,11 @@
+{
+    "recommendations": [
+        "davidanson.vscode-markdownlint",
+        "ionide.ionide-fsharp",
+        "ms-dotnettools.csharp",
+        "ms-dotnettools.csdevkit",
+        "ms-dotnettools.vscodeintellicode-csharp",
+        "ms-dotnettools.blazorwasm-companion",
+        "streetsidesoftware.code-spell-checker"
+    ]
+}

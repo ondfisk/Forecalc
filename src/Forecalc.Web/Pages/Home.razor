@@ -1,0 +1,46 @@
+﻿@page "/"
+@using Microsoft.FSharp.Collections
+@using static Forecalc.Library.QT4
+
+<PageTitle>Forecalc</PageTitle>
+
+<div id="forecalc">
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                @for (var col = 1; col <= 20; col++)
+                {
+                    <th>
+                        <span class="a1">@ReferenceResolver.alphaFromColumn(col)</span>
+                        <span class="r1c1" hidden>@col</span>
+                    </th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @for (var row = 1; row <= 100; row++)
+            {
+                <tr>
+                    <th>@row</th>
+                    @for (var col = 1; col <= 20; col++)
+                    {
+                        <td class="cell @(row == 100 ? "bottom" : null)" id="@($"R{row}C{col}")">
+                            <input type="text" id="@($"R{row}C{col}-expr")" name="@($"R{row}C{col}-expr")" class="expr" data-row="@row" data-col="@col" hidden />
+                            <div class="text" id="@($"R{row}C{col}-text")"></div>
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    public FSharpMap<string, qt4<CellContent>> Workbook { get; } 
+
+    public Home()
+    {
+        Workbook = MapModule.Add("Sheet1", QT4.create<CellContent>(), MapModule.Empty<string, QT4.qt4<CellContent>>());
+    }
+}
