@@ -4,8 +4,7 @@ open System.Globalization
 open System.Threading
 open FSharp.Text.Lexing
 
-module ExpressionParser =
-
+module Expression =
     let culture = CultureInfo("en-US")
     Thread.CurrentThread.CurrentCulture <- culture
     Thread.CurrentThread.CurrentUICulture <- culture

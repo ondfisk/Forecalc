@@ -43,3 +43,13 @@ and Ref =
     | Range of Range
 
 and AbsCell = { Sheet : string ; Row : int ; Col : int }
+
+and Error =
+    | DivZero
+    | Name
+    | NotAvailable
+    | Null
+    | Number
+    | Parse
+    | Reference
+    | Value
