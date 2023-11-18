@@ -16,3 +16,14 @@
 ### 2018-03-13 Update
 
 * Solution and projects upgraded for latest version of F#.
+
+## Build and Run
+
+Forecalc is a cross platform .NET 8 application:
+
+```bash
+dotnet restore
+dotnet build
+dotnet test
+dotnet run --project src/Forecalc.Web
+```

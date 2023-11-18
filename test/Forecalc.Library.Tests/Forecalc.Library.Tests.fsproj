@@ -39,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Forecalc.Library\Forecalc.Library.fsproj" />
+    <ProjectReference Include="..\..\src\Forecalc.Library\Forecalc.Library.fsproj" />
   </ItemGroup>
 
 </Project>
