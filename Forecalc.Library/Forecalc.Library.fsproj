@@ -38,6 +38,6 @@
     <PackageReference Update="FSharp.Core" Version="8.0.100" />
   </ItemGroup>
 
-  <Import Project="$(NuGetPackageRoot)/FsLexYacc/11.2.0/build/FsLexYacc.targets" />
+  <Import Project="$(NuGetPackageRoot)FsLexYacc/11.2.0/build/FsLexYacc.targets" />
 
 </Project>
