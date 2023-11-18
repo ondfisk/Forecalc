@@ -1,0 +1,12 @@
+{
+    "cSpell.enabled": true,
+    "cSpell.language": "en",
+    "cSpell.words": [
+        "forecalc",
+        "xunit"
+    ],
+    "editor.trimAutoWhitespace": true,
+    "files.autoSave": "afterDelay",
+    "files.trimFinalNewlines": true,
+    "files.trimTrailingWhitespace": true
+}
