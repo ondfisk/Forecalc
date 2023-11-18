@@ -7,6 +7,6 @@ updates:
       interval: daily
 
   - package-ecosystem: nuget
-    directory: /src
+    directory: /
     schedule:
       interval: daily
