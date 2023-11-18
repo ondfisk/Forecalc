@@ -1,13 +1,10 @@
 ﻿namespace Forecalc.Library
 
 open System.Globalization
-open System.Threading
 open FSharp.Text.Lexing
 
 module Expression =
     let culture = CultureInfo("en-US")
-    Thread.CurrentThread.CurrentCulture <- culture
-    Thread.CurrentThread.CurrentUICulture <- culture
 
     let parse (expr : string) =
         let expr = expr.Trim()
