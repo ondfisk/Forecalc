@@ -22,12 +22,18 @@ if (!app.Environment.IsDevelopment())
 
 app.UseStaticFiles();
 
+var localization = new RequestLocalizationOptions().SetDefaultCulture("en-US")
+    .AddSupportedCultures(["en-US"])
+    .AddSupportedUICultures(["en-US"]);
+
+app.UseRequestLocalization(localization);
+
 app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapPut("/forecalc", (ForecalcService functions, CellUpdateDTO cell) => functions.Put(cell.Row, cell.Col, cell.Expr));
-app.MapDelete("/forecalc", (ForecalcService functions) => functions.Reset());
+app.MapPut("/forecalc", (ForecalcService service, CellUpdateDTO cell) => service.Put(cell.Row, cell.Col, cell.Expr));
+app.MapDelete("/forecalc", (ForecalcService service) => service.Reset());
 
 app.MapRazorPages();
 

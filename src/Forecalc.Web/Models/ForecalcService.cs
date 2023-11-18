@@ -42,7 +42,7 @@ public class ForecalcService(FSharpMap<string, QT4<CellContent>> workbook)
     public bool Reset()
     {
         var clear = FSharpFunc<CellContent, CellContent>.FromConverter(Empty);
-        
+
         QT4.apply(clear, workbook[Sheet]);
 
         return true;
@@ -52,32 +52,17 @@ public class ForecalcService(FSharpMap<string, QT4<CellContent>> workbook)
 
     private static CellContentDTO ConvertToTuple(CellValue value)
     {
-        var type = "";
+        var type =
+            value.IsBooleanValue ? "bool" :
+            value.IsFloatValue ? "float" :
+            value.IsErrorValue ? "error" :
+            value.IsNullValue ? "" :
+            value.IsStringValue ? "string" :
+            value.IsValueList ? "error" :
+            "";
+
         var str = Eval.toString(value);
-        if (value.IsBooleanValue)
-        {
-            type = "bool";
-        }
-        if (value.IsErrorValue)
-        {
-            type = "error";
-        }
-        if (value.IsFloatValue)
-        {
-            type = "float";
-        }
-        if (value.IsStringValue)
-        {
-            type = "string";
-        }
-        if (value.IsNullValue)
-        {
-            type = "";
-        }
-        if (value.IsValueList)
-        {
-            type = "error";
-        }
+
         return new CellContentDTO(type, str);
     }
 }
