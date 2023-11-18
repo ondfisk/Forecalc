@@ -3,7 +3,6 @@
 open System.Text.RegularExpressions
 
 module ReferenceResolver =
-
     let regexA1 = Regex(@"^(\$?)([A-Z]+)(\$?)(\d+)$")
     let regexR1C1 = Regex(@"^R(\[?)([\+|\-]?\d+)?(\]?)C(\[?)([\+|\-]?\d+)?(\])?$")
 

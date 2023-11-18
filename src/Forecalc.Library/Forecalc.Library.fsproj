@@ -1,14 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
-
   <ItemGroup>
-    <Compile Include="Errors.fs" />
-    <Compile Include="Ast.fs" />
+    <Compile Include="Types.fs" />
     <FsYacc Include="Parser.fsy">
       <OtherFlags>--module Parser</OtherFlags>
     </FsYacc>
@@ -23,20 +20,17 @@
       <Visible>false</Visible>
       <Link>Lexer.fs</Link>
     </Compile>
-    <Compile Include="ExpressionParser.fs" />
+    <Compile Include="Expression.fs" />
     <Compile Include="ReferenceResolver.fs" />
     <Compile Include="QT4.fs" />
     <Compile Include="Eval.fs" />
     <Compile Include="Workbook.fs" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="FsLexYacc" Version="11.2.0" />
     <PackageReference Include="FsLexYacc.Runtime" Version="11.2.0" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Update="FSharp.Core" Version="8.0.100" />
   </ItemGroup>
-
 </Project>

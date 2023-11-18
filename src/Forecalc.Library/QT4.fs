@@ -9,7 +9,7 @@ type QT4<'a> internal() =
     let h = 1 <<< logh
     let mh = h - 1
     let sizeh = 1 <<< (4 * logh)
-    let validate (c, r) =
+    let validate c r =
         if c < 0 || c >= sizew then
             failwithf "c must be between 0 and %i" (sizew - 1)
         if r < 0 || r >= sizeh then
@@ -21,7 +21,7 @@ type QT4<'a> internal() =
 
         member this.Item
             with get(c, r) =
-                validate (c, r)
+                validate c r
                 let v = t0.[(((c >>> (3 * logw)) &&& mw) <<< logh) + ((r >>> (3 * logh)) &&& mh)]
                 match v with
                     | None -> None
@@ -36,7 +36,7 @@ type QT4<'a> internal() =
                                     | Some(t3) -> t3.[((c &&& mw) <<< logh) + (r &&& mh)]
 
             and set(c, r) (v : 'a option) =
-                validate (c, r)
+                validate c r
                 let i0 = (((c >>> (3 * logw)) &&& mw) <<< logh) + ((r >>> (3 * logh)) &&& mh)
                 let t1() = t0.[i0]
                 if t1().IsNone && v.IsSome then

@@ -14,7 +14,6 @@ type CellValue =
 type CellContent = { Expr : Expr ; Value : CellValue ; Volatile : bool }
 
 module Eval =
-
     let random = new Random()
 
     let rec eval cell expr (workbook : Map<string, QT4<CellContent>>) (dirty : HashSet<AbsCell>) (computing : HashSet<AbsCell>) =
