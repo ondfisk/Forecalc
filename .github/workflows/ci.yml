@@ -5,14 +5,18 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - README.md
+    paths:
+      - .github/workflows/build-and-test.yml
+      - src/**
+      - test/**
 
   pull_request:
     branches:
       - main
-    paths-ignore:
-      - README.md
+    paths:
+      - .github/workflows/build-and-test.yml
+      - src/**
+      - test/**
 
   workflow_dispatch:
 
