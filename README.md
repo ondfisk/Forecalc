@@ -8,10 +8,10 @@
 * Compare different data representations for large spreadsheets.
 * Compare object-oriented and functional programming styles in a substantial piece of software, including testability, maintainability, and code volume.
 
-### 2023-11-16 Update
+### 2023-11-18 Update
 
 * Upgraded to .NET 8.
-* Web App rewritten in Blazor Web Assembly.
+* Web App rewritten in Razor Pages.
 
 ### 2018-03-13 Update
 
