@@ -7,9 +7,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E5E596FA-DE0
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Forecalc.Library", "src\Forecalc.Library\Forecalc.Library.fsproj", "{AA1E90CE-FA5B-4DC7-B217-1D879015C614}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{2DF24BB8-E8B8-4CD6-9A99-974BCCB99E45}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{2DF24BB8-E8B8-4CD6-9A99-974BCCB99E45}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Forecalc.Library.Tests", "test\Forecalc.Library.Tests\Forecalc.Library.Tests.fsproj", "{CFC1E962-68A4-4B48-92E1-D4A7DB93DA6F}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Forecalc.Library.Tests", "tests\Forecalc.Library.Tests\Forecalc.Library.Tests.fsproj", "{CFC1E962-68A4-4B48-92E1-D4A7DB93DA6F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Forecalc.Web", "src\Forecalc.Web\Forecalc.Web.csproj", "{68CC0089-C889-4212-9E65-599582D39735}"
 EndProject

@@ -8,7 +8,7 @@ on:
     paths:
       - .github/workflows/build-and-test.yml
       - src/**
-      - test/**
+      - tests/**
 
   pull_request:
     branches:
@@ -16,7 +16,7 @@ on:
     paths:
       - .github/workflows/build-and-test.yml
       - src/**
-      - test/**
+      - tests/**
 
   workflow_dispatch:
 
