@@ -27,7 +27,7 @@
     <Compile Include="Workbook.fs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="FsLexYacc" Version="11.2.0" />
+    <PackageReference Include="FsLexYacc" Version="11.3.0" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Update="FSharp.Core" Version="8.0.300" />
