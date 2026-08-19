@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Forecalc.Library/Forecalc.Library.fsproj" />
+    <Project Path="src/Forecalc.Web/Forecalc.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Forecalc.Library.Tests/Forecalc.Library.Tests.fsproj" />
+  </Folder>
+</Solution>
