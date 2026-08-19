@@ -1,9 +1,4 @@
 <Solution>
-  <Configurations>
-    <Platform Name="Any CPU" />
-    <Platform Name="x64" />
-    <Platform Name="x86" />
-  </Configurations>
   <Folder Name="/src/">
     <Project Path="src/Forecalc.Library/Forecalc.Library.fsproj" />
     <Project Path="src/Forecalc.Web/Forecalc.Web.csproj" />
