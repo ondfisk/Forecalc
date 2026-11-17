@@ -12,11 +12,11 @@
     <FsLex Include="Lexer.fsl">
       <OtherFlags>--unicode</OtherFlags>
     </FsLex>
-    <Compile Include="Parser.fs">
+    <Compile Include="$(FsYaccOutputFolder)Parser.fs">
       <Visible>false</Visible>
       <Link>Parser.fs</Link>
     </Compile>
-    <Compile Include="Lexer.fs">
+    <Compile Include="$(FsYaccOutputFolder)Lexer.fs">
       <Visible>false</Visible>
       <Link>Lexer.fs</Link>
     </Compile>
@@ -27,9 +27,6 @@
     <Compile Include="Workbook.fs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="FsLexYacc" Version="11.4.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Update="FSharp.Core" Version="10.1.400" />
+    <PackageReference Include="FsLexYacc" Version="13.0.0" />
   </ItemGroup>
 </Project>
